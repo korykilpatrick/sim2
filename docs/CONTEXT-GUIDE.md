@@ -157,6 +157,13 @@ This document helps you determine which documentation to load based on your curr
 ❌ Avoid loading similar documents (e.g., all UI-related docs)
 ❌ Don't keep documents loaded between different task types
 
+## 📝 Documentation Standards
+
+When writing new code or reviewing existing code:
+- **Always reference JSDOC-STANDARDS.md** for documentation guidelines
+- Follow JSDoc conventions for all exported functions, components, and types
+- Ensure consistent documentation patterns across the codebase
+
 ## 🎯 Task Switching Protocol
 
 When switching between tasks:
