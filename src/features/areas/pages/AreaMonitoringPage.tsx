@@ -9,16 +9,17 @@ import {
 import {
   AreaList,
   AreaMap,
-  AreaConfigForm,
   AreaStats,
   AreaAlerts,
+  AreaSearch,
+  AreaWizard,
 } from '../components'
 import { useAreaAlerts, useMarkAlertRead } from '../hooks/useAreaMonitoring'
+import { PageLayout } from '@/components/layouts'
 import Button from '@/components/common/Button'
-import Input from '@/components/forms/Input'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Modal from '@/components/common/Modal'
-import { Plus, Search, MapPin } from 'lucide-react'
+import { Plus, MapPin } from 'lucide-react'
 import type { Area, CreateAreaRequest } from '../types'
 
 export default function AreaMonitoringPage() {
@@ -26,9 +27,6 @@ export default function AreaMonitoringPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedArea, setSelectedArea] = useState<Area | null>(null)
   const [isCreating, setIsCreating] = useState(false)
-  const [currentAreaGeometry, setCurrentAreaGeometry] = useState<
-    GeoJSON.Polygon | undefined
-  >()
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [areaToDelete, setAreaToDelete] = useState<Area | null>(null)
 
@@ -55,13 +53,12 @@ export default function AreaMonitoringPage() {
     vesselsMonitored: 0,
     highRiskVessels: 0,
   }
-  const alerts = alertsData?.data || []
+  const alerts = alertsData?.data?.data || []
 
   const handleCreateArea = async (data: CreateAreaRequest) => {
     try {
       await createAreaMutation.mutateAsync(data)
       setIsCreating(false)
-      setCurrentAreaGeometry(undefined)
     } catch (error) {
       // Error handled by mutation
     }
@@ -92,73 +89,28 @@ export default function AreaMonitoringPage() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="sm:flex sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Area Monitoring</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Monitor specific maritime areas of interest with real-time alerts
-          </p>
-        </div>
-        <div className="mt-4 sm:mt-0">
-          <Button
-            variant="primary"
-            onClick={() => setIsCreating(true)}
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Create New Area
-          </Button>
-        </div>
-      </div>
+    <PageLayout
+      title="Area Monitoring"
+      subtitle="Monitor specific maritime areas of interest with real-time alerts"
+      action={{
+        label: 'Create New Area',
+        onClick: () => setIsCreating(true),
+        icon: <Plus className="h-5 w-5" />,
+      }}
+    >
+      <div className="space-y-8">
+        {/* Stats */}
+        <AreaStats stats={stats} />
 
-      {/* Stats */}
-      <AreaStats stats={stats} />
-
-      {/* Main Content */}
-      {isCreating ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Step 1: Define Area
-            </h2>
-            <AreaMap
-              onAreaCreate={(geometry) => {
-                setCurrentAreaGeometry(geometry)
-              }}
-            />
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Step 2: Configure Monitoring
-            </h2>
-            <AreaConfigForm
-              area={currentAreaGeometry}
-              areaSize={100} // Calculate from geometry in real implementation
-              onSubmit={handleCreateArea}
-              onCancel={() => {
-                setIsCreating(false)
-                setCurrentAreaGeometry(undefined)
-              }}
-              isSubmitting={createAreaMutation.isPending}
-            />
-          </div>
-        </div>
-      ) : (
+        {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Areas List */}
           <div className="lg:col-span-1">
             <div className="mb-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                <Input
-                  type="search"
-                  placeholder="Search areas..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+              <AreaSearch
+                searchQuery={searchQuery}
+                onSearchQueryChange={setSearchQuery}
+              />
             </div>
             <AreaList
               areas={areas}
@@ -198,7 +150,20 @@ export default function AreaMonitoringPage() {
             )}
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Create Area Modal */}
+      <Modal
+        isOpen={isCreating}
+        onClose={() => setIsCreating(false)}
+        title="Create New Area"
+        size="xl"
+      >
+        <AreaWizard
+          onComplete={handleCreateArea}
+          onCancel={() => setIsCreating(false)}
+        />
+      </Modal>
 
       {/* Delete Confirmation Modal */}
       <Modal
@@ -226,6 +191,6 @@ export default function AreaMonitoringPage() {
           </Button>
         </div>
       </Modal>
-    </div>
+    </PageLayout>
   )
 }

@@ -75,3 +75,11 @@ export function useDeleteArea() {
     },
   })
 }
+
+export function useMonitoringCriteria() {
+  return useQuery({
+    queryKey: ['monitoring-criteria'],
+    queryFn: () => areaApi.getMonitoringCriteria(),
+    staleTime: 60 * 60 * 1000, // 1 hour (this data rarely changes)
+  })
+}
