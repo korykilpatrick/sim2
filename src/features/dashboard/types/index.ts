@@ -59,5 +59,5 @@ export interface DashboardActivity {
   /** ISO timestamp of the activity */
   timestamp: string
   /** Additional activity-specific data */
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }

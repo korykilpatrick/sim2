@@ -198,7 +198,7 @@ export interface ChronologyEvent {
   /** Risk level associated with this event */
   riskLevel?: 'low' | 'medium' | 'high'
   /** Additional event-specific details */
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 }
 
 /**

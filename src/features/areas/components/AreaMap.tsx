@@ -20,7 +20,7 @@ export const AreaMap: React.FC<AreaMapProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
-  const [currentPolygon, setCurrentPolygon] = useState<any[]>([])
+  const [currentPolygon, setCurrentPolygon] = useState<{ lat: number; lng: number }[]>([])
 
   useEffect(() => {
     // Note: In a real implementation, you would integrate with a mapping library

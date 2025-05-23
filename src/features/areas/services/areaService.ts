@@ -8,6 +8,7 @@ import type {
   AreaFilters,
   MonitoringCriteria,
 } from '../types'
+import type { Vessel } from '@/features/vessels/types'
 
 const BASE_URL = '/api/v1/areas'
 
@@ -42,7 +43,12 @@ export const areaApi = {
     )
   },
 
-  startMonitoring: async (areaId: string, config: any) => {
+  startMonitoring: async (areaId: string, config: {
+    criteria: string[]
+    updateFrequency: 3 | 6 | 12 | 24
+    duration: number
+    alertsEnabled: boolean
+  }) => {
     return apiClient.post<{ data: AreaMonitoring }>(
       `${BASE_URL}/${areaId}/monitoring`,
       config,
@@ -58,7 +64,13 @@ export const areaApi = {
   },
 
   // Alerts
-  getAreaAlerts: async (areaId: string, filters?: any) => {
+  getAreaAlerts: async (areaId: string, filters?: {
+    severity?: 'low' | 'medium' | 'high' | 'critical'
+    type?: string
+    isRead?: boolean
+    limit?: number
+    page?: number
+  }) => {
     return apiClient.get<{ data: AreaAlert[]; total: number }>(
       `${BASE_URL}/${areaId}/alerts`,
       { params: filters },
@@ -95,7 +107,7 @@ export const areaApi = {
 
   // Vessels in area
   getVesselsInArea: async (areaId: string) => {
-    return apiClient.get<{ data: any[]; total: number }>(
+    return apiClient.get<{ data: Vessel[]; total: number }>(
       `${BASE_URL}/${areaId}/vessels`,
     )
   },

@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { areaApi } from '../services/areaService'
 import toast from 'react-hot-toast'
+import type { AxiosError } from 'axios'
+import type { ApiError } from '@/types/api'
 
 export function useAreaMonitoring(areaId: string) {
   return useQuery({
@@ -14,13 +16,18 @@ export function useStartMonitoring(areaId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (config: any) => areaApi.startMonitoring(areaId, config),
+    mutationFn: (config: {
+      criteria: string[]
+      updateFrequency: 3 | 6 | 12 | 24
+      duration: number
+      alertsEnabled: boolean
+    }) => areaApi.startMonitoring(areaId, config),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['area-monitoring', areaId] })
       queryClient.invalidateQueries({ queryKey: ['areas', areaId] })
       toast.success('Monitoring started successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ error?: ApiError }>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to start monitoring',
       )
@@ -37,7 +44,7 @@ export function usePauseMonitoring(areaId: string) {
       queryClient.invalidateQueries({ queryKey: ['area-monitoring', areaId] })
       toast.success('Monitoring paused')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ error?: ApiError }>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to pause monitoring',
       )
@@ -54,7 +61,7 @@ export function useResumeMonitoring(areaId: string) {
       queryClient.invalidateQueries({ queryKey: ['area-monitoring', areaId] })
       toast.success('Monitoring resumed')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ error?: ApiError }>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to resume monitoring',
       )
@@ -62,7 +69,14 @@ export function useResumeMonitoring(areaId: string) {
   })
 }
 
-export function useAreaAlerts(areaId: string, filters?: any) {
+export function useAreaAlerts(areaId: string, filters?: {
+  enabled?: boolean
+  severity?: 'low' | 'medium' | 'high' | 'critical'
+  type?: string
+  isRead?: boolean
+  limit?: number
+  page?: number
+}) {
   return useQuery({
     queryKey: ['area-alerts', areaId, filters],
     queryFn: () => areaApi.getAreaAlerts(areaId, filters),

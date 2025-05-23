@@ -3,6 +3,8 @@ import { reportApi } from '../services/reportService'
 import type { ReportFilters, ReportRequest, BulkReportRequest } from '../types'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import type { AxiosError } from 'axios'
+import type { ApiResponse } from '@/types/api'
 
 export function useReports(filters?: ReportFilters) {
   return useQuery({
@@ -32,7 +34,7 @@ export function useCreateReport() {
       toast.success('Report generation started')
       navigate(`/reports/${response.data.reportId}`)
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create report',
       )
@@ -51,7 +53,7 @@ export function useCreateBulkReports() {
       queryClient.invalidateQueries({ queryKey: ['report-statistics'] })
       toast.success('Bulk report generation started')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
         error.response?.data?.error?.message ||
           'Failed to create bulk reports',
@@ -76,7 +78,7 @@ export function useDownloadReport(id: string) {
       window.URL.revokeObjectURL(url)
       toast.success('Report downloaded successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to download report',
       )
@@ -126,7 +128,7 @@ export function useCancelReport() {
       queryClient.invalidateQueries({ queryKey: ['report-status', id] })
       toast.success('Report cancelled')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to cancel report',
       )
@@ -145,7 +147,7 @@ export function useRetryReport() {
       queryClient.invalidateQueries({ queryKey: ['report-status', id] })
       toast.success('Report retry started')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to retry report',
       )

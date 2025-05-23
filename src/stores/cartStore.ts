@@ -120,7 +120,7 @@ export const useCartStore = create<CartStore>()(
       // Deserialize dates
       onRehydrateStorage: () => (state) => {
         if (state) {
-          state.items = state.items.map((item: any) => ({
+          state.items = state.items.map((item: CartItem & { addedAt: string }) => ({
             ...item,
             addedAt: new Date(item.addedAt),
           }));

@@ -32,7 +32,9 @@ export default function DashboardPage() {
             <div className="h-12 w-12 rounded-full bg-gray-300 flex items-center justify-center">
               <span className="text-gray-600 text-xl">👤</span>
             </div>
-            <h1 className="ml-4 text-2xl font-bold text-gray-900">Welcome!</h1>
+            <h1 className="ml-4 text-2xl font-bold text-gray-900">
+              Welcome{user?.name ? `, ${user.name}` : ''}!
+            </h1>
           </div>
         </div>
       </div>

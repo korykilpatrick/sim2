@@ -4,6 +4,8 @@ import toast from 'react-hot-toast'
 import { authApi } from '../services/auth'
 import { useAuthStore } from '../services/authStore'
 import { LoginCredentials, RegisterData } from '../types/auth'
+import type { AxiosError } from 'axios'
+import type { ApiResponse } from '@/types/api'
 
 /**
  * Authentication hook providing login, register, logout functionality.
@@ -36,7 +38,7 @@ export function useAuth() {
       toast.success('Successfully logged in!')
       navigate('/dashboard')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(error.response?.data?.error?.message || 'Login failed')
     },
   })
@@ -50,7 +52,7 @@ export function useAuth() {
       toast.success('Account created successfully!')
       navigate('/dashboard')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(error.response?.data?.error?.message || 'Registration failed')
     },
   })

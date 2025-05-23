@@ -35,7 +35,7 @@ export const ReportList: React.FC<ReportListProps> = ({
     )
   }
 
-  const getReportType = (report: any): 'compliance' | 'chronology' => {
+  const getReportType = (report: ComplianceReport | ChronologyReport): 'compliance' | 'chronology' => {
     return 'sanctionsScreening' in report ? 'compliance' : 'chronology'
   }
 

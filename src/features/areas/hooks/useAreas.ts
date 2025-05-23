@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { areaApi } from '../services/areaService'
 import type { AreaFilters, CreateAreaRequest } from '../types'
 import toast from 'react-hot-toast'
+import type { AxiosError } from 'axios'
+import type { ApiError } from '@/types/api'
 
 export function useAreas(filters?: AreaFilters) {
   return useQuery({
@@ -29,7 +31,7 @@ export function useCreateArea() {
       queryClient.invalidateQueries({ queryKey: ['area-statistics'] })
       toast.success('Area created successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ error?: ApiError }>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create area',
       )
@@ -48,7 +50,7 @@ export function useUpdateArea(id: string) {
       queryClient.invalidateQueries({ queryKey: ['areas', id] })
       toast.success('Area updated successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ error?: ApiError }>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to update area',
       )
@@ -66,7 +68,7 @@ export function useDeleteArea() {
       queryClient.invalidateQueries({ queryKey: ['area-statistics'] })
       toast.success('Area deleted successfully')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<{ error?: ApiError }>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to delete area',
       )

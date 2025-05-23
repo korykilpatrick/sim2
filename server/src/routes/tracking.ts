@@ -3,8 +3,22 @@ import { mockVessels, mockTrackingCriteria } from '../data/mockData'
 
 const router = Router()
 
+// Tracking type definition
+interface VesselTracking {
+  id: string
+  vesselId: string
+  vessel: typeof mockVessels[0]
+  criteria: typeof mockTrackingCriteria
+  status: 'active' | 'paused' | 'ended'
+  startDate: string
+  endDate?: string
+  alertsCount: number
+  creditsPerDay: number
+  userId: string
+}
+
 // Mock tracking data
-const mockTrackings: any[] = []
+const mockTrackings: VesselTracking[] = []
 
 // Get tracking criteria
 router.get('/criteria', async (_req, res) => {
@@ -52,7 +66,7 @@ router.post('/vessels', async (req, res) => {
     })
   }
 
-  const newTracking = {
+  const newTracking: VesselTracking = {
     id: `vt-${Date.now()}`,
     vesselId,
     vessel,

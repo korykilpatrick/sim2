@@ -21,7 +21,8 @@ import Select from '@/components/forms/Select'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Modal from '@/components/common/Modal'
 import { Plus, Search } from 'lucide-react'
-import type { ReportFilters, ReportTemplate } from '../types'
+import type { ReportFilters, ReportTemplate, ComplianceReport, ChronologyReport } from '../types'
+import type { Vessel } from '@/features/vessels/types'
 
 export default function ReportsMainPage() {
   const navigate = useNavigate()
@@ -30,7 +31,7 @@ export default function ReportsMainPage() {
     reportType: 'all',
   })
   const [isCreating, setIsCreating] = useState(false)
-  const [selectedVessel, setSelectedVessel] = useState<any>(null)
+  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null)
   const [vesselSearchQuery, setVesselSearchQuery] = useState('')
 
   // Hooks
@@ -71,7 +72,7 @@ export default function ReportsMainPage() {
     }
   }
 
-  const handleViewReport = (report: any) => {
+  const handleViewReport = (report: ComplianceReport | ChronologyReport) => {
     navigate(`/reports/${report.id}`)
   }
 
@@ -119,7 +120,7 @@ export default function ReportsMainPage() {
           />
           <Select
             value={filters.status}
-            onChange={(e) => setFilters({ ...filters, status: e.target.value as any })}
+            onChange={(e) => setFilters({ ...filters, status: e.target.value as ReportFilters['status'] })}
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
@@ -128,7 +129,7 @@ export default function ReportsMainPage() {
           </Select>
           <Select
             value={filters.reportType}
-            onChange={(e) => setFilters({ ...filters, reportType: e.target.value as any })}
+            onChange={(e) => setFilters({ ...filters, reportType: e.target.value as ReportFilters['reportType'] })}
           >
             <option value="all">All Types</option>
             <option value="compliance">Compliance</option>
@@ -136,7 +137,7 @@ export default function ReportsMainPage() {
           </Select>
           <Select
             value={filters.sortBy || 'createdAt'}
-            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as any })}
+            onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as ReportFilters['sortBy'] })}
           >
             <option value="createdAt">Recent First</option>
             <option value="vesselName">Vessel Name</option>
@@ -181,7 +182,7 @@ export default function ReportsMainPage() {
             
             {vesselSearchResults && vesselSearchResults.length > 0 && (
               <div className="mt-2 max-h-48 overflow-y-auto border rounded-lg">
-                {vesselSearchResults.map((vessel: any) => (
+                {vesselSearchResults.map((vessel) => (
                   <button
                     key={vessel.id}
                     className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b last:border-b-0"

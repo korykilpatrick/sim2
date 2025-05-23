@@ -223,7 +223,7 @@ export interface ChronologyEvent {
   /** Other vessels involved (for STS transfers) */
   vessels?: string[]
   /** Additional event-specific details */
-  details?: Record<string, any>
+  details?: Record<string, unknown>
 }
 
 /**

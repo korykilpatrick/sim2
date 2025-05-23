@@ -99,7 +99,7 @@ export interface TrackingCriteria {
   /** Whether this criterion is currently active */
   enabled: boolean
   /** Type-specific configuration (e.g., geofence coordinates) */
-  config?: any
+  config?: Record<string, unknown>
 }
 
 /**
@@ -123,7 +123,7 @@ export interface VesselAlert {
   /** ISO timestamp when alert was generated */
   timestamp: string
   /** Additional context data specific to alert type */
-  data?: any
+  data?: Record<string, unknown>
   /** Whether user has acknowledged this alert */
   acknowledged: boolean
 }

@@ -44,7 +44,7 @@ export default function Header({ onMenuClick }: HeaderProps) {
         <div className="flex items-center gap-4">
           {/* User Icon */}
           <Link 
-            to="/account"
+            to={isAuthenticated ? "/dashboard" : "/account"}
             className="text-gray-400 hover:text-white transition-colors"
           >
             <User className="h-5 w-5" />

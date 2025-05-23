@@ -18,8 +18,8 @@ import Button from '@/components/common/Button'
 import Input from '@/components/forms/Input'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Modal from '@/components/common/Modal'
-import { Plus, Search } from 'lucide-react'
-import type { Area } from '../types'
+import { Plus, Search, MapPin } from 'lucide-react'
+import type { Area, CreateAreaRequest } from '../types'
 
 export default function AreaMonitoringPage() {
   const navigate = useNavigate()
@@ -57,7 +57,7 @@ export default function AreaMonitoringPage() {
   }
   const alerts = alertsData?.data || []
 
-  const handleCreateArea = async (data: any) => {
+  const handleCreateArea = async (data: CreateAreaRequest) => {
     try {
       await createAreaMutation.mutateAsync(data)
       setIsCreating(false)

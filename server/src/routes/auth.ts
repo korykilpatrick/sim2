@@ -5,6 +5,11 @@ import { mockUsers } from '../data/mockData'
 const router = Router()
 const JWT_SECRET = 'mock-jwt-secret'
 
+// JWT payload type
+interface JWTPayload {
+  userId: string
+}
+
 // Helper to generate tokens
 const generateTokens = (userId: string) => {
   const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '1h' })
@@ -111,7 +116,7 @@ router.post('/refresh', async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, JWT_SECRET) as any
+    const decoded = jwt.verify(refreshToken, JWT_SECRET) as JWTPayload
     const tokens = generateTokens(decoded.userId)
 
     res.json({
@@ -147,7 +152,7 @@ router.get('/me', async (req, res) => {
   const token = authHeader.substring(7)
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
     const user = mockUsers.find((u) => u.id === decoded.userId)
 
     if (!user) {

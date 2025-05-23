@@ -3,7 +3,7 @@
  * 
  * @template T - The type of data returned in the response
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   /** Indicates whether the request was successful */
   success: boolean
   /** The response payload */
@@ -17,7 +17,7 @@ export interface ApiResponse<T = any> {
     /** Machine-readable error code for client handling */
     code: string
     /** Additional error context or validation details */
-    details?: any
+    details?: unknown
   }
 }
 
@@ -31,7 +31,7 @@ export interface ApiResponse<T = any> {
  * // Response type for paginated vessel list
  * type VesselListResponse = PaginatedResponse<Vessel>
  */
-export interface PaginatedResponse<T = any> extends ApiResponse<T[]> {
+export interface PaginatedResponse<T = unknown> extends ApiResponse<T[]> {
   /** Pagination metadata */
   meta: {
     /** Current page number (1-indexed) */

@@ -7,6 +7,7 @@ import Select from '@/components/forms/Select'
 import { useMonitoringCriteria, useAreaCostCalculation } from '../hooks/useAreaMonitoring'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { clsx } from '@/utils/clsx'
+import type { CreateAreaRequest } from '../types'
 
 interface AreaConfigFormData {
   name: string
@@ -19,7 +20,7 @@ interface AreaConfigFormData {
 interface AreaConfigFormProps {
   area?: GeoJSON.Polygon | GeoJSON.MultiPolygon
   areaSize?: number // km²
-  onSubmit: (data: any) => void
+  onSubmit: (data: CreateAreaRequest) => void
   onCancel: () => void
   isSubmitting?: boolean
 }
@@ -112,7 +113,7 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             <Select
               label="Update Frequency"
               {...register('updateFrequency')}
-              onChange={(e) => setUpdateFrequency(Number(e.target.value) as any)}
+              onChange={(e) => setUpdateFrequency(Number(e.target.value) as 3 | 6 | 12 | 24)}
               error={errors.updateFrequency?.message}
             >
               <option value="3">Every 3 hours</option>

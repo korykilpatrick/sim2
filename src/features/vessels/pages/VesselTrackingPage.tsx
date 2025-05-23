@@ -16,6 +16,9 @@ import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import VesselSearchResults from '../components/VesselSearchResults'
 import CriteriaSelector from '../components/CriteriaSelector'
 import TrackingCostSummary from '../components/TrackingCostSummary'
+import type { Vessel } from '../types'
+import type { AxiosError } from 'axios'
+import type { ApiResponse } from '@/types/api'
 
 interface TrackingFormData {
   vesselSearch: string
@@ -25,8 +28,8 @@ interface TrackingFormData {
 
 export default function VesselTrackingPage() {
   const navigate = useNavigate()
-  const [selectedVessel, setSelectedVessel] = useState<any>(null)
-  const [searchResults, setSearchResults] = useState<any[]>([])
+  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null)
+  const [searchResults, setSearchResults] = useState<Vessel[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [selectedCriteria, setSelectedCriteria] = useState<string[]>([])
   const [trackingDays, setTrackingDays] = useState(30)
@@ -77,12 +80,16 @@ export default function VesselTrackingPage() {
 
   // Create tracking mutation
   const createTrackingMutation = useMutation({
-    mutationFn: (data: any) => vesselsApi.createTracking(data),
+    mutationFn: (data: {
+      vesselId: string
+      criteria: string[]
+      endDate: string
+    }) => vesselsApi.createTracking(data),
     onSuccess: () => {
       toast.success('Vessel tracking created successfully!')
       navigate('/vessels')
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
         error.response?.data?.error?.message || 'Failed to create tracking',
       )
