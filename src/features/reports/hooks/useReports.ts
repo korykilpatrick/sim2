@@ -1,0 +1,169 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { reportApi } from '../services/reportService'
+import type { ReportFilters, ReportRequest, BulkReportRequest } from '../types'
+import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
+
+export function useReports(filters?: ReportFilters) {
+  return useQuery({
+    queryKey: ['reports', filters],
+    queryFn: () => reportApi.getReports(filters),
+    staleTime: 30 * 1000, // 30 seconds
+  })
+}
+
+export function useReport(id: string) {
+  return useQuery({
+    queryKey: ['reports', id],
+    queryFn: () => reportApi.getReport(id),
+    enabled: !!id,
+  })
+}
+
+export function useCreateReport() {
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  return useMutation({
+    mutationFn: (request: ReportRequest) => reportApi.createReport(request),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] })
+      queryClient.invalidateQueries({ queryKey: ['report-statistics'] })
+      toast.success('Report generation started')
+      navigate(`/reports/${response.data.reportId}`)
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to create report',
+      )
+    },
+  })
+}
+
+export function useCreateBulkReports() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (request: BulkReportRequest) =>
+      reportApi.createBulkReports(request),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] })
+      queryClient.invalidateQueries({ queryKey: ['report-statistics'] })
+      toast.success('Bulk report generation started')
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message ||
+          'Failed to create bulk reports',
+      )
+    },
+  })
+}
+
+export function useDownloadReport(id: string) {
+  return useMutation({
+    mutationFn: (format: 'pdf' | 'excel' | 'json') =>
+      reportApi.downloadReport(id, format),
+    onSuccess: (response, format) => {
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `report-${id}.${format}`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      toast.success('Report downloaded successfully')
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to download report',
+      )
+    },
+  })
+}
+
+export function useReportTemplates() {
+  return useQuery({
+    queryKey: ['report-templates'],
+    queryFn: () => reportApi.getReportTemplates(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  })
+}
+
+export function useReportStatistics() {
+  return useQuery({
+    queryKey: ['report-statistics'],
+    queryFn: () => reportApi.getReportStatistics(),
+    refetchInterval: 60 * 1000, // Refresh every minute
+  })
+}
+
+export function useReportStatus(id: string) {
+  return useQuery({
+    queryKey: ['report-status', id],
+    queryFn: () => reportApi.getReportStatus(id),
+    enabled: !!id,
+    refetchInterval: (data) => {
+      // Poll while processing
+      if (data?.data.status === 'processing' || data?.data.status === 'pending') {
+        return 5000 // 5 seconds
+      }
+      return false
+    },
+  })
+}
+
+export function useCancelReport() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => reportApi.cancelReport(id),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] })
+      queryClient.invalidateQueries({ queryKey: ['reports', id] })
+      queryClient.invalidateQueries({ queryKey: ['report-status', id] })
+      toast.success('Report cancelled')
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to cancel report',
+      )
+    },
+  })
+}
+
+export function useRetryReport() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => reportApi.retryReport(id),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] })
+      queryClient.invalidateQueries({ queryKey: ['reports', id] })
+      queryClient.invalidateQueries({ queryKey: ['report-status', id] })
+      toast.success('Report retry started')
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to retry report',
+      )
+    },
+  })
+}
+
+export function useReportCostPreview() {
+  return useMutation({
+    mutationFn: (request: ReportRequest) =>
+      reportApi.previewReportCost(request),
+  })
+}
+
+export function useVesselReports(vesselId: string) {
+  return useQuery({
+    queryKey: ['vessel-reports', vesselId],
+    queryFn: () => reportApi.getVesselReports(vesselId),
+    enabled: !!vesselId,
+  })
+}

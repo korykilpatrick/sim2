@@ -1,0 +1,1 @@
+export { areaApi } from './areaService'

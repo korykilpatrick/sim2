@@ -1,0 +1,75 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { areaApi } from '../services/areaService'
+import type { AreaFilters, CreateAreaRequest } from '../types'
+import toast from 'react-hot-toast'
+
+export function useAreas(filters?: AreaFilters) {
+  return useQuery({
+    queryKey: ['areas', filters],
+    queryFn: () => areaApi.getAreas(filters),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+
+export function useArea(id: string) {
+  return useQuery({
+    queryKey: ['areas', id],
+    queryFn: () => areaApi.getArea(id),
+    enabled: !!id,
+  })
+}
+
+export function useCreateArea() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: CreateAreaRequest) => areaApi.createArea(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['areas'] })
+      queryClient.invalidateQueries({ queryKey: ['area-statistics'] })
+      toast.success('Area created successfully')
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to create area',
+      )
+    },
+  })
+}
+
+export function useUpdateArea(id: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: Partial<CreateAreaRequest>) =>
+      areaApi.updateArea(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['areas'] })
+      queryClient.invalidateQueries({ queryKey: ['areas', id] })
+      toast.success('Area updated successfully')
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to update area',
+      )
+    },
+  })
+}
+
+export function useDeleteArea() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => areaApi.deleteArea(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['areas'] })
+      queryClient.invalidateQueries({ queryKey: ['area-statistics'] })
+      toast.success('Area deleted successfully')
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.error?.message || 'Failed to delete area',
+      )
+    },
+  })
+}
