@@ -1,13 +1,35 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react'
 import clsx from 'clsx'
 
+/**
+ * Props for the Button component.
+ */
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Visual style variant of the button */
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'synmax'
+  /** Size variant affecting padding and font size */
   size?: 'sm' | 'md' | 'lg'
+  /** Shows loading spinner and disables interaction */
   loading?: boolean
+  /** Makes button expand to full container width */
   fullWidth?: boolean
 }
 
+/**
+ * Versatile button component with multiple style variants and sizes.
+ * Supports loading states and full-width layouts.
+ * 
+ * @component
+ * @example
+ * <Button variant="primary" size="md" onClick={handleClick}>
+ *   Click me
+ * </Button>
+ * 
+ * @example
+ * <Button variant="synmax" loading fullWidth>
+ *   Processing...
+ * </Button>
+ */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {

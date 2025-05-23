@@ -5,6 +5,23 @@ import { authApi } from '../services/auth'
 import { useAuthStore } from '../services/authStore'
 import { LoginCredentials, RegisterData } from '../types/auth'
 
+/**
+ * Authentication hook providing login, register, logout functionality.
+ * Manages authentication state and user data with React Query.
+ * 
+ * @returns Authentication methods and state
+ * 
+ * @example
+ * const { login, logout, user, isAuthenticated } = useAuth();
+ * 
+ * // Login
+ * login({ email: 'user@example.com', password: 'password' });
+ * 
+ * // Check auth state
+ * if (isAuthenticated) {
+ *   console.log('Logged in as:', user.name);
+ * }
+ */
 export function useAuth() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()

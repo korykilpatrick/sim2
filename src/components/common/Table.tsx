@@ -1,28 +1,77 @@
 import { ReactNode } from 'react'
 import clsx from 'clsx'
 
+/**
+ * Column configuration for table rendering.
+ * 
+ * @template T - The type of data items in the table
+ */
 export interface Column<T> {
+  /** Unique column identifier */
   key: string
+  /** Column header text */
   header: string
+  /** Function to extract/render cell content from data item */
   accessor: (item: T) => ReactNode
+  /** Optional CSS width (e.g., 'w-32', 'w-1/4') */
   width?: string
+  /** Text alignment within the column */
   align?: 'left' | 'center' | 'right'
+  /** Whether this column supports sorting (future feature) */
   sortable?: boolean
 }
 
+/**
+ * Props for the Table component.
+ * 
+ * @template T - The type of data items to display
+ */
 export interface TableProps<T> {
+  /** Array of data items to display */
   data: T[]
+  /** Column configurations */
   columns: Column<T>[]
+  /** Function to generate unique key for each row */
   keyExtractor: (item: T, index: number) => string | number
+  /** Callback fired when a row is clicked */
   onRowClick?: (item: T) => void
+  /** Message displayed when data array is empty */
   emptyMessage?: string
+  /** Shows loading state instead of table content */
   loading?: boolean
+  /** Alternates row background colors */
   striped?: boolean
+  /** Highlights rows on hover */
   hoverable?: boolean
+  /** Reduces padding for denser display */
   compact?: boolean
+  /** Additional CSS classes for the table wrapper */
   className?: string
 }
 
+/**
+ * Flexible data table component with responsive design.
+ * Supports custom column rendering, row interactions, and various display modes.
+ * 
+ * @template T - The type of data items to display
+ * 
+ * @component
+ * @example
+ * const columns: Column<User>[] = [
+ *   { key: 'name', header: 'Name', accessor: (user) => user.name },
+ *   { key: 'email', header: 'Email', accessor: (user) => user.email },
+ *   { key: 'status', header: 'Status', accessor: (user) => (
+ *     <StatusBadge status={user.status} />
+ *   )}
+ * ];
+ * 
+ * <Table
+ *   data={users}
+ *   columns={columns}
+ *   keyExtractor={(user) => user.id}
+ *   onRowClick={(user) => navigate(`/users/${user.id}`)}
+ * />
+ */
 function Table<T>({
   data,
   columns,

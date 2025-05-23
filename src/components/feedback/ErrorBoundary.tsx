@@ -1,32 +1,71 @@
 import { Component, ReactNode, ErrorInfo } from 'react'
 import Button from '../common/Button'
 
+/**
+ * Props for the ErrorBoundary component.
+ */
 export interface ErrorBoundaryProps {
+  /** Child components to render and protect from errors */
   children: ReactNode
+  /** Custom error UI renderer function */
   fallback?: (error: Error, resetError: () => void) => ReactNode
+  /** Callback fired when an error is caught (useful for error reporting) */
   onError?: (error: Error, errorInfo: ErrorInfo) => void
 }
 
+/**
+ * Internal state for ErrorBoundary component.
+ */
 interface ErrorBoundaryState {
+  /** Whether an error has been caught */
   hasError: boolean
+  /** The caught error object */
   error: Error | null
 }
 
+/**
+ * React error boundary component that catches JavaScript errors in child components.
+ * Prevents the entire app from crashing and displays a fallback UI.
+ * 
+ * @component
+ * @example
+ * <ErrorBoundary
+ *   onError={(error, errorInfo) => logErrorToService(error, errorInfo)}
+ *   fallback={(error, reset) => <CustomErrorUI error={error} onReset={reset} />}
+ * >
+ *   <App />
+ * </ErrorBoundary>
+ */
 export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = { hasError: false, error: null }
   }
 
+  /**
+   * Updates state to render fallback UI on next render.
+   * 
+   * @param error - The error that was thrown
+   * @returns New state with error information
+   */
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true, error }
   }
 
+  /**
+   * Logs error information and calls optional error handler.
+   * 
+   * @param error - The error that was thrown
+   * @param errorInfo - Stack trace information
+   */
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo)
     this.props.onError?.(error, errorInfo)
   }
 
+  /**
+   * Resets the error state to retry rendering children.
+   */
   resetError = () => {
     this.setState({ hasError: false, error: null })
   }

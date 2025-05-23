@@ -2,16 +2,73 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 
+/**
+ * Toast notification types
+ */
 export type ToastType = 'success' | 'error' | 'warning' | 'info'
 
+/**
+ * Props for the Toast component
+ */
 export interface ToastProps {
+  /**
+   * Unique identifier for the toast
+   */
   id: string
+  /**
+   * Message to display in the toast
+   */
   message: string
+  /**
+   * Type of toast notification which determines styling and icon
+   * @default 'info'
+   */
   type?: ToastType
+  /**
+   * Duration in milliseconds before auto-dismissing the toast
+   * @default 5000
+   */
   duration?: number
+  /**
+   * Callback function called when the toast is closed
+   */
   onClose?: () => void
 }
 
+/**
+ * A toast notification component that displays temporary messages to users.
+ * Supports different types (success, error, warning, info) with appropriate
+ * icons and styling. Auto-dismisses after a configurable duration.
+ * 
+ * @param {ToastProps} props - The component props
+ * @returns {React.ReactPortal} The rendered toast notification portal
+ * 
+ * @example
+ * ```tsx
+ * // Success toast
+ * <Toast
+ *   id="toast-1"
+ *   message="Operation completed successfully!"
+ *   type="success"
+ * />
+ * 
+ * // Error toast with custom duration
+ * <Toast
+ *   id="toast-2"
+ *   message="Something went wrong"
+ *   type="error"
+ *   duration={10000}
+ * />
+ * 
+ * // With close callback
+ * <Toast
+ *   id="toast-3"
+ *   message="File uploaded"
+ *   type="success"
+ *   onClose={() => console.log('Toast closed')}
+ * />
+ * ```
+ */
 const Toast = ({
   message,
   type = 'info',
@@ -120,12 +177,50 @@ const Toast = ({
   )
 }
 
-// Toast container component for managing multiple toasts
+/**
+ * Props for the ToastContainer component
+ */
 export interface ToastContainerProps {
+  /**
+   * Array of toast notifications to display
+   */
   toasts: ToastProps[]
+  /**
+   * Callback function to remove a toast by its ID
+   */
   onRemove: (id: string) => void
 }
 
+/**
+ * Container component for managing and displaying multiple toast notifications.
+ * Handles positioning and stacking of toasts with smooth transitions.
+ * 
+ * @param {ToastContainerProps} props - The component props
+ * @returns {JSX.Element} The rendered toast container
+ * 
+ * @example
+ * ```tsx
+ * const MyApp = () => {
+ *   const [toasts, setToasts] = useState<ToastProps[]>([]);
+ *   
+ *   const addToast = (toast: Omit<ToastProps, 'id'>) => {
+ *     const id = Date.now().toString();
+ *     setToasts(prev => [...prev, { ...toast, id }]);
+ *   };
+ *   
+ *   const removeToast = (id: string) => {
+ *     setToasts(prev => prev.filter(toast => toast.id !== id));
+ *   };
+ *   
+ *   return (
+ *     <>
+ *       <App />
+ *       <ToastContainer toasts={toasts} onRemove={removeToast} />
+ *     </>
+ *   );
+ * };
+ * ```
+ */
 export const ToastContainer = ({ toasts, onRemove }: ToastContainerProps) => {
   return (
     <>

@@ -2,18 +2,52 @@ import { ReactNode, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import clsx from 'clsx'
 
+/**
+ * Props for the Modal component.
+ */
 export interface ModalProps {
+  /** Controls modal visibility */
   isOpen: boolean
+  /** Callback fired when modal should close */
   onClose: () => void
+  /** Optional modal title displayed in header */
   title?: string
+  /** Modal content */
   children: ReactNode
+  /** Size variant affecting modal width */
   size?: 'sm' | 'md' | 'lg' | 'xl'
+  /** Whether clicking the overlay closes the modal */
   closeOnOverlayClick?: boolean
+  /** Whether pressing Escape key closes the modal */
   closeOnEsc?: boolean
+  /** Whether to show the X close button in header */
   showCloseButton?: boolean
+  /** Optional footer content (typically action buttons) */
   footer?: ReactNode
 }
 
+/**
+ * Accessible modal dialog component with overlay.
+ * Supports keyboard navigation, focus management, and customizable behavior.
+ * 
+ * @component
+ * @example
+ * <Modal
+ *   isOpen={showModal}
+ *   onClose={() => setShowModal(false)}
+ *   title="Confirm Action"
+ *   footer={
+ *     <>
+ *       <Button variant="outline" onClick={() => setShowModal(false)}>
+ *         Cancel
+ *       </Button>
+ *       <Button onClick={handleConfirm}>Confirm</Button>
+ *     </>
+ *   }
+ * >
+ *   Are you sure you want to proceed?
+ * </Modal>
+ */
 const Modal = ({
   isOpen,
   onClose,

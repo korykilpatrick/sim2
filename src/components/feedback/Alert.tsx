@@ -1,18 +1,48 @@
 import { ReactNode } from 'react'
 import clsx from 'clsx'
 
+/**
+ * Available alert types with distinct visual styles.
+ */
 export type AlertType = 'success' | 'error' | 'warning' | 'info'
 
+/**
+ * Props for the Alert component.
+ */
 export interface AlertProps {
+  /** Alert severity type determining color scheme */
   type?: AlertType
+  /** Optional bold title text */
   title?: string
+  /** Main alert message content */
   message: string | ReactNode
+  /** Whether the alert can be dismissed by the user */
   dismissible?: boolean
+  /** Callback fired when dismiss button is clicked */
   onDismiss?: () => void
+  /** Additional CSS classes */
   className?: string
+  /** Whether to show the type-specific icon */
   icon?: boolean
 }
 
+/**
+ * Contextual feedback messages for user actions.
+ * Supports multiple severity levels with appropriate styling and icons.
+ * 
+ * @component
+ * @example
+ * <Alert
+ *   type="success"
+ *   title="Success!"
+ *   message="Your changes have been saved."
+ *   dismissible
+ *   onDismiss={() => setShowAlert(false)}
+ * />
+ * 
+ * @example
+ * <Alert type="error" message="Failed to connect to server" />
+ */
 const Alert = ({
   type = 'info',
   title,

@@ -1,11 +1,47 @@
 import clsx from 'clsx'
 
+/**
+ * Props for the LoadingSpinner component
+ */
 interface LoadingSpinnerProps {
+  /**
+   * Size of the spinner
+   * @default 'md'
+   */
   size?: 'sm' | 'md' | 'lg'
+  /**
+   * Whether to display the spinner centered in full screen
+   * @default false
+   */
   fullScreen?: boolean
+  /**
+   * Additional CSS classes to apply to the spinner
+   */
   className?: string
 }
 
+/**
+ * A customizable loading spinner component with support for different sizes
+ * and full-screen display mode.
+ * 
+ * @param {LoadingSpinnerProps} props - The component props
+ * @returns {JSX.Element} The rendered loading spinner
+ * 
+ * @example
+ * ```tsx
+ * // Basic usage
+ * <LoadingSpinner />
+ * 
+ * // Small spinner
+ * <LoadingSpinner size="sm" />
+ * 
+ * // Full screen loading
+ * <LoadingSpinner fullScreen />
+ * 
+ * // Custom styling
+ * <LoadingSpinner className="text-blue-500" />
+ * ```
+ */
 export default function LoadingSpinner({
   size = 'md',
   fullScreen = false,
