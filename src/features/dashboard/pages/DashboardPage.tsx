@@ -1,25 +1,27 @@
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import Button from '@/components/common/Button'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { productService } from '@/services/products'
 
 export default function DashboardPage() {
-  const { } = useAuth()
+  const { user } = useAuth()
   const navigate = useNavigate()
 
-  const userProducts = [
-    {
-      id: 'vts',
-      name: 'Vessel Tracking Service',
-      description: 'Customized vessel tracking solution tied to IMO numbers. Monitor vessels with alerts for AIS reporting, dark events, spoofing, STS transfers, port calls, and risk assessment changes.',
-      isActive: true,
-    },
-    {
-      id: 'ams',
-      name: 'Area Monitoring Service',
-      description: 'Real-time monitoring of custom ocean areas. Track vessel entries/exits, dark ship events, GPS manipulation, and receive automated alerts for critical maritime activities in your defined AOI.',
-      isActive: false,
-    },
-  ]
+  // Fetch all products
+  const { data: allProducts = [], isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => productService.getProducts(),
+  })
+
+  // Mock user's active products (in real app, this would come from user data)
+  const activeProductIds = ['vts', 'ams']
+  const userProducts = allProducts
+    .filter(product => activeProductIds.includes(product.id))
+    .map(product => ({
+      ...product,
+      isActive: product.id === 'vts', // Mock: only VTS is active
+    }))
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -62,38 +64,66 @@ export default function DashboardPage() {
 
       {/* Products Grid */}
       <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="space-y-4">
-          {userProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white rounded-lg shadow p-6 flex items-start gap-6"
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-600 border-r-transparent"></div>
+            <p className="mt-2 text-gray-600">Loading your products...</p>
+          </div>
+        ) : userProducts.length === 0 ? (
+          <div className="bg-white rounded-lg shadow p-12 text-center">
+            <p className="text-gray-500 mb-4">You don't have any active products yet</p>
+            <Button
+              variant="synmax"
+              onClick={() => navigate('/')}
             >
-              <div className="w-32 h-32 bg-gray-200 rounded-lg flex-shrink-0" />
-              
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  {product.name}
-                </h3>
-                <p className="mt-2 text-gray-600">
-                  {product.description}
-                </p>
-              </div>
-
-              <Button
-                variant={product.isActive ? 'secondary' : 'primary'}
-                onClick={() => {
-                  if (product.id === 'vts') {
-                    navigate('/vessels')
-                  } else if (product.id === 'ams') {
-                    navigate('/areas')
-                  }
-                }}
+              Browse Products
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {userProducts.map((product) => (
+              <div
+                key={product.id}
+                className="bg-white rounded-lg shadow p-6 flex items-start gap-6"
               >
-                Launch
-              </Button>
-            </div>
-          ))}
-        </div>
+                <div className="w-32 h-32 bg-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center">
+                  <span className="text-gray-400 text-xl font-semibold">
+                    {product.shortName || product.name.substring(0, 3).toUpperCase()}
+                  </span>
+                </div>
+                
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {product.name}
+                  </h3>
+                  <p className="mt-2 text-gray-600">
+                    {product.descriptions.detailed}
+                  </p>
+                  <div className="mt-3 text-sm text-gray-500">
+                    {product.category.charAt(0).toUpperCase() + product.category.slice(1)} • 
+                    ${product.pricing.monthly.toLocaleString()}/month
+                  </div>
+                </div>
+
+                <Button
+                  variant={product.isActive ? 'secondary' : 'primary'}
+                  onClick={() => {
+                    if (product.id === 'vts') {
+                      navigate('/vessels')
+                    } else if (product.id === 'ams') {
+                      navigate('/areas')
+                    } else {
+                      // For other products, navigate to their detail page
+                      navigate(product.path)
+                    }
+                  }}
+                >
+                  {product.isActive ? 'Launch' : 'Activate'}
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

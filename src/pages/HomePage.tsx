@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import Button from '@/components/common/Button'
 import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { productService } from '@/services/products'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -26,39 +28,10 @@ export default function HomePage() {
     },
   ]
 
-  const products = [
-    {
-      id: 'vts',
-      title: 'Vessel Tracking Service',
-      description: 'Customized vessel tracking by IMO with alerts for AIS, dark events, and risk changes',
-      path: '/products/vts',
-      featured: true,
-    },
-    {
-      id: 'ams',
-      title: 'Area Monitoring Service',
-      description: 'Real-time monitoring of custom ocean areas with vessel entry/exit alerts',
-      path: '/products/ams',
-    },
-    {
-      id: 'fts',
-      title: 'Fleet Tracking Service',
-      description: 'Centralized fleet monitoring with tailored alerts across multiple vessels',
-      path: '/products/fts',
-    },
-    {
-      id: 'reports',
-      title: 'Compliance & Chronology Reports',
-      description: 'On-demand vessel compliance assessments and historical activity timelines',
-      path: '/products/reports',
-    },
-    {
-      id: 'mis',
-      title: 'Maritime Investigations',
-      description: 'Expert-led deep-dive analysis leveraging multiple intelligence sources',
-      path: '/products/mis',
-    },
-  ]
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => productService.getProducts(),
+  })
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -135,29 +108,39 @@ export default function HomePage() {
 
       {/* Products Grid */}
       <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className={`rounded-lg bg-gray-200 p-6 ${
-                product.featured ? 'bg-primary-100' : ''
-              }`}
-            >
-              <h3 className="text-lg font-semibold text-gray-900">
-                {product.title}
-              </h3>
-              <p className="mt-1 text-sm text-gray-600">{product.description}</p>
-              <Button
-                variant={product.featured ? 'synmax' : 'secondary'}
-                size="sm"
-                onClick={() => handleProductClick(product.path)}
-                className="mt-4"
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-600 border-r-transparent"></div>
+            <p className="mt-2 text-gray-600">Loading products...</p>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {products.map((product, index) => (
+              <div
+                key={product.id}
+                className={`rounded-lg bg-gray-200 p-6 ${
+                  index === 0 ? 'bg-primary-100' : ''
+                }`}
               >
-                Learn more
-              </Button>
-            </div>
-          ))}
-        </div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {product.name}
+                </h3>
+                <p className="mt-1 text-sm text-gray-600">{product.descriptions.standard}</p>
+                <div className="mt-3 text-sm text-gray-500">
+                  Starting at ${product.pricing.monthly.toLocaleString()}/month
+                </div>
+                <Button
+                  variant={index === 0 ? 'synmax' : 'secondary'}
+                  size="sm"
+                  onClick={() => handleProductClick(product.path)}
+                  className="mt-4"
+                >
+                  Learn more
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

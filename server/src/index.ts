@@ -8,6 +8,7 @@ import rateLimit from 'express-rate-limit'
 import authRoutes from './routes/auth'
 import vesselsRoutes from './routes/vessels'
 import trackingRoutes from './routes/tracking'
+import productsRoutes from './routes/products'
 
 const app = express()
 const httpServer = createServer(app)
@@ -38,6 +39,7 @@ app.get('/api/v1/health', (_req, res) => {
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/vessels', vesselsRoutes)
 app.use('/api/v1/tracking', trackingRoutes)
+app.use('/api/v1/products', productsRoutes)
 
 // Socket.io connection
 io.on('connection', (socket) => {

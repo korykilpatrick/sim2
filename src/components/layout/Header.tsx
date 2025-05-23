@@ -7,7 +7,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onMenuClick }: HeaderProps) {
-  const { } = useAuth()
+  const { isAuthenticated } = useAuth()
 
   return (
     <header className="sticky top-0 z-40 bg-dark-500 px-4 py-4">

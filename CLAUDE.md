@@ -37,3 +37,10 @@ The project follows the architecture defined in `docs/architecture/FRONTEND-ARCH
 - The client dev server runs on port 5173 with proxy to API
 - Path aliases are configured (@components, @features, etc.)
 - Strict TypeScript mode is enabled
+
+## Data Architecture Guidelines
+- **NEVER duplicate data definitions** - Always use a single source of truth
+- Product data is centralized in `/src/constants/products.ts`
+- All product-related components must import from the centralized source
+- See `/docs/standards/DATA-ARCHITECTURE.md` for detailed patterns
+- When adding new data types, follow the same centralized pattern
