@@ -34,6 +34,13 @@ const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
 // Cart pages
 const CartPage = lazy(() => import('@pages/CartPage'))
 
+// Product pages
+const ProductDetailPage = lazy(() => import('@pages/products/ProductDetailPage'))
+
+// Payment pages
+const CheckoutPage = lazy(() => import('@pages/CheckoutPage'))
+const PaymentConfirmationPage = lazy(() => import('@pages/PaymentConfirmationPage'))
+
 function App() {
   return (
     <Suspense fallback={<LoadingSpinner fullScreen />}>
@@ -43,6 +50,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/products/:productId" element={<ProductDetailPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/payment-confirmation" element={<PaymentConfirmationPage />} />
 
         {/* Protected routes */}
         <Route
