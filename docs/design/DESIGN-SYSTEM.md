@@ -1,7 +1,7 @@
 # Design System Guide
 
 ## Overview
-This document defines the visual language, design tokens, and styling foundation for the application using Tailwind CSS as the primary styling solution with custom extensions for brand consistency.
+This document defines the visual language, design tokens, and styling foundation for the SynMax Intelligence Marketplace (SIM) application. The design system aligns with SynMax's brand identity, using Tailwind CSS as the primary styling solution with custom extensions for brand consistency.
 
 ## Design Principles
 
@@ -13,52 +13,78 @@ This document defines the visual language, design tokens, and styling foundation
 
 ## Color System
 
-### Brand Colors
+### Brand Colors (SynMax)
 ```css
 /* tailwind.config.js */
 module.exports = {
   theme: {
     extend: {
       colors: {
+        // SynMax brand colors
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93bbfd',
-          400: '#60a5fa',
-          500: '#3b82f6',  // Main brand blue
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
-          950: '#172554'
+          50: '#e6f4f7',
+          100: '#cce9ef',
+          200: '#99d3df',
+          300: '#66bdcf',
+          400: '#33a7bf',
+          500: '#00a4bd',  // SynMax calypso blue
+          600: '#008397',
+          700: '#006271',
+          800: '#00414b',
+          900: '#002025',
+          950: '#001013'
         },
         secondary: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#22c55e',  // Success green
-          600: '#16a34a',
-          700: '#15803d',
-          800: '#166534',
-          900: '#14532d',
-          950: '#052e16'
+          50: '#e6ffec',
+          100: '#ccffda',
+          200: '#99ffb5',
+          300: '#66ff90',
+          400: '#33ff6b',
+          500: '#00e96c',  // SynMax bright green
+          600: '#00ba56',
+          700: '#008c41',
+          800: '#005d2b',
+          900: '#002f16',
+          950: '#00170b'
         },
-        neutral: {
-          // Extended grays for UI elements
-          50: '#fafafa',
-          100: '#f5f5f5',
-          200: '#e5e5e5',
-          300: '#d4d4d4',
-          400: '#a3a3a3',
-          500: '#737373',
-          600: '#525252',
-          700: '#404040',
-          800: '#262626',
-          900: '#171717',
-          950: '#0a0a0a'
+        accent: {
+          50: '#f0ffe6',
+          100: '#e1ffcc',
+          200: '#c3ff99',
+          300: '#a5ff66',
+          400: '#8bff5b',  // SynMax lime green
+          500: '#6fe633',
+          600: '#59b829',
+          700: '#438a1f',
+          800: '#2d5c14',
+          900: '#172e0a',
+          950: '#0b1705'
+        },
+        dark: {
+          50: '#e7e8ea',
+          100: '#cfd1d5',
+          200: '#9fa3ab',
+          300: '#6f7581',
+          400: '#3f4757',
+          500: '#131c2a',  // SynMax dark navy
+          600: '#0f1622',
+          700: '#0b1119',
+          800: '#070b11',
+          900: '#040608',
+          950: '#020304'
+        },
+        gray: {
+          50: '#f9fafb',
+          100: '#f3f4f6',
+          200: '#e5e7eb',
+          300: '#d1d5db',
+          400: '#9ca3af',
+          500: '#6b7280',
+          600: '#4b5563',
+          700: '#374151',
+          800: '#1f2937',
+          900: '#111827',
+          950: '#030712'
         }
       }
     }
@@ -71,10 +97,10 @@ module.exports = {
 /* Functional color mappings */
 colors: {
   // Status colors
-  success: colors.green[500],
-  warning: colors.amber[500],
-  error: colors.red[500],
-  info: colors.blue[500],
+  success: '#00e96c',  // SynMax green
+  warning: '#f59e0b',
+  error: '#ef4444',
+  info: '#00a4bd',     // SynMax calypso
   
   // UI colors
   background: {
@@ -115,7 +141,9 @@ colors: {
 ### Font Stack
 ```css
 fontFamily: {
-  sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+  sans: ['Graphie', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+  'sans-light': ['Graphie Light', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+  'sans-bold': ['Graphie Bold', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
   mono: ['JetBrains Mono', 'Consolas', 'monospace']
 }
 ```

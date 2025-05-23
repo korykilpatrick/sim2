@@ -1,56 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Synmax brand colors */
+    --synmax-navy: 19 28 42;
+    --synmax-calypso: 0 164 189;
+    --synmax-green: 0 233 108;
+    --synmax-lime: 139 255 91;
+    
+    /* Light mode */
+    --background: 255 255 255;
+    --foreground: 19 28 42;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 19 28 42;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 100%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --popover-foreground: 19 28 42;
+    --primary: 188 100% 37%; /* Synmax calypso */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 148 100% 46%; /* Synmax green */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 14% 97%;
+    --muted-foreground: 210 14% 45%;
+    --accent: 87 100% 68%; /* Synmax lime */
+    --accent-foreground: 19 28 42;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 217.2 91.2% 59.8%;
+    --ring: 188 100% 37%;
     --radius: 0.5rem;
+    
+    /* Component-specific variables */
+    --header-height: 64px;
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 64px;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 1.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 19 28 42; /* Synmax navy */
+    --foreground: 255 255 255;
+    --card: 210 29% 12%;
+    --card-foreground: 0 0% 100%;
+    --popover: 210 29% 12%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 188 100% 37%; /* Synmax calypso */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 148 100% 46%; /* Synmax green */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 20%;
+    --muted-foreground: 210 14% 65%;
+    --accent: 87 100% 68%; /* Synmax lime */
+    --accent-foreground: 19 28 42;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 217.2 91.2% 59.8%;
+    --ring: 188 100% 37%;
   }
 }
 
 @layer base {
   body {
     @apply antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+  }
+  
+  /* Synmax gradient backgrounds */
+  .bg-gradient-synmax {
+    background: linear-gradient(135deg, #00e96c 0%, #8bff5b 100%);
+  }
+  
+  .bg-gradient-synmax-dark {
+    background: linear-gradient(180deg, #131c2a 0%, #0f1622 100%);
+  }
+  
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+  
+  /* Synmax button styles */
+  .btn-synmax {
+    @apply relative overflow-hidden transition-all duration-300;
+    background: linear-gradient(135deg, #00a4bd 0%, #00e96c 100%);
+  }
+  
+  .btn-synmax:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(0, 164, 189, 0.3);
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300;
+  }
+  
+  .card-hover:hover {
+    @apply shadow-lg;
+    transform: translateY(-4px);
   }
 }

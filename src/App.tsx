@@ -31,6 +31,9 @@ const ReportsPage = lazy(() => import('@pages/reports/ReportsPage'))
 // Credits pages
 const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
 
+// Cart pages
+const CartPage = lazy(() => import('@pages/CartPage'))
+
 function App() {
   return (
     <Suspense fallback={<LoadingSpinner fullScreen />}>
@@ -39,6 +42,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/cart" element={<CartPage />} />
 
         {/* Protected routes */}
         <Route

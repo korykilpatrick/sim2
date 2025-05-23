@@ -4,12 +4,7 @@ import { LoginCredentials } from '../types/auth'
 import { useAuth } from '../hooks/useAuth'
 import Button from '@/components/common/Button'
 import Input from '@/components/forms/Input'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/common/Card'
+import { Ship } from 'lucide-react'
 
 export default function LoginPage() {
   const { login, isLoggingIn } = useAuth()
@@ -24,33 +19,34 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to SIM
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
-          <Link
-            to="/register"
-            className="font-medium text-primary-600 hover:text-primary-500"
-          >
-            create a new account
-          </Link>
-        </p>
-      </div>
+    <div className="flex min-h-screen">
+      {/* Left Panel - Form */}
+      <div className="flex w-full flex-col justify-center px-4 sm:px-6 lg:w-1/2 lg:px-20 xl:px-32">
+        <div className="mx-auto w-full max-w-sm">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-500">
+              <Ship className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-dark-500">SYNMAX</h1>
+              <p className="text-sm text-gray-600">Intelligence Marketplace</p>
+            </div>
+          </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card>
-          <CardHeader>
-            <CardTitle>Welcome back</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Form */}
+          <div className="mt-10">
+            <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
+            <p className="mt-2 text-gray-600">
+              Sign in to access your maritime intelligence dashboard
+            </p>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6">
               <Input
                 label="Email address"
                 type="email"
                 autoComplete="email"
+                placeholder="you@example.com"
                 {...register('email', {
                   required: 'Email is required',
                   pattern: {
@@ -65,6 +61,7 @@ export default function LoginPage() {
                 label="Password"
                 type="password"
                 autoComplete="current-password"
+                placeholder="••••••••"
                 {...register('password', {
                   required: 'Password is required',
                   minLength: {
@@ -85,28 +82,74 @@ export default function LoginPage() {
                   />
                   <label
                     htmlFor="remember-me"
-                    className="ml-2 block text-sm text-gray-900"
+                    className="ml-2 block text-sm text-gray-700"
                   >
                     Remember me
                   </label>
                 </div>
 
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-medium text-primary-600 hover:text-primary-500"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <a
+                  href="#"
+                  className="text-sm font-medium text-primary-600 hover:text-primary-500"
+                >
+                  Forgot password?
+                </a>
               </div>
 
-              <Button type="submit" loading={isLoggingIn} fullWidth>
+              <Button
+                type="submit"
+                loading={isLoggingIn}
+                fullWidth
+                size="lg"
+                variant="synmax"
+              >
                 Sign in
               </Button>
+
+              <div className="text-center">
+                <span className="text-gray-600">Don't have an account? </span>
+                <Link
+                  to="/register"
+                  className="font-medium text-primary-600 hover:text-primary-500"
+                >
+                  Sign up
+                </Link>
+              </div>
             </form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Image/Branding */}
+      <div className="relative hidden w-0 flex-1 lg:block">
+        <div className="absolute inset-0 bg-gradient-to-br from-dark-500 to-dark-700">
+          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-10"></div>
+          <div className="relative flex h-full items-center justify-center p-12">
+            <div className="max-w-lg text-center">
+              <h2 className="text-4xl font-bold text-white">
+                Maritime Intelligence at Your Fingertips
+              </h2>
+              <p className="mt-4 text-lg text-gray-300">
+                Track vessels, monitor areas, and generate compliance reports with
+                our comprehensive maritime intelligence platform.
+              </p>
+              <div className="mt-8 flex justify-center gap-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary-400">10K+</div>
+                  <div className="text-sm text-gray-300">Vessels Tracked</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary-400">500+</div>
+                  <div className="text-sm text-gray-300">Active Users</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-secondary-400">99.9%</div>
+                  <div className="text-sm text-gray-300">Uptime</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
