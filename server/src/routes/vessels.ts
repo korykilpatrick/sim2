@@ -8,17 +8,18 @@ router.get('/', async (req, res) => {
   const { query, page = 1, limit = 10 } = req.query
 
   // Simulate delay
-  await new Promise(resolve => setTimeout(resolve, 300))
+  await new Promise((resolve) => setTimeout(resolve, 300))
 
   let filteredVessels = [...mockVessels]
 
   // Simple search filter
   if (query) {
     const searchQuery = String(query).toLowerCase()
-    filteredVessels = filteredVessels.filter(v =>
-      v.name.toLowerCase().includes(searchQuery) ||
-      v.imo.includes(searchQuery) ||
-      v.mmsi.includes(searchQuery)
+    filteredVessels = filteredVessels.filter(
+      (v) =>
+        v.name.toLowerCase().includes(searchQuery) ||
+        v.imo.includes(searchQuery) ||
+        v.mmsi.includes(searchQuery),
     )
   }
 
@@ -45,9 +46,9 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params
 
   // Simulate delay
-  await new Promise(resolve => setTimeout(resolve, 200))
+  await new Promise((resolve) => setTimeout(resolve, 200))
 
-  const vessel = mockVessels.find(v => v.id === id)
+  const vessel = mockVessels.find((v) => v.id === id)
 
   if (!vessel) {
     return res.status(404).json({

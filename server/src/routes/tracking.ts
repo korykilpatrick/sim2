@@ -8,7 +8,7 @@ const mockTrackings: any[] = []
 
 // Get tracking criteria
 router.get('/criteria', async (_req, res) => {
-  await new Promise(resolve => setTimeout(resolve, 200))
+  await new Promise((resolve) => setTimeout(resolve, 200))
 
   res.json({
     success: true,
@@ -19,7 +19,7 @@ router.get('/criteria', async (_req, res) => {
 
 // Get user's vessel trackings
 router.get('/vessels', async (_req, res) => {
-  await new Promise(resolve => setTimeout(resolve, 300))
+  await new Promise((resolve) => setTimeout(resolve, 300))
 
   res.json({
     success: true,
@@ -38,10 +38,10 @@ router.get('/vessels', async (_req, res) => {
 router.post('/vessels', async (req, res) => {
   const { vesselId, criteria, endDate } = req.body
 
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 500))
 
-  const vessel = mockVessels.find(v => v.id === vesselId)
-  
+  const vessel = mockVessels.find((v) => v.id === vesselId)
+
   if (!vessel) {
     return res.status(404).json({
       success: false,
@@ -56,7 +56,7 @@ router.post('/vessels', async (req, res) => {
     id: `vt-${Date.now()}`,
     vesselId,
     vessel,
-    criteria: mockTrackingCriteria.filter(c => criteria.includes(c.id)),
+    criteria: mockTrackingCriteria.filter((c) => criteria.includes(c.id)),
     status: 'active',
     startDate: new Date().toISOString(),
     endDate,
@@ -78,7 +78,7 @@ router.post('/vessels', async (req, res) => {
 router.post('/calculate-cost', async (req, res) => {
   const { criteria, days } = req.body
 
-  await new Promise(resolve => setTimeout(resolve, 200))
+  await new Promise((resolve) => setTimeout(resolve, 200))
 
   const creditsPerDay = criteria.length * 5 // 5 credits per criteria
   const totalCredits = creditsPerDay * days

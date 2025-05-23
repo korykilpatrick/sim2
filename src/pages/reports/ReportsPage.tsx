@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/Card'
 import Button from '@/components/common/Button'
 
 export default function ReportsPage() {
@@ -6,7 +11,8 @@ export default function ReportsPage() {
     {
       id: 'compliance',
       name: 'Vessel Compliance Report',
-      description: 'Detailed assessment of vessel compliance status and regulatory adherence',
+      description:
+        'Detailed assessment of vessel compliance status and regulatory adherence',
       icon: '📋',
       price: 50,
       features: [
@@ -20,7 +26,8 @@ export default function ReportsPage() {
     {
       id: 'chronology',
       name: 'Vessel Chronology Report',
-      description: 'Comprehensive timeline of vessel activities over a selected period',
+      description:
+        'Comprehensive timeline of vessel activities over a selected period',
       icon: '📅',
       price: 75,
       features: [
@@ -97,9 +104,7 @@ export default function ReportsPage() {
               <p className="text-gray-500">No reports generated yet</p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {/* Report list would go here */}
-            </div>
+            <div className="space-y-4">{/* Report list would go here */}</div>
           )}
         </CardContent>
       </Card>

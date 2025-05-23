@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/features/auth/hooks/useAuth'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -30,7 +30,7 @@ export default function HomePage() {
             <span className="block text-primary-600">SIM Platform</span>
           </h1>
           <p className="mx-auto mt-3 max-w-md text-base text-gray-500 sm:text-lg md:mt-5 md:max-w-3xl md:text-xl">
-            Satellite Intelligence Monitoring - Your comprehensive solution for
+            SynMax Intelligence Marketplace - Your comprehensive solution for
             vessel tracking, area monitoring, and fleet management.
           </p>
           <div className="mx-auto mt-5 max-w-md sm:flex sm:justify-center md:mt-8">

@@ -48,16 +48,23 @@ io.on('connection', (socket) => {
 })
 
 // Error handling middleware
-app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err.stack)
-  res.status(500).json({
-    success: false,
-    error: {
-      message: 'Internal server error',
-      code: 'INTERNAL_ERROR',
-    },
-  })
-})
+app.use(
+  (
+    err: Error,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction,
+  ) => {
+    console.error(err.stack)
+    res.status(500).json({
+      success: false,
+      error: {
+        message: 'Internal server error',
+        code: 'INTERNAL_ERROR',
+      },
+    })
+  },
+)
 
 // Start server
 const PORT = process.env.PORT || 3001

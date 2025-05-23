@@ -17,9 +17,11 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body
 
   // Simulate delay
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 500))
 
-  const user = mockUsers.find(u => u.email === email && u.password === password)
+  const user = mockUsers.find(
+    (u) => u.email === email && u.password === password,
+  )
 
   if (!user) {
     return res.status(401).json({
@@ -51,10 +53,10 @@ router.post('/register', async (req, res) => {
   const { email, password, name, company } = req.body
 
   // Simulate delay
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 500))
 
   // Check if user exists
-  if (mockUsers.find(u => u.email === email)) {
+  if (mockUsers.find((u) => u.email === email)) {
     return res.status(400).json({
       success: false,
       error: {
@@ -131,7 +133,7 @@ router.post('/refresh', async (req, res) => {
 // Get current user
 router.get('/me', async (req, res) => {
   const authHeader = req.headers.authorization
-  
+
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
       success: false,
@@ -146,7 +148,7 @@ router.get('/me', async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as any
-    const user = mockUsers.find(u => u.id === decoded.userId)
+    const user = mockUsers.find((u) => u.id === decoded.userId)
 
     if (!user) {
       throw new Error('User not found')

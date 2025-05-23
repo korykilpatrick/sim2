@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Card, CardContent } from '@/components/common/Card'
 import Button from '@/components/common/Button'
-import Input from '@/components/common/Input'
+import Input from '@/components/forms/Input'
 
 export default function AreasPage() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -48,9 +48,13 @@ export default function AreasPage() {
         {stats.map((stat) => (
           <Card key={stat.label}>
             <CardContent className="p-6">
-              <dt className="text-sm font-medium text-gray-500">{stat.label}</dt>
+              <dt className="text-sm font-medium text-gray-500">
+                {stat.label}
+              </dt>
               <dd className="mt-1 flex items-baseline justify-between">
-                <span className="text-2xl font-semibold text-gray-900">{stat.value}</span>
+                <span className="text-2xl font-semibold text-gray-900">
+                  {stat.value}
+                </span>
                 <span className="text-sm text-gray-500">{stat.change}</span>
               </dd>
             </CardContent>
@@ -88,7 +92,9 @@ export default function AreasPage() {
               d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
             />
           </svg>
-          <h3 className="mt-2 text-sm font-medium text-gray-900">No areas monitored</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            No areas monitored
+          </h3>
           <p className="mt-1 text-sm text-gray-500">
             Get started by defining your first area of interest
           </p>

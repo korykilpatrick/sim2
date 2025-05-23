@@ -1,10 +1,11 @@
 import { ReactNode } from 'react'
-import clsx from 'clsx'
+import { clsx } from '@/utils/clsx'
 
 interface CardProps {
   children: ReactNode
   className?: string
   padding?: 'none' | 'sm' | 'md' | 'lg'
+  onClick?: () => void
 }
 
 interface CardHeaderProps {
@@ -53,7 +54,13 @@ export function CardHeader({ children, actions, className }: CardHeaderProps) {
   )
 }
 
-export function CardTitle({ children, className }: { children: ReactNode; className?: string }) {
+export function CardTitle({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+}) {
   return (
     <h3 className={clsx('text-lg font-semibold text-gray-900', className)}>
       {children}
@@ -61,7 +68,13 @@ export function CardTitle({ children, className }: { children: ReactNode; classN
   )
 }
 
-export function CardContent({ children, className }: { children: ReactNode; className?: string }) {
+export function CardContent({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+}) {
   return <div className={clsx('pt-4', className)}>{children}</div>
 }
 

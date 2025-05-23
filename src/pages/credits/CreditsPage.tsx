@@ -1,7 +1,13 @@
 import { useState } from 'react'
-import { useAuth } from '@/hooks/useAuth'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Card'
+import { useAuth } from '@/features/auth/hooks/useAuth'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/Card'
 import Button from '@/components/common/Button'
+import { clsx } from '@/utils/clsx'
 
 export default function CreditsPage() {
   const { user } = useAuth()
@@ -59,7 +65,9 @@ export default function CreditsPage() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-500">Current Balance</p>
+              <p className="text-sm font-medium text-gray-500">
+                Current Balance
+              </p>
               <p className="mt-1 text-3xl font-bold text-gray-900">
                 {user?.credits || 0} Credits
               </p>
@@ -84,7 +92,9 @@ export default function CreditsPage() {
 
       {/* Purchase Credits */}
       <div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Purchase Credits</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          Purchase Credits
+        </h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {creditPackages.map((pkg) => (
             <div
@@ -98,43 +108,39 @@ export default function CreditsPage() {
               onClick={() => setSelectedPackage(pkg.id)}
             >
               <Card>
-              {pkg.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                    Most Popular
-                  </span>
-                </div>
-              )}
-              <CardHeader>
-                <CardTitle className="text-center">{pkg.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <div className="mt-2">
-                  <span className="text-4xl font-bold">{pkg.credits}</span>
-                  <span className="text-gray-500 ml-1">credits</span>
-                </div>
-                <div className="mt-4">
-                  <span className="text-3xl font-bold">${pkg.price}</span>
-                </div>
-                {pkg.savings > 0 && (
-                  <p className="mt-2 text-sm text-green-600 font-medium">
-                    Save {pkg.savings}%
-                  </p>
+                {pkg.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-primary-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                      Most Popular
+                    </span>
+                  </div>
                 )}
-                <p className="mt-1 text-sm text-gray-500">
-                  ${(pkg.price / pkg.credits).toFixed(2)} per credit
-                </p>
-              </CardContent>
+                <CardHeader>
+                  <CardTitle className="text-center">{pkg.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="mt-2">
+                    <span className="text-4xl font-bold">{pkg.credits}</span>
+                    <span className="text-gray-500 ml-1">credits</span>
+                  </div>
+                  <div className="mt-4">
+                    <span className="text-3xl font-bold">${pkg.price}</span>
+                  </div>
+                  {pkg.savings > 0 && (
+                    <p className="mt-2 text-sm text-green-600 font-medium">
+                      Save {pkg.savings}%
+                    </p>
+                  )}
+                  <p className="mt-1 text-sm text-gray-500">
+                    ${(pkg.price / pkg.credits).toFixed(2)} per credit
+                  </p>
+                </CardContent>
               </Card>
             </div>
           ))}
         </div>
         <div className="mt-6 text-center">
-          <Button
-            variant="primary"
-            size="lg"
-            disabled={!selectedPackage}
-          >
+          <Button variant="primary" size="lg" disabled={!selectedPackage}>
             Purchase Credits
           </Button>
         </div>
@@ -166,15 +172,21 @@ export default function CreditsPage() {
         <CardContent>
           <div className="space-y-4">
             <div className="flex justify-between items-center py-2 border-b">
-              <span className="text-sm text-gray-600">Vessel Tracking (per vessel/day)</span>
+              <span className="text-sm text-gray-600">
+                Vessel Tracking (per vessel/day)
+              </span>
               <span className="font-medium">5-15 credits</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b">
-              <span className="text-sm text-gray-600">Area Monitoring (per day)</span>
+              <span className="text-sm text-gray-600">
+                Area Monitoring (per day)
+              </span>
               <span className="font-medium">10-50 credits</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b">
-              <span className="text-sm text-gray-600">Fleet Tracking (per vessel/month)</span>
+              <span className="text-sm text-gray-600">
+                Fleet Tracking (per vessel/month)
+              </span>
               <span className="font-medium">100 credits</span>
             </div>
             <div className="flex justify-between items-center py-2 border-b">
@@ -192,6 +204,3 @@ export default function CreditsPage() {
   )
 }
 
-function clsx(...classes: any[]) {
-  return classes.filter(Boolean).join(' ')
-}
