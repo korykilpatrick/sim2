@@ -46,6 +46,16 @@
   - `VesselSearchInput.tsx` - Vessel-specific search component
 - Simplified page component from 257 lines to 59 lines
 
+### 8. **Refactored ReportsPage** ✅
+- Decomposed into:
+  - `ReportWizard.tsx` - Main wizard for report generation
+  - `VesselSelectionStep.tsx` - Vessel search step (reuses vessel search components)
+  - `ReportTypeSelectionStep.tsx` - Report template selection
+  - `ReportConfigurationStep.tsx` - Report configuration
+  - `ReportFilters.tsx` - Extracted filtering controls
+- Uses new `PageLayout` component for consistent page structure
+- Simplified page component from 237 lines to 119 lines
+
 ## Benefits Achieved
 
 1. **Code Reusability**: Search, empty states, and wizard patterns can now be reused across all features
@@ -56,11 +66,10 @@
 
 ## Remaining Refactoring Tasks
 
-1. **ReportsPage** - Extract report generation wizard, filters, and search
-2. **AreaMonitoringPage** - Extract area creation flow and management components
-3. **Enhanced Table Components** - Create reusable table with sorting, pagination, and filtering
-4. **Modal Management** - Create modal provider and management system
-5. **Additional Service Decomposition** - Split large service files by domain
+1. **AreaMonitoringPage** - Extract area creation flow and management components
+2. **Enhanced Table Components** - Create reusable table with sorting, pagination, and filtering
+3. **Modal Management** - Create modal provider and management system
+4. **Additional Service Decomposition** - Split large service files by domain
 
 ## Usage Examples
 

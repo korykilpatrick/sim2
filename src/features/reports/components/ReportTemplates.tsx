@@ -8,19 +8,25 @@ interface ReportTemplatesProps {
   templates: ReportTemplate[]
   onSelectTemplate: (template: ReportTemplate) => void
   selectedVessel?: { id: string; name: string }
+  selectedTemplateId?: string
 }
 
 export const ReportTemplates: React.FC<ReportTemplatesProps> = ({
   templates,
   onSelectTemplate,
   selectedVessel,
+  selectedTemplateId,
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {templates.map((template) => (
         <Card
           key={template.id}
-          className="hover:shadow-lg transition-shadow cursor-pointer"
+          className={`hover:shadow-lg transition-shadow cursor-pointer ${
+            selectedTemplateId === template.id
+              ? 'ring-2 ring-primary-500 border-primary-500'
+              : ''
+          }`}
         >
           <CardHeader>
             <div className="flex items-start justify-between">
