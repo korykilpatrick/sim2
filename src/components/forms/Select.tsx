@@ -12,7 +12,7 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: string
   hint?: string
   fullWidth?: boolean
-  options: SelectOption[]
+  options?: SelectOption[]
   placeholder?: string
 }
 
@@ -66,18 +66,24 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             }
             {...props}
           >
-            <option value="" disabled>
-              {placeholder}
-            </option>
-            {options.map((option) => (
-              <option
-                key={option.value}
-                value={option.value}
-                disabled={option.disabled}
-              >
-                {option.label}
-              </option>
-            ))}
+            {options ? (
+              <>
+                <option value="" disabled>
+                  {placeholder}
+                </option>
+                {options.map((option) => (
+                  <option
+                    key={option.value}
+                    value={option.value}
+                    disabled={option.disabled}
+                  >
+                    {option.label}
+                  </option>
+                ))}
+              </>
+            ) : (
+              props.children
+            )}
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <svg
