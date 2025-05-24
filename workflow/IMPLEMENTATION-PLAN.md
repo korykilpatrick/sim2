@@ -53,13 +53,13 @@ The PRD specifies 6 products, but only 3 are truly implemented. Complete the mis
 - [x] Create PDF generation for reports (mock implementation)
 - [x] Add report preview functionality
 
-#### 1.2 Vessel Chronology Report (VChR) - 2 days
-- [ ] Build vessel history timeline component
-- [ ] Implement historical data aggregation
-- [ ] Create chronology visualization
-- [ ] Add event filtering and search
-- [ ] Generate downloadable reports
-- [ ] Implement date range selection
+#### 1.2 Vessel Chronology Report (VChR) - 2 days ✅ COMPLETED
+- [x] Build vessel history timeline component
+- [x] Implement historical data aggregation
+- [x] Create chronology visualization
+- [x] Add event filtering and search
+- [x] Generate downloadable reports
+- [x] Implement date range selection
 
 #### 1.3 Maritime Investigations Service (MIS) - 1-2 days
 - [ ] Design investigation request form

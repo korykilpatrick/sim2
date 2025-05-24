@@ -23,6 +23,14 @@ export function useReport(id: string) {
   })
 }
 
+export function useReportById(id: string) {
+  return useQuery({
+    queryKey: reportKeys.detail(id),
+    queryFn: () => reportApi.getReport(id),
+    enabled: !!id,
+  })
+}
+
 export function useCreateReport() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -62,16 +70,24 @@ export function useCreateBulkReports() {
   })
 }
 
-export function useDownloadReport(id: string) {
+export function useDownloadReport() {
   return useMutation({
-    mutationFn: (format: 'pdf' | 'excel' | 'json') =>
-      reportApi.downloadReport(id, format),
-    onSuccess: (response, format) => {
+    mutationFn: ({
+      reportId,
+      format,
+    }: {
+      reportId: string
+      format: 'pdf' | 'excel' | 'json'
+    }) => reportApi.downloadReport(reportId, format),
+    onSuccess: (response, variables) => {
       // Create download link
       const url = window.URL.createObjectURL(new Blob([response]))
       const link = document.createElement('a')
       link.href = url
-      link.setAttribute('download', `report-${id}.${format}`)
+      link.setAttribute(
+        'download',
+        `report-${variables.reportId}.${variables.format}`,
+      )
       document.body.appendChild(link)
       link.click()
       link.remove()

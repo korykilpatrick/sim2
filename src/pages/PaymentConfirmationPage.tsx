@@ -6,10 +6,10 @@ import { CheckCircle, Package } from 'lucide-react'
 
 export default function PaymentConfirmationPage() {
   const navigate = useNavigate()
-  
+
   // Generate a random order number
   const orderNumber = Math.random().toString(36).substring(2, 10).toUpperCase()
-  
+
   // Save order number to localStorage for demonstration
   useEffect(() => {
     localStorage.setItem('lastOrderNumber', orderNumber)
@@ -31,10 +31,8 @@ export default function PaymentConfirmationPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Payment Successful!
           </h1>
-          
-          <p className="text-lg text-gray-600 mb-8">
-            Order #{orderNumber}
-          </p>
+
+          <p className="text-lg text-gray-600 mb-8">Order #{orderNumber}</p>
 
           <div className="bg-gray-50 rounded-lg p-6 mb-8">
             <div className="flex items-center gap-3 mb-4">
@@ -43,23 +41,21 @@ export default function PaymentConfirmationPage() {
                 What happens next?
               </h2>
             </div>
-            
+
             <div className="space-y-3 text-gray-600">
               <p>
-                • You'll receive a confirmation email with your order details and login credentials
+                • You'll receive a confirmation email with your order details
+                and login credentials
               </p>
+              <p>• Your subscription is now active and ready to use</p>
+              <p>• Access your products anytime from the dashboard</p>
               <p>
-                • Your subscription is now active and ready to use
-              </p>
-              <p>
-                • Access your products anytime from the dashboard
-              </p>
-              <p>
-                • Monitor your usage and manage subscriptions in your account settings
+                • Monitor your usage and manage subscriptions in your account
+                settings
               </p>
             </div>
           </div>
-          
+
           <div className="text-center text-gray-600 mb-8">
             <p className="font-medium">Need help getting started?</p>
             <p>Contact our support team at support@synmax.com</p>

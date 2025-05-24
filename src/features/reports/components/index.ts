@@ -1,6 +1,7 @@
 export { ReportList } from './ReportList'
 export { ReportTemplates } from './ReportTemplates'
 export { ComplianceReportView } from './ComplianceReportView'
+export { ChronologyReportView } from './ChronologyReportView'
 export { ReportStats } from './ReportStats'
 export { ReportFiltersPanel } from './ReportFilters'
 export { ReportWizard } from './report-wizard'

@@ -29,6 +29,7 @@ const FleetsPage = lazy(() => import('@features/fleet/pages/FleetsPage'))
 
 // Reports pages
 const ReportsPage = lazy(() => import('@features/reports/pages/ReportsPage'))
+const ReportDetailPage = lazy(() => import('@pages/reports/ReportDetailPage'))
 
 // Credits pages
 const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
@@ -56,7 +57,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/products/sim/:productId" element={<ProductDetailPage />} />
+        <Route
+          path="/products/sim/:productId"
+          element={<ProductDetailPage />}
+        />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route
           path="/payment-confirmation"
@@ -85,14 +89,36 @@ function App() {
 
           {/* Reports */}
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/reports/:id" element={<ReportDetailPage />} />
 
           {/* Credits */}
           <Route path="/credits" element={<CreditsPage />} />
-          
+
           {/* Account & Settings */}
-          <Route path="/account" element={<div className="flex items-center justify-center min-h-[calc(100vh-4rem)]"><p className="text-gray-500">Account settings coming soon</p></div>} />
-          <Route path="/settings" element={<div className="flex items-center justify-center min-h-[calc(100vh-4rem)]"><p className="text-gray-500">Settings coming soon</p></div>} />
-          <Route path="/help" element={<div className="flex items-center justify-center min-h-[calc(100vh-4rem)]"><p className="text-gray-500">Help center coming soon</p></div>} />
+          <Route
+            path="/account"
+            element={
+              <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                <p className="text-gray-500">Account settings coming soon</p>
+              </div>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                <p className="text-gray-500">Settings coming soon</p>
+              </div>
+            }
+          />
+          <Route
+            path="/help"
+            element={
+              <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                <p className="text-gray-500">Help center coming soon</p>
+              </div>
+            }
+          />
         </Route>
 
         {/* Redirect root to dashboard if authenticated */}
