@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Product } from '@/types/product';
 
-const API_URL = '/api/v1'; // Using Vite proxy
+const API_URL = '/api/v1';
 
 export interface ProductsResponse {
   success: boolean;

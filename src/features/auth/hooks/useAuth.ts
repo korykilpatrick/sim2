@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { authApi } from '../services/auth'
@@ -73,20 +73,10 @@ export function useAuth() {
     },
   })
 
-  const { data: currentUser, isLoading: isLoadingUser } = useQuery({
-    queryKey: ['auth', 'user'],
-    queryFn: async () => {
-      const response = await authApi.getCurrentUser()
-      return response.data
-    },
-    enabled: isAuthenticated,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  })
-
   return {
-    user: currentUser || user,
+    user,
     isAuthenticated,
-    isLoadingUser,
+    isLoadingUser: false,
     login: loginMutation.mutate,
     register: registerMutation.mutate,
     logout: logoutMutation.mutate,
