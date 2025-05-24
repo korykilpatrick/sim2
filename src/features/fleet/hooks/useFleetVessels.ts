@@ -4,10 +4,11 @@ import type {
   AddVesselToFleetInput,
   RemoveVesselFromFleetInput,
 } from '../types'
+import { fleetKeys } from './'
 
 export const useFleetVessels = (fleetId: string) => {
   return useQuery({
-    queryKey: ['fleets', fleetId, 'vessels'],
+    queryKey: fleetKeys.vessels(fleetId),
     queryFn: () => fleetService.getFleetVessels(fleetId),
     enabled: !!fleetId,
   })
@@ -21,10 +22,10 @@ export const useAddVesselToFleet = () => {
       fleetService.addVesselToFleet(data),
     onSuccess: (_, { fleetId }) => {
       queryClient.invalidateQueries({
-        queryKey: ['fleets', fleetId, 'vessels'],
+        queryKey: fleetKeys.vessels(fleetId),
       })
-      queryClient.invalidateQueries({ queryKey: ['fleets', 'stats'] })
-      queryClient.invalidateQueries({ queryKey: ['fleets', fleetId] })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.stats() })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.detail(fleetId) })
     },
   })
 }
@@ -37,17 +38,17 @@ export const useRemoveVesselFromFleet = () => {
       fleetService.removeVesselFromFleet(data),
     onSuccess: (_, { fleetId }) => {
       queryClient.invalidateQueries({
-        queryKey: ['fleets', fleetId, 'vessels'],
+        queryKey: fleetKeys.vessels(fleetId),
       })
-      queryClient.invalidateQueries({ queryKey: ['fleets', 'stats'] })
-      queryClient.invalidateQueries({ queryKey: ['fleets', fleetId] })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.stats() })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.detail(fleetId) })
     },
   })
 }
 
 export const useSearchFleetVessels = (fleetId: string, query: string) => {
   return useQuery({
-    queryKey: ['fleets', fleetId, 'vessels', 'search', query],
+    queryKey: fleetKeys.vesselSearch(fleetId, query),
     queryFn: () => fleetService.searchFleetVessels(fleetId, query),
     enabled: !!fleetId && query.length > 0,
   })

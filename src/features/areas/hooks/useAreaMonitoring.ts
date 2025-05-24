@@ -3,10 +3,11 @@ import { areaApi } from '../services/areaService'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
 import type { ApiError } from '@/types/api'
+import { areaKeys } from './'
 
 export function useAreaMonitoring(areaId: string) {
   return useQuery({
-    queryKey: ['area-monitoring', areaId],
+    queryKey: areaKeys.monitoring(areaId),
     queryFn: () => areaApi.getAreaMonitoring(areaId),
     enabled: !!areaId,
   })
@@ -23,8 +24,8 @@ export function useStartMonitoring(areaId: string) {
       alertsEnabled: boolean
     }) => areaApi.startMonitoring(areaId, config),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['area-monitoring', areaId] })
-      queryClient.invalidateQueries({ queryKey: ['areas', areaId] })
+      queryClient.invalidateQueries({ queryKey: areaKeys.monitoring(areaId) })
+      queryClient.invalidateQueries({ queryKey: areaKeys.detail(areaId) })
       toast.success('Monitoring started successfully')
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
@@ -41,7 +42,7 @@ export function usePauseMonitoring(areaId: string) {
   return useMutation({
     mutationFn: () => areaApi.pauseMonitoring(areaId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['area-monitoring', areaId] })
+      queryClient.invalidateQueries({ queryKey: areaKeys.monitoring(areaId) })
       toast.success('Monitoring paused')
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
@@ -58,7 +59,7 @@ export function useResumeMonitoring(areaId: string) {
   return useMutation({
     mutationFn: () => areaApi.resumeMonitoring(areaId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['area-monitoring', areaId] })
+      queryClient.invalidateQueries({ queryKey: areaKeys.monitoring(areaId) })
       toast.success('Monitoring resumed')
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
@@ -78,7 +79,7 @@ export function useAreaAlerts(areaId: string, filters?: {
   page?: number
 }) {
   return useQuery({
-    queryKey: ['area-alerts', areaId, filters],
+    queryKey: areaKeys.alerts(areaId, filters),
     queryFn: () => areaApi.getAreaAlerts(areaId, filters),
     enabled: !!areaId,
   })
@@ -91,14 +92,14 @@ export function useMarkAlertRead() {
     mutationFn: ({ areaId, alertId }: { areaId: string; alertId: string }) =>
       areaApi.markAlertRead(areaId, alertId),
     onSuccess: (_, { areaId }) => {
-      queryClient.invalidateQueries({ queryKey: ['area-alerts', areaId] })
+      queryClient.invalidateQueries({ queryKey: areaKeys.alerts(areaId) })
     },
   })
 }
 
 export function useAreaStatistics() {
   return useQuery({
-    queryKey: ['area-statistics'],
+    queryKey: areaKeys.statistics(),
     queryFn: () => areaApi.getAreaStatistics(),
     staleTime: 30 * 1000, // 30 seconds
   })
@@ -106,7 +107,7 @@ export function useAreaStatistics() {
 
 export function useMonitoringCriteria() {
   return useQuery({
-    queryKey: ['monitoring-criteria'],
+    queryKey: areaKeys.criteria(),
     queryFn: () => areaApi.getMonitoringCriteria(),
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
@@ -119,7 +120,7 @@ export function useAreaCostCalculation(config: {
   duration: number
 }) {
   return useQuery({
-    queryKey: ['area-cost', config],
+    queryKey: areaKeys.cost(config),
     queryFn: () => areaApi.calculateCost(config),
     enabled: config.sizeKm2 > 0 && config.criteria.length > 0,
   })
@@ -127,7 +128,7 @@ export function useAreaCostCalculation(config: {
 
 export function useVesselsInArea(areaId: string) {
   return useQuery({
-    queryKey: ['area-vessels', areaId],
+    queryKey: areaKeys.vessels(areaId),
     queryFn: () => areaApi.getVesselsInArea(areaId),
     enabled: !!areaId,
     refetchInterval: 60 * 1000, // Refresh every minute

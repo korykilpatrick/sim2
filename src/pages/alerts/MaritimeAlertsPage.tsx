@@ -1,37 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import Button from '@/components/common/Button'
 import Header from '@/components/layout/Header'
-
-interface AlertType {
-  id: string
-  name: string
-  description: string
-  active: boolean
-}
+import { MARITIME_ALERT_TYPES } from '@/constants/alerts'
 
 export default function MaritimeAlertsPage() {
   const navigate = useNavigate()
-
-  const alertTypes: AlertType[] = [
-    {
-      id: 'ship',
-      name: 'Ship Alert',
-      description: 'Description for this type of alert goes here.',
-      active: true,
-    },
-    {
-      id: 'area',
-      name: 'Area Alert',
-      description: 'Description for this type of alert goes here.',
-      active: false,
-    },
-    {
-      id: 'ship-area',
-      name: 'Ship & Area Alert',
-      description: 'Description for this type of alert goes here.',
-      active: false,
-    },
-  ]
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -45,7 +18,7 @@ export default function MaritimeAlertsPage() {
         </p>
 
         <div className="space-y-4">
-          {alertTypes.map((alert) => (
+          {MARITIME_ALERT_TYPES.map((alert) => (
             <div
               key={alert.id}
               className="bg-white rounded-lg shadow p-6 flex items-center justify-between"

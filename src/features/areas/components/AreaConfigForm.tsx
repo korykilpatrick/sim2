@@ -78,7 +78,7 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
     })
   }
 
-  const criteria = Array.isArray(criteriaData?.data) ? criteriaData.data : criteriaData?.data?.data || []
+  const criteria = criteriaData || []
 
   // Group criteria by category
   const criteriaByCategory = criteria.reduce((acc: Record<string, MonitoringCriteria[]>, criterion) => {
@@ -208,12 +208,12 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Credits per day</span>
-                <span className="font-medium">{costData?.data?.data?.creditsPerDay || 0}</span>
+                <span className="font-medium">{costData?.creditsPerDay || 0}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Total credits ({duration} days)</span>
                 <span className="text-lg font-bold text-primary-600">
-                  {costData?.data?.data?.totalCredits || 0}
+                  {costData?.totalCredits || 0}
                 </span>
               </div>
             </div>

@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/features/auth/hooks/useAuth'
 import Button from '@/components/common/Button'
+import Header from '@/components/layout/Header'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
+import { productKeys } from '@/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { isAuthenticated } = useAuth()
   const [currentSlide, setCurrentSlide] = useState(0)
 
   const promotionalSlides = [
@@ -30,7 +30,7 @@ export default function HomePage() {
   ]
 
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ['products'],
+    queryKey: productKeys.all,
     queryFn: () => productService.getProducts(),
   })
 
@@ -47,40 +47,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-dark-500 px-4 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-white">SYNMAX</span>
-            <span className="text-xl text-gray-300">Marketplace</span>
-          </div>
-          <div className="flex items-center gap-4">
-            {isAuthenticated ? (
-              <Button
-                variant="synmax"
-                size="sm"
-                onClick={() => navigate('/dashboard')}
-              >
-                Go to Dashboard
-              </Button>
-            ) : (
-              <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate('/login')}
-                  className="border-gray-600 text-white hover:bg-gray-700"
-                >
-                  Sign In
-                </Button>
-                <button className="text-primary-500 hover:text-primary-400 text-sm">
-                  🛒
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Promotional Slider */}
       <div className="relative h-64 overflow-hidden bg-gray-700">

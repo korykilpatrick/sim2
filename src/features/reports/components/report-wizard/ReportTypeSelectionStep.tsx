@@ -17,7 +17,7 @@ export function ReportTypeSelectionStep({
   selectedVessel,
 }: ReportTypeSelectionStepProps) {
   const { data: templatesData, isLoading } = useReportTemplates()
-  const templates = templatesData?.data?.data || []
+  const templates = templatesData || []
 
   if (isLoading) {
     return (

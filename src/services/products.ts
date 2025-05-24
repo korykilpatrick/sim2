@@ -1,24 +1,6 @@
-import axios from 'axios';
+import { apiClient } from '@/lib/api/client';
+import type { ApiResponse } from '@/types/api';
 import { Product } from '@/types/product';
-
-const API_URL = '/api/v1';
-
-export interface ProductsResponse {
-  success: boolean;
-  data: Product[];
-  metadata?: {
-    total: number;
-    categories: string[];
-    category?: string;
-  };
-  timestamp: string;
-}
-
-export interface ProductResponse {
-  success: boolean;
-  data: Product;
-  timestamp: string;
-}
 
 export interface ProductAvailability {
   productId: string;
@@ -33,44 +15,41 @@ class ProductService {
     search?: string;
     sort?: 'price-asc' | 'price-desc' | 'name';
   }): Promise<Product[]> {
-    const { data } = await axios.get<ProductsResponse>(`${API_URL}/products`, {
+    const response = await apiClient.get<ApiResponse<Product[]>>('/products', {
       params,
     });
-    return data.data;
+    return response.data.data;
   }
 
   async getProductById(id: string): Promise<Product> {
-    const { data } = await axios.get<ProductResponse>(`${API_URL}/products/${id}`);
-    return data.data;
+    const response = await apiClient.get<ApiResponse<Product>>(`/products/${id}`);
+    return response.data.data;
   }
 
   async getProductsByCategory(category: string): Promise<Product[]> {
-    const { data } = await axios.get<ProductsResponse>(
-      `${API_URL}/products/category/${category}`
+    const response = await apiClient.get<ApiResponse<Product[]>>(
+      `/products/category/${category}`
     );
-    return data.data;
+    return response.data.data;
   }
 
   async getFeaturedProducts(): Promise<Product[]> {
-    const { data } = await axios.get<ProductsResponse>(`${API_URL}/products/featured`);
-    return data.data;
+    const response = await apiClient.get<ApiResponse<Product[]>>(`/products/featured`);
+    return response.data.data;
   }
 
   async checkProductAvailability(
     productId: string,
     token?: string
   ): Promise<ProductAvailability> {
-    const { data } = await axios.post<{
-      success: boolean;
-      data: ProductAvailability;
-    }>(
-      `${API_URL}/products/${productId}/check-availability`,
+    const response = await apiClient.post<ApiResponse<ProductAvailability>>(
+      `/products/${productId}/check-availability`,
       {},
       {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       }
     );
-    return data.data;
+    return response.data.data;
   }
 }
 

@@ -23,7 +23,7 @@ export function AreaReviewStep({
   durationMonths,
 }: AreaReviewStepProps) {
   const { data: criteriaData } = useMonitoringCriteria()
-  const allCriteria = criteriaData?.data?.data || []
+  const allCriteria = criteriaData || []
   
   const selectedCriteriaDetails = allCriteria.filter((c: MonitoringCriteria) =>
     monitoringCriteria.includes(c.id)

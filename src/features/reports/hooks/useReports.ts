@@ -5,10 +5,11 @@ import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import type { AxiosError } from 'axios'
 import type { ApiResponse } from '@/types/api'
+import { reportKeys } from './'
 
 export function useReports(filters?: ReportFilters) {
   return useQuery({
-    queryKey: ['reports', filters],
+    queryKey: reportKeys.list(filters),
     queryFn: () => reportApi.getReports(filters),
     staleTime: 30 * 1000, // 30 seconds
   })
@@ -16,7 +17,7 @@ export function useReports(filters?: ReportFilters) {
 
 export function useReport(id: string) {
   return useQuery({
-    queryKey: ['reports', id],
+    queryKey: reportKeys.detail(id),
     queryFn: () => reportApi.getReport(id),
     enabled: !!id,
   })
@@ -29,10 +30,10 @@ export function useCreateReport() {
   return useMutation({
     mutationFn: (request: ReportRequest) => reportApi.createReport(request),
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ['reports'] })
-      queryClient.invalidateQueries({ queryKey: ['report-statistics'] })
+      queryClient.invalidateQueries({ queryKey: reportKeys.all })
+      queryClient.invalidateQueries({ queryKey: reportKeys.statistics() })
       toast.success('Report generation started')
-      navigate(`/reports/${response.data.data.reportId}`)
+      navigate(`/reports/${response.reportId}`)
     },
     onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
@@ -49,8 +50,8 @@ export function useCreateBulkReports() {
     mutationFn: (request: BulkReportRequest) =>
       reportApi.createBulkReports(request),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['reports'] })
-      queryClient.invalidateQueries({ queryKey: ['report-statistics'] })
+      queryClient.invalidateQueries({ queryKey: reportKeys.all })
+      queryClient.invalidateQueries({ queryKey: reportKeys.statistics() })
       toast.success('Bulk report generation started')
     },
     onError: (error: AxiosError<ApiResponse>) => {
@@ -88,7 +89,7 @@ export function useDownloadReport(id: string) {
 
 export function useReportTemplates() {
   return useQuery({
-    queryKey: ['report-templates'],
+    queryKey: reportKeys.templates(),
     queryFn: () => reportApi.getReportTemplates(),
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
@@ -96,7 +97,7 @@ export function useReportTemplates() {
 
 export function useReportStatistics() {
   return useQuery({
-    queryKey: ['report-statistics'],
+    queryKey: reportKeys.statistics(),
     queryFn: () => reportApi.getReportStatistics(),
     refetchInterval: 60 * 1000, // Refresh every minute
   })
@@ -104,13 +105,13 @@ export function useReportStatistics() {
 
 export function useReportStatus(id: string) {
   return useQuery({
-    queryKey: ['report-status', id],
+    queryKey: reportKeys.status(id),
     queryFn: () => reportApi.getReportStatus(id),
     enabled: !!id,
     refetchInterval: (query) => {
       // Poll while processing
       const data = query.state.data
-      const status = data?.data?.data?.status
+      const status = data?.status
       if (status === 'processing' || status === 'pending') {
         return 5000 // 5 seconds
       }
@@ -125,9 +126,9 @@ export function useCancelReport() {
   return useMutation({
     mutationFn: (id: string) => reportApi.cancelReport(id),
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ['reports'] })
-      queryClient.invalidateQueries({ queryKey: ['reports', id] })
-      queryClient.invalidateQueries({ queryKey: ['report-status', id] })
+      queryClient.invalidateQueries({ queryKey: reportKeys.all })
+      queryClient.invalidateQueries({ queryKey: reportKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: reportKeys.status(id) })
       toast.success('Report cancelled')
     },
     onError: (error: AxiosError<ApiResponse>) => {
@@ -144,9 +145,9 @@ export function useRetryReport() {
   return useMutation({
     mutationFn: (id: string) => reportApi.retryReport(id),
     onSuccess: (_, id) => {
-      queryClient.invalidateQueries({ queryKey: ['reports'] })
-      queryClient.invalidateQueries({ queryKey: ['reports', id] })
-      queryClient.invalidateQueries({ queryKey: ['report-status', id] })
+      queryClient.invalidateQueries({ queryKey: reportKeys.all })
+      queryClient.invalidateQueries({ queryKey: reportKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: reportKeys.status(id) })
       toast.success('Report retry started')
     },
     onError: (error: AxiosError<ApiResponse>) => {
@@ -166,7 +167,7 @@ export function useReportCostPreview() {
 
 export function useVesselReports(vesselId: string) {
   return useQuery({
-    queryKey: ['vessel-reports', vesselId],
+    queryKey: reportKeys.vesselReports(vesselId),
     queryFn: () => reportApi.getVesselReports(vesselId),
     enabled: !!vesselId,
   })

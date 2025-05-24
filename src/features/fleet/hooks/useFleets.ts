@@ -1,17 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { fleetService } from '../services/fleetService'
 import type { CreateFleetInput, UpdateFleetInput } from '../types'
+import { fleetKeys } from './'
 
 export const useFleets = () => {
   return useQuery({
-    queryKey: ['fleets'],
+    queryKey: fleetKeys.all,
     queryFn: fleetService.getFleets,
   })
 }
 
 export const useFleet = (id: string) => {
   return useQuery({
-    queryKey: ['fleets', id],
+    queryKey: fleetKeys.detail(id),
     queryFn: () => fleetService.getFleet(id),
     enabled: !!id,
   })
@@ -19,7 +20,7 @@ export const useFleet = (id: string) => {
 
 export const useFleetStats = () => {
   return useQuery({
-    queryKey: ['fleets', 'stats'],
+    queryKey: fleetKeys.stats(),
     queryFn: fleetService.getFleetStats,
   })
 }
@@ -30,8 +31,8 @@ export const useCreateFleet = () => {
   return useMutation({
     mutationFn: (data: CreateFleetInput) => fleetService.createFleet(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fleets'] })
-      queryClient.invalidateQueries({ queryKey: ['fleets', 'stats'] })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.all })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.stats() })
     },
   })
 }
@@ -43,9 +44,9 @@ export const useUpdateFleet = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateFleetInput }) =>
       fleetService.updateFleet(id, data),
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ['fleets'] })
-      queryClient.invalidateQueries({ queryKey: ['fleets', id] })
-      queryClient.invalidateQueries({ queryKey: ['fleets', 'stats'] })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.all })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.detail(id) })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.stats() })
     },
   })
 }
@@ -56,15 +57,15 @@ export const useDeleteFleet = () => {
   return useMutation({
     mutationFn: (id: string) => fleetService.deleteFleet(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fleets'] })
-      queryClient.invalidateQueries({ queryKey: ['fleets', 'stats'] })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.all })
+      queryClient.invalidateQueries({ queryKey: fleetKeys.stats() })
     },
   })
 }
 
 export const useSearchFleets = (query: string) => {
   return useQuery({
-    queryKey: ['fleets', 'search', query],
+    queryKey: fleetKeys.search(query),
     queryFn: () => fleetService.searchFleets(query),
     enabled: query.length > 0,
   })

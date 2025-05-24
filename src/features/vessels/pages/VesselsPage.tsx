@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { vesselsApi } from '../services/vessels'
+import { vesselKeys } from '../hooks'
 import type { VesselTracking } from '../types'
 import Button from '@/components/common/Button'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
@@ -13,12 +14,12 @@ export default function VesselsPage() {
   const [searchQuery, setSearchQuery] = useState('')
 
   const { data: trackings, isLoading } = useQuery({
-    queryKey: ['vessel-trackings'],
+    queryKey: vesselKeys.trackings(),
     queryFn: () => vesselsApi.getMyTrackings(),
   })
 
   const activeTrackings =
-    trackings?.data?.filter((t: VesselTracking) => t.status === 'active') || []
+    trackings?.items?.filter((t: VesselTracking) => t.status === 'active') || []
 
   return (
     <div className="space-y-8">

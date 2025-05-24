@@ -1,11 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import Button from '@/components/common/Button'
-import { ArrowLeft, ShoppingCart } from 'lucide-react'
+import Header from '@/components/layout/Header'
+import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
-import { useCartStore } from '@/stores/cartStore'
+import { productKeys } from '@/services/productKeys'
+import { useCartStore, cartSelectors } from '@/stores/cartStore'
 import { formatPrice, hasStandardPricing, getProductPrice } from '@/utils/formatPrice'
 
 
@@ -15,11 +17,10 @@ export default function ProductDetailPage() {
   const { isAuthenticated } = useAuth()
   const [addedToCart, setAddedToCart] = useState(false)
   const [selectedBilling, setSelectedBilling] = useState<'monthly' | 'annual'>('monthly')
-  const { addItem, getItemCount } = useCartStore()
-  const cartItemCount = getItemCount()
+  const addItem = useCartStore(cartSelectors.addItem)
 
   const { data: product, isLoading } = useQuery({
-    queryKey: ['product', productId],
+    queryKey: productKeys.detail(productId!),
     queryFn: () => productService.getProductById(productId!),
     enabled: !!productId,
   })
@@ -70,44 +71,20 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-dark-500 px-4 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate(-1)}
-              className="text-gray-400 hover:text-white"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold text-white">SYNMAX</span>
-              <span className="text-xl text-gray-300">Marketplace</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => navigate('/cart')}
-              className="relative text-primary-500 hover:text-primary-400"
-            >
-              <ShoppingCart className="h-6 w-6" />
-              {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-secondary-500 text-xs text-white flex items-center justify-center">
-                  {cartItemCount}
-                </span>
-              )}
-            </button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate(isAuthenticated ? '/dashboard' : '/login')}
-              className="border-gray-600 text-white hover:bg-gray-700"
-            >
-              {isAuthenticated ? 'Dashboard' : 'Sign In'}
-            </Button>
-          </div>
+      <Header />
+      
+      {/* Back Navigation */}
+      <div className="bg-gray-100 border-b">
+        <div className="mx-auto max-w-7xl px-4 py-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-sm">Back</span>
+          </button>
         </div>
-      </header>
+      </div>
 
       {/* Product Details */}
       <div className="mx-auto max-w-7xl px-4 py-8">

@@ -35,8 +35,8 @@ export default function ReportsMainPage() {
   const retryReportMutation = useRetryReport()
   const cancelReportMutation = useCancelReport()
 
-  const reports = reportsData?.data?.data || []
-  const stats = statsData?.data?.data || {
+  const reports = reportsData?.items || []
+  const stats = statsData || {
     totalReports: 0,
     completedToday: 0,
     pendingReports: 0,

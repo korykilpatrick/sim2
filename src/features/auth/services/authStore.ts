@@ -72,3 +72,17 @@ export const useAuthStore = create<AuthStore>()(
     },
   ),
 )
+
+/**
+ * Selector functions for accessing specific parts of the auth store.
+ * Using selectors prevents unnecessary re-renders when unrelated state changes.
+ */
+export const authSelectors = {
+  user: (state: AuthStore) => state.user,
+  isAuthenticated: (state: AuthStore) => state.isAuthenticated,
+  accessToken: (state: AuthStore) => state.accessToken,
+  refreshToken: (state: AuthStore) => state.refreshToken,
+  setAuth: (state: AuthStore) => state.setAuth,
+  updateUser: (state: AuthStore) => state.updateUser,
+  logout: (state: AuthStore) => state.logout,
+}

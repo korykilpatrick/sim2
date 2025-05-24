@@ -17,7 +17,7 @@ export const authApi = {
       '/auth/login',
       credentials,
     )
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -31,7 +31,7 @@ export const authApi = {
       '/auth/register',
       data,
     )
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -54,7 +54,7 @@ export const authApi = {
     const response = await apiClient.post<
       ApiResponse<{ accessToken: string; refreshToken: string }>
     >('/auth/refresh', { refreshToken })
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -65,6 +65,6 @@ export const authApi = {
   getCurrentUser: async () => {
     const response =
       await apiClient.get<ApiResponse<AuthResponse['user']>>('/auth/me')
-    return response.data
+    return response.data.data
   },
 }

@@ -34,7 +34,7 @@ export function useVesselSearch(minSearchLength = 3): UseVesselSearchReturn {
     
     try {
       const response = await vesselsApi.searchVessels({ query });
-      setSearchResults(response.data || []);
+      setSearchResults(response.items || []);
     } catch (err) {
       setError('Failed to search vessels');
       setSearchResults([]);

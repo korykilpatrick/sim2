@@ -1,4 +1,5 @@
 import { apiClient } from '@/lib/api/client'
+import type { ApiResponse, PaginatedResponse } from '@/types/api'
 import type {
   Area,
   AreaMonitoring,
@@ -15,32 +16,41 @@ const BASE_URL = '/api/v1/areas'
 export const areaApi = {
   // Areas
   getAreas: async (filters?: AreaFilters) => {
-    return apiClient.get<{ data: Area[]; total: number }>(BASE_URL, {
+    const response = await apiClient.get<PaginatedResponse<Area>>(BASE_URL, {
       params: filters,
     })
+    return {
+      items: response.data.data,
+      meta: response.data.meta,
+    }
   },
 
   getArea: async (id: string) => {
-    return apiClient.get<{ data: Area }>(`${BASE_URL}/${id}`)
+    const response = await apiClient.get<ApiResponse<Area>>(`${BASE_URL}/${id}`)
+    return response.data.data // Return just the area object
   },
 
   createArea: async (data: CreateAreaRequest) => {
-    return apiClient.post<{ data: Area }>(BASE_URL, data)
+    const response = await apiClient.post<ApiResponse<Area>>(BASE_URL, data)
+    return response.data.data // Return just the created area
   },
 
   updateArea: async (id: string, data: Partial<CreateAreaRequest>) => {
-    return apiClient.patch<{ data: Area }>(`${BASE_URL}/${id}`, data)
+    const response = await apiClient.patch<ApiResponse<Area>>(`${BASE_URL}/${id}`, data)
+    return response.data.data // Return just the updated area
   },
 
   deleteArea: async (id: string) => {
-    return apiClient.delete(`${BASE_URL}/${id}`)
+    const response = await apiClient.delete<ApiResponse<void>>(`${BASE_URL}/${id}`)
+    return response.data
   },
 
   // Monitoring
   getAreaMonitoring: async (areaId: string) => {
-    return apiClient.get<{ data: AreaMonitoring }>(
+    const response = await apiClient.get<ApiResponse<AreaMonitoring>>(
       `${BASE_URL}/${areaId}/monitoring`,
     )
+    return response.data.data // Return just the monitoring data
   },
 
   startMonitoring: async (areaId: string, config: {
@@ -49,18 +59,21 @@ export const areaApi = {
     duration: number
     alertsEnabled: boolean
   }) => {
-    return apiClient.post<{ data: AreaMonitoring }>(
+    const response = await apiClient.post<ApiResponse<AreaMonitoring>>(
       `${BASE_URL}/${areaId}/monitoring`,
       config,
     )
+    return response.data.data // Return just the monitoring data
   },
 
   pauseMonitoring: async (areaId: string) => {
-    return apiClient.post(`${BASE_URL}/${areaId}/monitoring/pause`)
+    const response = await apiClient.post<ApiResponse<void>>(`${BASE_URL}/${areaId}/monitoring/pause`)
+    return response.data
   },
 
   resumeMonitoring: async (areaId: string) => {
-    return apiClient.post(`${BASE_URL}/${areaId}/monitoring/resume`)
+    const response = await apiClient.post<ApiResponse<void>>(`${BASE_URL}/${areaId}/monitoring/resume`)
+    return response.data
   },
 
   // Alerts
@@ -71,26 +84,33 @@ export const areaApi = {
     limit?: number
     page?: number
   }) => {
-    return apiClient.get<{ data: AreaAlert[]; total: number }>(
+    const response = await apiClient.get<PaginatedResponse<AreaAlert>>(
       `${BASE_URL}/${areaId}/alerts`,
       { params: filters },
     )
+    return {
+      items: response.data.data,
+      meta: response.data.meta,
+    }
   },
 
   markAlertRead: async (areaId: string, alertId: string) => {
-    return apiClient.patch(`${BASE_URL}/${areaId}/alerts/${alertId}/read`)
+    const response = await apiClient.patch<ApiResponse<void>>(`${BASE_URL}/${areaId}/alerts/${alertId}/read`)
+    return response.data
   },
 
   // Statistics
   getAreaStatistics: async () => {
-    return apiClient.get<{ data: AreaStatistics }>(`${BASE_URL}/statistics`)
+    const response = await apiClient.get<ApiResponse<AreaStatistics>>(`${BASE_URL}/statistics`)
+    return response.data.data // Return just the statistics object
   },
 
   // Criteria
   getMonitoringCriteria: async () => {
-    return apiClient.get<{ data: MonitoringCriteria[] }>(
+    const response = await apiClient.get<ApiResponse<MonitoringCriteria[]>>(
       `${BASE_URL}/criteria`,
     )
+    return response.data.data // Return just the criteria array
   },
 
   // Cost calculation
@@ -100,15 +120,18 @@ export const areaApi = {
     updateFrequency: number
     duration: number
   }) => {
-    return apiClient.post<{
-      data: { creditsPerDay: number; totalCredits: number }
-    }>(`${BASE_URL}/calculate-cost`, config)
+    const response = await apiClient.post<ApiResponse<{ creditsPerDay: number; totalCredits: number }>>(`${BASE_URL}/calculate-cost`, config)
+    return response.data.data // Return just the cost calculation
   },
 
   // Vessels in area
   getVesselsInArea: async (areaId: string) => {
-    return apiClient.get<{ data: Vessel[]; total: number }>(
+    const response = await apiClient.get<PaginatedResponse<Vessel>>(
       `${BASE_URL}/${areaId}/vessels`,
     )
+    return {
+      items: response.data.data,
+      meta: response.data.meta,
+    }
   },
 }

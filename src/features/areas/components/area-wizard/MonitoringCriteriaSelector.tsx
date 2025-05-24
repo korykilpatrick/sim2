@@ -17,7 +17,7 @@ export function MonitoringCriteriaSelector({
   const { data: criteriaData, isLoading } = useMonitoringCriteria()
   const [expandedCategories, setExpandedCategories] = useState<string[]>([])
 
-  const criteria: MonitoringCriteria[] = criteriaData?.data?.data || []
+  const criteria: MonitoringCriteria[] = criteriaData || []
 
   const toggleCategory = (category: string) => {
     setExpandedCategories((prev) =>

@@ -1,15 +1,18 @@
 import { useNavigate } from 'react-router-dom'
 import Button from '@/components/common/Button'
 import Header from '@/components/layout/Header'
-import { useCartStore } from '@/stores/cartStore'
+import { useCartStore, cartSelectors } from '@/stores/cartStore'
 import { Trash2 } from 'lucide-react'
 import { calculateProductTotal, hasStandardPricing } from '@/utils/formatPrice'
 
 
 export default function CartPage() {
   const navigate = useNavigate()
-  const { items, removeItem, updateQuantity, updateBillingCycle, getTotal } = useCartStore()
-  const { subtotal, tax, total } = getTotal()
+  const items = useCartStore(cartSelectors.items)
+  const removeItem = useCartStore(cartSelectors.removeItem)
+  const updateQuantity = useCartStore(cartSelectors.updateQuantity)
+  const updateBillingCycle = useCartStore(cartSelectors.updateBillingCycle)
+  const { subtotal, tax, total } = useCartStore(cartSelectors.total)
 
   return (
     <div className="min-h-screen bg-gray-50">

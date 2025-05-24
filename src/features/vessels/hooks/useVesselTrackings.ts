@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { vesselsApi } from '../services/vessels'
+import { vesselKeys } from './'
 
 /**
  * Hook for fetching user's active vessel trackings.
@@ -19,7 +20,7 @@ import { vesselsApi } from '../services/vessels'
  */
 export function useVesselTrackings() {
   return useQuery({
-    queryKey: ['vessel-trackings'],
+    queryKey: vesselKeys.trackings(),
     queryFn: () => vesselsApi.getMyTrackings(),
   })
 }

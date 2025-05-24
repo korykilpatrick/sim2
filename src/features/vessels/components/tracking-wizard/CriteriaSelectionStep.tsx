@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { vesselsApi } from '../../services/vessels';
+import { vesselKeys } from '../../hooks';
 import LoadingSpinner from '@/components/feedback/LoadingSpinner';
 import Alert from '@/components/feedback/Alert';
 import CriteriaSelector from '../CriteriaSelector';
@@ -14,7 +15,7 @@ export function CriteriaSelectionStep({
   onCriteriaChange,
 }: CriteriaSelectionStepProps) {
   const { data: criteriaData, isLoading, error } = useQuery({
-    queryKey: ['tracking-criteria'],
+    queryKey: vesselKeys.trackingCriteria(),
     queryFn: () => vesselsApi.getTrackingCriteria(),
   });
 
@@ -39,7 +40,7 @@ export function CriteriaSelectionStep({
     );
   }
 
-  const criteria = criteriaData?.data || [];
+  const criteria = criteriaData || [];
 
   return (
     <div className="space-y-4">

@@ -44,8 +44,8 @@ export default function AreaMonitoringPage() {
   })
   const markAlertReadMutation = useMarkAlertRead()
 
-  const areas = areasData?.data?.data || []
-  const stats = statsData?.data?.data || {
+  const areas = areasData?.items || []
+  const stats = statsData || {
     totalAreas: 0,
     activeMonitoring: 0,
     alertsToday: 0,
@@ -53,7 +53,7 @@ export default function AreaMonitoringPage() {
     vesselsMonitored: 0,
     highRiskVessels: 0,
   }
-  const alerts = alertsData?.data?.data || []
+  const alerts = alertsData?.items || []
 
   const handleCreateArea = async (data: CreateAreaRequest) => {
     try {

@@ -129,3 +129,20 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+
+/**
+ * Selector functions for accessing specific parts of the cart store.
+ * Using selectors prevents unnecessary re-renders when unrelated state changes.
+ */
+export const cartSelectors = {
+  items: (state: CartStore) => state.items,
+  itemCount: (state: CartStore) => state.getItemCount(),
+  total: (state: CartStore) => state.getTotal(),
+  addItem: (state: CartStore) => state.addItem,
+  removeItem: (state: CartStore) => state.removeItem,
+  updateQuantity: (state: CartStore) => state.updateQuantity,
+  updateBillingCycle: (state: CartStore) => state.updateBillingCycle,
+  clearCart: (state: CartStore) => state.clearCart,
+  getTotal: (state: CartStore) => state.getTotal,
+  getItemCount: (state: CartStore) => state.getItemCount,
+};

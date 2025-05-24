@@ -24,7 +24,10 @@ export const vesselsApi = {
         params,
       },
     )
-    return response.data
+    return {
+      items: response.data.data,
+      meta: response.data.meta,
+    }
   },
 
   /**
@@ -35,7 +38,7 @@ export const vesselsApi = {
    */
   getVessel: async (id: string) => {
     const response = await apiClient.get<ApiResponse<Vessel>>(`/vessels/${id}`)
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -48,7 +51,10 @@ export const vesselsApi = {
       await apiClient.get<PaginatedResponse<VesselTracking>>(
         '/tracking/vessels',
       )
-    return response.data
+    return {
+      items: response.data.data,
+      meta: response.data.meta,
+    }
   },
 
   /**
@@ -69,7 +75,7 @@ export const vesselsApi = {
       '/tracking/vessels',
       data,
     )
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -82,7 +88,7 @@ export const vesselsApi = {
     const response = await apiClient.get<ApiResponse<VesselTracking>>(
       `/tracking/vessels/${id}`,
     )
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -97,7 +103,7 @@ export const vesselsApi = {
       `/tracking/vessels/${id}`,
       data,
     )
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -110,7 +116,7 @@ export const vesselsApi = {
     const response = await apiClient.post<ApiResponse<VesselTracking>>(
       `/tracking/vessels/${id}/pause`,
     )
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -123,7 +129,7 @@ export const vesselsApi = {
     const response = await apiClient.post<ApiResponse<VesselTracking>>(
       `/tracking/vessels/${id}/resume`,
     )
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -147,7 +153,7 @@ export const vesselsApi = {
   getTrackingCriteria: async () => {
     const response =
       await apiClient.get<ApiResponse<TrackingCriteria[]>>('/tracking/criteria')
-    return response.data
+    return response.data.data
   },
 
   /**
@@ -167,6 +173,6 @@ export const vesselsApi = {
     const response = await apiClient.post<
       ApiResponse<{ totalCredits: number; creditsPerDay: number }>
     >('/tracking/calculate-cost', data)
-    return response.data
+    return response.data.data
   },
 }

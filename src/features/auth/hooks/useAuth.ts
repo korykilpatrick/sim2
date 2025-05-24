@@ -2,10 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { authApi } from '../services/auth'
-import { useAuthStore } from '../services/authStore'
+import { useAuthStore, authSelectors } from '../services/authStore'
 import { LoginCredentials, RegisterData } from '../types/auth'
 import type { AxiosError } from 'axios'
 import type { ApiResponse } from '@/types/api'
+import { authKeys } from './'
 
 /**
  * Authentication hook providing login, register, logout functionality.
@@ -27,14 +28,17 @@ import type { ApiResponse } from '@/types/api'
 export function useAuth() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { setAuth, logout: logoutStore, isAuthenticated, user } = useAuthStore()
+  const user = useAuthStore(authSelectors.user)
+  const isAuthenticated = useAuthStore(authSelectors.isAuthenticated)
+  const setAuth = useAuthStore(authSelectors.setAuth)
+  const logoutStore = useAuthStore(authSelectors.logout)
 
   const loginMutation = useMutation({
     mutationFn: (credentials: LoginCredentials) => authApi.login(credentials),
     onSuccess: (response) => {
-      const { user, accessToken, refreshToken } = response.data
+      const { user, accessToken, refreshToken } = response
       setAuth(user, accessToken, refreshToken)
-      queryClient.setQueryData(['auth', 'user'], user)
+      queryClient.setQueryData(authKeys.user(), user)
       toast.success('Successfully logged in!')
       navigate('/dashboard')
     },
@@ -46,9 +50,9 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (data: RegisterData) => authApi.register(data),
     onSuccess: (response) => {
-      const { user, accessToken, refreshToken } = response.data
+      const { user, accessToken, refreshToken } = response
       setAuth(user, accessToken, refreshToken)
-      queryClient.setQueryData(['auth', 'user'], user)
+      queryClient.setQueryData(authKeys.user(), user)
       toast.success('Account created successfully!')
       navigate('/dashboard')
     },
