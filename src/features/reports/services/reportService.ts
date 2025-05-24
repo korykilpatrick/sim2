@@ -9,6 +9,8 @@ import type {
   ReportTemplate,
   BulkReportRequest,
 } from '../types'
+import { downloadPDF, convertToReportData } from './pdfGenerator'
+import { useAuthStore } from '@/features/auth/services/authStore'
 
 const BASE_URL = '/api/v1/reports'
 
@@ -50,6 +52,43 @@ export const reportApi = {
 
   // Download report
   downloadReport: async (id: string, format: 'pdf' | 'excel' | 'json') => {
+    // For PDF format, generate client-side using react-pdf
+    if (format === 'pdf') {
+      try {
+        // First get the report data
+        const report = await reportApi.getReport(id)
+        const user = useAuthStore.getState().user
+
+        // Determine report type
+        const reportType =
+          'riskAssessment' in report ? 'compliance' : 'chronology'
+
+        // Convert to PDF format
+        const reportData = convertToReportData(
+          reportType,
+          report,
+          user?.email || 'Unknown',
+        )
+
+        // Generate and download PDF
+        const result = await downloadPDF({
+          reportType,
+          data: reportData,
+          filename: `${reportType}-report-${id}.pdf`,
+        })
+
+        if (!result.success) {
+          throw new Error('Failed to generate PDF')
+        }
+
+        return new Blob(['PDF generated successfully'], { type: 'text/plain' })
+      } catch (error) {
+        console.error('PDF generation failed:', error)
+        // Fallback to server-side generation
+      }
+    }
+
+    // For other formats, use server endpoint
     const response = await apiClient.get(`${BASE_URL}/${id}/download`, {
       params: { format },
       responseType: 'blob',

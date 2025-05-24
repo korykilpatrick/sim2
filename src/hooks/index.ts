@@ -11,3 +11,4 @@ export {
   useIsDesktop,
 } from './useMediaQuery'
 export { useClickOutside } from './useClickOutside'
+export { useToast, useToasts } from './useToast'

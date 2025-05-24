@@ -174,7 +174,7 @@ export function ReviewSubmitStep({ data }: ReviewSubmitStepProps) {
         </div>
       </Card>
 
-      <Alert 
+      <Alert
         type="info"
         message={
           <div className="space-y-2">
@@ -185,8 +185,12 @@ export function ReviewSubmitStep({ data }: ReviewSubmitStepProps) {
                 They will contact you to refine scope and provide a final quote
               </li>
               <li>Upon approval, the investigation will begin immediately</li>
-              <li>You'll receive regular updates throughout the investigation</li>
-              <li>Final report will be delivered within the agreed timeframe</li>
+              <li>
+                You'll receive regular updates throughout the investigation
+              </li>
+              <li>
+                Final report will be delivered within the agreed timeframe
+              </li>
             </ol>
           </div>
         }

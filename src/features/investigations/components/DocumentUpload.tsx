@@ -110,11 +110,11 @@ export function DocumentUpload({
       </div>
       <div className="p-4 space-y-4">
         {error && (
-          <Alert 
-            type="error" 
-            message={error} 
-            dismissible 
-            onDismiss={() => setError(null)} 
+          <Alert
+            type="error"
+            message={error}
+            dismissible
+            onDismiss={() => setError(null)}
           />
         )}
 
