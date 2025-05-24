@@ -36,8 +36,9 @@ After completing each task:
    - `npm run typecheck`
    - `npm run format`
 3. **Perform codebase analysis**:
-   - Perform a comprehensive codebase analysis like the one in `workflow/CODEBASE_ANALYSIS.md`
-   - Overwrite CODEBASE_ANALYSIS.md to contain the results of the new analysis
+   - Scan the (now defunct) `workflow/CODEBASE_ANALYSIS.md` to get an idea of what should go into a condebase analysis
+   - Delete `workflow/CODEBASE_ANALYSIS.MD`, as it is defunct
+   - Perform a comprehensive codebase analysis and write the results to `workflow/CODEBASE_ANALYSIS.md`
 3. **Update steps in `workflow/IMPLEMENTATION-PLAN.md`**:
    - Mark completed items with [x]
    - Review the newly created `workflow/CODEBASE_ANALYSIS.md`
