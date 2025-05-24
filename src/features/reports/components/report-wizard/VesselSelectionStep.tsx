@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { VesselSearchInput } from '@/features/vessels/components/vessel-search'
 import { useVesselSearch } from '@/features/vessels/hooks'
 import { Card } from '@/components/common'
@@ -11,26 +11,42 @@ interface VesselSelectionStepProps {
 }
 
 export function VesselSelectionStep({
-  selectedVessel,
+  selectedVessel: initialVessel,
   onSelectVessel,
 }: VesselSelectionStepProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const { searchResults, isSearching, searchVessels } = useVesselSearch()
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchResults,
+    isSearching,
+    selectedVessel,
+    selectVessel,
+    clearSelection,
+    error,
+  } = useVesselSearch()
 
-  const handleSearchChange = (term: string) => {
-    setSearchTerm(term)
-    searchVessels(term)
+  useEffect(() => {
+    if (initialVessel && !selectedVessel) {
+      selectVessel(initialVessel)
+    }
+  }, [initialVessel, selectedVessel, selectVessel])
+
+  const handleSelectVessel = (vessel: Vessel) => {
+    selectVessel(vessel)
+    onSelectVessel(vessel)
   }
 
   return (
     <div className="space-y-6">
       <VesselSearchInput
         searchTerm={searchTerm}
-        onSearchChange={handleSearchChange}
+        onSearchChange={setSearchTerm}
         searchResults={searchResults}
         isSearching={isSearching}
         selectedVessel={selectedVessel}
-        onSelectVessel={onSelectVessel}
+        onSelectVessel={handleSelectVessel}
+        onClearSelection={clearSelection}
+        error={error}
         placeholder="Search by vessel name, IMO, or MMSI..."
         label="Search for vessel"
       />

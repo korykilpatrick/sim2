@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@/components/common/Card'
 import Button from '@/components/common/Button'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 export default function CreditsPage() {
   const { user } = useAuth()
@@ -99,7 +99,7 @@ export default function CreditsPage() {
           {creditPackages.map((pkg) => (
             <div
               key={pkg.id}
-              className={clsx(
+              className={cn(
                 'relative cursor-pointer transition-all',
                 selectedPackage === pkg.id
                   ? 'ring-2 ring-primary-500 shadow-lg'

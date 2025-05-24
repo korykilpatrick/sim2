@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Ca
 import Button from '@/components/common/Button'
 import RiskScoreBadge from '@/features/compliance/components/RiskScoreBadge'
 import { Download, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 interface ComplianceReportViewProps {
   report: ComplianceReport
@@ -105,7 +105,7 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
                 Overall Risk Level
               </span>
               <span
-                className={clsx(
+                className={cn(
                   'text-lg font-bold uppercase',
                   report.riskAssessment.level === 'low' && 'text-green-600',
                   report.riskAssessment.level === 'medium' && 'text-yellow-600',
@@ -129,7 +129,7 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
                     className="flex items-start p-3 bg-gray-50 rounded-lg"
                   >
                     <AlertTriangle
-                      className={clsx(
+                      className={cn(
                         'h-5 w-5 mr-3 mt-0.5',
                         factor.severity === 'low' && 'text-yellow-500',
                         factor.severity === 'medium' && 'text-orange-500',
@@ -163,7 +163,7 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Status</span>
               <span
-                className={clsx(
+                className={cn(
                   'font-medium capitalize',
                   report.sanctionsScreening.status === 'clear' &&
                     'text-green-600',
@@ -208,7 +208,7 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
             <div className="grid grid-cols-3 gap-4">
               <div className="text-center">
                 <div
-                  className={clsx(
+                  className={cn(
                     'mx-auto h-12 w-12 rounded-full flex items-center justify-center',
                     report.regulatoryCompliance.imoCompliant
                       ? 'bg-green-100'
@@ -225,7 +225,7 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
               </div>
               <div className="text-center">
                 <div
-                  className={clsx(
+                  className={cn(
                     'mx-auto h-12 w-12 rounded-full flex items-center justify-center',
                     report.regulatoryCompliance.solasCompliant
                       ? 'bg-green-100'
@@ -242,7 +242,7 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
               </div>
               <div className="text-center">
                 <div
-                  className={clsx(
+                  className={cn(
                     'mx-auto h-12 w-12 rounded-full flex items-center justify-center',
                     report.regulatoryCompliance.marpolCompliant
                       ? 'bg-green-100'

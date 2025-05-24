@@ -1,5 +1,5 @@
 import { TrackingCriteria } from '../types/vessel'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 interface CriteriaSelectorProps {
   criteria: TrackingCriteria[]
@@ -17,7 +17,7 @@ export default function CriteriaSelector({
       {criteria.map((criterion) => (
         <div
           key={criterion.id}
-          className={clsx(
+          className={cn(
             'border rounded-lg p-4 cursor-pointer transition-all',
             selectedCriteria.includes(criterion.id)
               ? 'border-primary-500 bg-primary-50'

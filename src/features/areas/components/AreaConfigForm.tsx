@@ -6,7 +6,7 @@ import Input from '@/components/forms/Input'
 import Select from '@/components/forms/Select'
 import { useMonitoringCriteria, useAreaCostCalculation } from '../hooks/useAreaMonitoring'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 import type { CreateAreaRequest, MonitoringCriteria } from '../types'
 
 interface AreaConfigFormData {
@@ -165,7 +165,7 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
                     {items.map((criterion) => (
                       <label
                         key={criterion.id}
-                        className={clsx(
+                        className={cn(
                           'flex items-start p-3 rounded-lg border cursor-pointer transition-colors',
                           selectedCriteria.includes(criterion.id)
                             ? 'border-primary-500 bg-primary-50'

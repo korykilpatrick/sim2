@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Card'
 import { AreaAlert } from '../types'
 import { AlertCircle, Ship, Clock, MapPin } from 'lucide-react'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 import Button from '@/components/common/Button'
 
 interface AreaAlertsProps {
@@ -62,7 +62,7 @@ export const AreaAlerts: React.FC<AreaAlertsProps> = ({
           {alerts.map((alert) => (
             <div
               key={alert.id}
-              className={clsx(
+              className={cn(
                 'p-4 transition-colors',
                 !alert.isRead && 'bg-gray-50',
                 getSeverityStyles(alert.severity),

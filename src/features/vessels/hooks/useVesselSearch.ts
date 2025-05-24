@@ -1,48 +1,72 @@
-import { useState, useCallback } from 'react'
-import toast from 'react-hot-toast'
-import { vesselsApi } from '../services/vessels'
-import { Vessel } from '../types/vessel'
+import { useState, useCallback, useEffect } from 'react';
+import { vesselsApi } from '../services/vessels';
+import { useDebounce } from '@/components/search';
+import type { Vessel } from '../types';
 
-/**
- * Hook for searching vessels by name, IMO, or MMSI.
- * Provides search functionality with loading state and error handling.
- * 
- * @returns Search state and methods
- * 
- * @example
- * const { searchVessels, searchResults, isSearching } = useVesselSearch();
- * 
- * // Perform search
- * await searchVessels('Vessel Name');
- * 
- * // Display results
- * searchResults.map(vessel => console.log(vessel.name));
- */
-export function useVesselSearch() {
-  const [searchResults, setSearchResults] = useState<Vessel[]>([])
-  const [isSearching, setIsSearching] = useState(false)
+interface UseVesselSearchReturn {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  searchResults: Vessel[];
+  isSearching: boolean;
+  selectedVessel: Vessel | null;
+  selectVessel: (vessel: Vessel) => void;
+  clearSelection: () => void;
+  error: string | null;
+}
+
+export function useVesselSearch(minSearchLength = 3): UseVesselSearchReturn {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState<Vessel[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   const searchVessels = useCallback(async (query: string) => {
-    if (query.length < 3) {
-      setSearchResults([])
-      return
+    if (query.length < minSearchLength) {
+      setSearchResults([]);
+      return;
     }
 
-    setIsSearching(true)
+    setIsSearching(true);
+    setError(null);
+    
     try {
-      const response = await vesselsApi.searchVessels({ query })
-      setSearchResults(response.data || [])
-    } catch (error) {
-      toast.error('Failed to search vessels')
-      setSearchResults([])
+      const response = await vesselsApi.searchVessels({ query });
+      setSearchResults(response.data || []);
+    } catch (err) {
+      setError('Failed to search vessels');
+      setSearchResults([]);
     } finally {
-      setIsSearching(false)
+      setIsSearching(false);
     }
-  }, [])
+  }, [minSearchLength]);
+
+  const selectVessel = useCallback((vessel: Vessel) => {
+    setSelectedVessel(vessel);
+    setSearchResults([]);
+  }, []);
+
+  const clearSelection = useCallback(() => {
+    setSelectedVessel(null);
+    setSearchTerm('');
+    setSearchResults([]);
+  }, []);
+
+  // Effect to trigger search when debounced term changes
+  useEffect(() => {
+    searchVessels(debouncedSearchTerm);
+  }, [debouncedSearchTerm, searchVessels]);
 
   return {
+    searchTerm,
+    setSearchTerm,
     searchResults,
     isSearching,
-    searchVessels,
-  }
+    selectedVessel,
+    selectVessel,
+    clearSelection,
+    error,
+  };
 }

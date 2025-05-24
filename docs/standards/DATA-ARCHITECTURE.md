@@ -223,7 +223,7 @@ export const calculateDiscount = (price: number) => price * 0.9;
 export const formatPrice = (price: number) => `$${price.toFixed(2)}`;
 
 // components/ProductCard.tsx
-import { calculateDiscount, formatPrice } from '@/utils/pricing';
+import { calculateDiscount, formatPrice } from '@/utils/formatPrice';
 ```
 
 ## Migration Guide

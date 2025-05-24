@@ -5,7 +5,7 @@ import {
   calculateAreaMonitoringCostDetailed,
   calculateFleetTrackingCost,
   getReportCost,
-} from '../utils/pricing';
+} from '../utils/creditPricing';
 
 interface VesselTrackingCostParams {
   criteriaCount: number;

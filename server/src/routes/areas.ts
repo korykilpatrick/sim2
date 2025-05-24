@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { calculateAreaMonitoringCostDetailed } from '../../../src/features/shared/utils/pricing'
+import { calculateAreaMonitoringCostDetailed } from '../../../src/features/shared/utils/creditPricing'
 
 const router = Router()
 

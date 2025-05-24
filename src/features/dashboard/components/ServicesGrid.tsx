@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Card, CardContent } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { DashboardService } from '../types'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 interface ServicesGridProps {
   services: DashboardService[]
@@ -23,7 +23,7 @@ export function ServicesGrid({ services }: ServicesGridProps) {
             <CardContent className="p-6">
               <div className="flex items-center">
                 <div
-                  className={clsx(
+                  className={cn(
                     service.color,
                     'flex h-12 w-12 items-center justify-center rounded-lg text-white text-2xl',
                   )}

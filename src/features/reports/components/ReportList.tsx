@@ -3,7 +3,7 @@ import { ComplianceReport, ChronologyReport } from '../types'
 import { Card, CardContent } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { FileText, Download, RefreshCw, X, Clock } from 'lucide-react'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 import ReportStatusBadge from '@/features/compliance/components/ReportStatusBadge'
 
 interface ReportListProps {
@@ -56,7 +56,7 @@ export const ReportList: React.FC<ReportListProps> = ({
         return (
           <Card
             key={report.id}
-            className={clsx(
+            className={cn(
               'cursor-pointer transition-all hover:shadow-md',
               report.status === 'failed' && 'border-red-200',
             )}
@@ -96,7 +96,7 @@ export const ReportList: React.FC<ReportListProps> = ({
 
                   {reportType === 'compliance' && report.status === 'completed' && (
                     <div className="mt-3 flex items-center gap-4">
-                      <div className={clsx(
+                      <div className={cn(
                         'text-sm font-medium',
                         (report as ComplianceReport).riskAssessment.level === 'low' && 'text-green-600',
                         (report as ComplianceReport).riskAssessment.level === 'medium' && 'text-yellow-600',

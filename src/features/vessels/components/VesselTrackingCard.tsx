@@ -7,7 +7,7 @@ import {
 } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { VesselTracking } from '../types/vessel'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 interface VesselTrackingCardProps {
   tracking: VesselTracking
@@ -27,7 +27,7 @@ export default function VesselTrackingCard({
             </p>
           </div>
           <span
-            className={clsx(
+            className={cn(
               'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
               tracking.vessel.riskLevel === 'low' &&
                 'bg-green-100 text-green-800',

@@ -1,2 +1,2 @@
 export { VesselSearchInput } from './VesselSearchInput';
-export { useVesselSearch } from './useVesselSearch';
+export { useVesselSearch } from '../../hooks';

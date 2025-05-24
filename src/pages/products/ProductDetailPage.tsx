@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
 import { useCartStore } from '@/stores/cartStore'
-import { formatPrice, hasStandardPricing, getProductPrice } from '@/utils/pricing'
+import { formatPrice, hasStandardPricing, getProductPrice } from '@/utils/formatPrice'
 
 
 export default function ProductDetailPage() {

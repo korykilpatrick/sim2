@@ -1,5 +1,5 @@
 import { Vessel } from '../types/vessel'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 interface VesselSearchResultsProps {
   results: Vessel[]
@@ -19,7 +19,7 @@ export default function VesselSearchResults({
       {results.map((vessel) => (
         <div
           key={vessel.id}
-          className={clsx(
+          className={cn(
             'p-4 cursor-pointer hover:bg-gray-50',
             selectedVessel?.id === vessel.id && 'bg-primary-50',
           )}

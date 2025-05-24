@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Product } from '@/types/product';
-import { getProductPrice } from '@/utils/pricing';
+import { getProductPrice } from '@/utils/formatPrice';
 
 export interface CartItem {
   product: Product;

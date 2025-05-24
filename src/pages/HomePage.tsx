@@ -4,7 +4,7 @@ import Button from '@/components/common/Button'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
-import { getPricingDisplayText } from '@/utils/pricing'
+import { getPricingDisplayText } from '@/utils/formatPrice'
 
 export default function HomePage() {
   const navigate = useNavigate()

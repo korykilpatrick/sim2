@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/common/Card'
 import { DashboardStat } from '../types'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 interface StatsGridProps {
   stats: DashboardStat[]
@@ -20,7 +20,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
             </dd>
             <dd className="mt-1 flex items-baseline">
               <span
-                className={clsx(
+                className={cn(
                   stat.changeType === 'positive'
                     ? 'text-green-600'
                     : stat.changeType === 'negative'

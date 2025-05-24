@@ -3,7 +3,7 @@ import Button from '@/components/common/Button'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
-import { getPricingDisplayText } from '@/utils/pricing'
+import { getPricingDisplayText } from '@/utils/formatPrice'
 
 export default function DashboardPage() {
   const { user } = useAuth()

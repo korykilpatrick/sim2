@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { PRICING, getCreditPackageValue } from '../utils/pricing';
+import { PRICING, getCreditPackageValue } from '../utils/creditPricing';
 
 export function useCreditPricing() {
   const packages = useMemo(() => {

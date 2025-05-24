@@ -3,7 +3,7 @@ import Button from '@/components/common/Button'
 import Header from '@/components/layout/Header'
 import { useCartStore } from '@/stores/cartStore'
 import { Trash2 } from 'lucide-react'
-import { calculateProductTotal, hasStandardPricing } from '@/utils/pricing'
+import { calculateProductTotal, hasStandardPricing } from '@/utils/formatPrice'
 
 
 export default function CartPage() {

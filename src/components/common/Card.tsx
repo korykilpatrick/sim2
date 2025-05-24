@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { clsx } from '@/utils/clsx'
+import { cn } from '@/lib/utils'
 
 /**
  * Props for the Card component.
@@ -59,7 +59,7 @@ export function Card({ children, className, padding = 'md' }: CardProps) {
 
   return (
     <div
-      className={clsx(
+      className={cn(
         'bg-white rounded-lg shadow-sm border border-gray-200',
         paddingClasses[padding],
         className,
@@ -83,7 +83,7 @@ export function Card({ children, className, padding = 'md' }: CardProps) {
 export function CardHeader({ children, actions, className }: CardHeaderProps) {
   return (
     <div
-      className={clsx(
+      className={cn(
         'flex items-center justify-between pb-4 border-b border-gray-200',
         className,
       )}
@@ -109,7 +109,7 @@ export function CardTitle({
   className?: string
 }) {
   return (
-    <h3 className={clsx('text-lg font-semibold text-gray-900', className)}>
+    <h3 className={cn('text-lg font-semibold text-gray-900', className)}>
       {children}
     </h3>
   )
@@ -129,7 +129,7 @@ export function CardContent({
   /** Additional CSS classes */
   className?: string
 }) {
-  return <div className={clsx('pt-4', className)}>{children}</div>
+  return <div className={cn('pt-4', className)}>{children}</div>
 }
 
 /**
@@ -141,7 +141,7 @@ export function CardContent({
 export function CardFooter({ children, className }: CardFooterProps) {
   return (
     <div
-      className={clsx(
+      className={cn(
         'pt-4 mt-4 border-t border-gray-200 flex items-center justify-end space-x-3',
         className,
       )}
