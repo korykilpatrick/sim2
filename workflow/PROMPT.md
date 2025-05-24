@@ -28,7 +28,7 @@ If documentation is lacking:
 - Update documentation BEFORE implementing
 - Ensure code matches updated documentation
 
-## 4. Post-Implementation Process (Go through this checklist after you finish completing the next task from the Implementation Plan)
+## 4. Post-Implementation Process (Go through this checklist AFTER you finish completing the next task from the Implementation Plan)
 After completing each task:
 1. **Cross-reference documentation** to verify consistency
 2. **Run quality checks**:
@@ -59,3 +59,4 @@ After completing each task:
 5. Provide summary and wait for feedback
 
 Please begin by checking the current status and identifying the next priority task.
+Remember that the last thing you do is to go thorugh Post-Implementation Process listed above.
