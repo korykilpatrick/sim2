@@ -2,7 +2,7 @@ export interface Product {
   id: string;
   name: string;
   shortName?: string;
-  category: 'trading' | 'analytics' | 'reporting' | 'infrastructure' | 'tracking' | 'monitoring' | 'investigation';
+  category: 'tracking' | 'monitoring' | 'reporting' | 'investigation';
   pricing: {
     monthly: number | null;
     annual: number | null;
@@ -17,13 +17,11 @@ export interface Product {
   images: {
     thumbnail?: string;
     hero?: string;
-    screenshots?: string[];
   };
   specifications?: {
     [key: string]: string | number | boolean;
   };
   requirements?: string[];
-  integrations?: string[];
   path: string;
 }
 

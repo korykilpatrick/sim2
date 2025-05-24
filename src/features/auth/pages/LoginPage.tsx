@@ -1,13 +1,13 @@
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { LoginCredentials } from '../types/auth'
 import { useAuth } from '../hooks/useAuth'
 import Button from '@/components/common/Button'
 import Input from '@/components/forms/Input'
+import { MinimalHeader } from '@/components/layout'
 
 export default function LoginPage() {
   const { login, isLoggingIn } = useAuth()
-  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -20,24 +20,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-dark-500 px-4 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div 
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => navigate('/')}
-          >
-            <span className="text-xl font-bold text-white">SYNMAX</span>
-            <span className="text-xl text-gray-300">Marketplace</span>
-          </div>
-          <button 
-            onClick={() => navigate('/cart')}
-            className="text-primary-500 hover:text-primary-400"
-          >
-            🛒
-          </button>
-        </div>
-      </header>
+      <MinimalHeader />
 
       {/* Login Form */}
       <div className="flex items-center justify-center px-4 py-16">
