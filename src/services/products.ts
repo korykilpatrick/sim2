@@ -9,7 +9,7 @@ export interface ProductAvailability {
   requiresApproval: boolean;
 }
 
-class ProductService {
+export const productApi = {
   async getProducts(params?: {
     category?: string;
     search?: string;
@@ -19,24 +19,24 @@ class ProductService {
       params,
     });
     return response.data.data;
-  }
+  },
 
   async getProductById(id: string): Promise<Product> {
     const response = await apiClient.get<ApiResponse<Product>>(`/products/${id}`);
     return response.data.data;
-  }
+  },
 
   async getProductsByCategory(category: string): Promise<Product[]> {
     const response = await apiClient.get<ApiResponse<Product[]>>(
       `/products/category/${category}`
     );
     return response.data.data;
-  }
+  },
 
   async getFeaturedProducts(): Promise<Product[]> {
     const response = await apiClient.get<ApiResponse<Product[]>>(`/products/featured`);
     return response.data.data;
-  }
+  },
 
   async checkProductAvailability(
     productId: string,
@@ -50,7 +50,5 @@ class ProductService {
       }
     );
     return response.data.data;
-  }
-}
-
-export const productService = new ProductService();
+  },
+};

@@ -2,7 +2,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import Button from '@/components/common/Button'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { productService } from '@/services/products'
+import { productApi } from '@/services/products'
 import { productKeys } from '@/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
 
@@ -13,7 +13,7 @@ export default function DashboardPage() {
   // Fetch all products
   const { data: allProducts = [], isLoading } = useQuery({
     queryKey: productKeys.all,
-    queryFn: () => productService.getProducts(),
+    queryFn: () => productApi.getProducts(),
   })
 
   // Mock user's active products (in real app, this would come from user data)

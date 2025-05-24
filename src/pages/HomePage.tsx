@@ -3,7 +3,7 @@ import Button from '@/components/common/Button'
 import Header from '@/components/layout/Header'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { productService } from '@/services/products'
+import { productApi } from '@/services/products'
 import { productKeys } from '@/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
 
@@ -31,7 +31,7 @@ export default function HomePage() {
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: productKeys.all,
-    queryFn: () => productService.getProducts(),
+    queryFn: () => productApi.getProducts(),
   })
 
   useEffect(() => {

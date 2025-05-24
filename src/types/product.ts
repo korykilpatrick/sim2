@@ -25,13 +25,6 @@ export interface Product {
   path: string;
 }
 
-export interface CartItem {
-  productId: string;
-  quantity: number;
-  billingCycle: 'monthly' | 'annual';
-  addedAt: Date;
-}
-
 export interface ProductFilters {
   category?: Product['category'];
   priceRange?: {

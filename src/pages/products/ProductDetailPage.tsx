@@ -5,7 +5,7 @@ import Header from '@/components/layout/Header'
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { productService } from '@/services/products'
+import { productApi } from '@/services/products'
 import { productKeys } from '@/services/productKeys'
 import { useCartStore, cartSelectors } from '@/stores/cartStore'
 import { formatPrice, hasStandardPricing, getProductPrice } from '@/utils/formatPrice'
@@ -21,7 +21,7 @@ export default function ProductDetailPage() {
 
   const { data: product, isLoading } = useQuery({
     queryKey: productKeys.detail(productId!),
-    queryFn: () => productService.getProductById(productId!),
+    queryFn: () => productApi.getProductById(productId!),
     enabled: !!productId,
   })
 
