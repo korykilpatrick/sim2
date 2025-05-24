@@ -10,6 +10,7 @@ import vesselsRoutes from './routes/vessels'
 import trackingRoutes from './routes/tracking'
 import productsRoutes from './routes/products'
 import areasRoutes from './routes/areas'
+import reportsRoutes from './routes/reports'
 
 const app = express()
 const httpServer = createServer(app)
@@ -42,6 +43,7 @@ app.use('/api/v1/vessels', vesselsRoutes)
 app.use('/api/v1/tracking', trackingRoutes)
 app.use('/api/v1/products', productsRoutes)
 app.use('/api/v1/areas', areasRoutes)
+app.use('/api/v1/reports', reportsRoutes)
 
 // Socket.io connection
 io.on('connection', (socket) => {

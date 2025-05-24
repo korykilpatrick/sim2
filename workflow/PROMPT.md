@@ -38,7 +38,7 @@ After completing each task:
 3. **Perform codebase analysis**:
    - Perform a comprehensive codebase analysis like the one in `workflow/CODEBASE_ANALYSIS.md`
    - Overwrite CODEBASE_ANALYSIS.md to contain the results of the new analysis
-3. **Update `workflow/IMPLEMENTATION-PLAN.md`**:
+3. **Update steps in `workflow/IMPLEMENTATION-PLAN.md`**:
    - Mark completed items with [x]
    - Review the newly created `workflow/CODEBASE_ANALYSIS.md`
    - Add any new tasks discovered
@@ -47,6 +47,7 @@ After completing each task:
    - What was implemented
    - Any documentation updates made
    - Any issues or considerations found
+   - Summarize the CODEBASE_ANALYSIS
 5. **Wait for approval** before proceeding to the next task
 
 ## Expected Response Format

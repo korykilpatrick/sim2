@@ -68,7 +68,7 @@ export function useDownloadReport(id: string) {
       reportApi.downloadReport(id, format),
     onSuccess: (response, format) => {
       // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const url = window.URL.createObjectURL(new Blob([response]))
       const link = document.createElement('a')
       link.href = url
       link.setAttribute('download', `report-${id}.${format}`)

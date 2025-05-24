@@ -36,7 +36,7 @@ export const reportApi = {
   createReport: async (request: ReportRequest) => {
     const response = await apiClient.post<
       ApiResponse<{ reportId: string; estimatedTime: number }>
-    >(BASE_URL, request)
+    >(`${BASE_URL}/generate`, request)
     return response.data.data
   },
 

@@ -28,9 +28,7 @@ const AreaMonitoringPage = lazy(
 const FleetsPage = lazy(() => import('@features/fleet/pages/FleetsPage'))
 
 // Reports pages
-const ReportsPage = lazy(
-  () => import('@features/reports/pages/ReportsPage'),
-)
+const ReportsPage = lazy(() => import('@features/reports/pages/ReportsPage'))
 
 // Credits pages
 const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
