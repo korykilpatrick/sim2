@@ -1,6 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { areaApi } from '../services/areaService'
 import type { AreaFilters, CreateAreaRequest } from '../types'
+import { useCreditDeduction } from '@/features/shared/hooks'
+import { creditService } from '@/features/shared/services'
+import { calculateAreaSize } from '../utils'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
 import type { ApiError } from '@/api/types'
@@ -24,9 +27,44 @@ export function useArea(id: string) {
 
 export function useCreateArea() {
   const queryClient = useQueryClient()
+  const { deductCredits } = useCreditDeduction()
 
   return useMutation({
-    mutationFn: (data: CreateAreaRequest) => areaApi.createArea(data),
+    mutationFn: async (data: CreateAreaRequest) => {
+      // Calculate credit cost
+      const days = data.duration
+      const areaSize = calculateAreaSize(data.geometry)
+      const creditCost = creditService.calculateServiceCost('area_monitoring', {
+        areaSize,
+        days,
+      })
+
+      // Check if user has sufficient credits
+      const hasSufficientCredits =
+        await creditService.checkSufficientCredits(creditCost)
+      if (!hasSufficientCredits) {
+        throw new Error(
+          `Insufficient credits. This monitoring requires ${creditCost} credits.`,
+        )
+      }
+
+      // First deduct credits
+      await deductCredits({
+        amount: creditCost,
+        description: `Area monitoring for "${data.name}"`,
+        serviceId: `area_${Date.now()}`,
+        serviceType: 'area_monitoring',
+        metadata: {
+          areaName: data.name,
+          geometry: data.geometry,
+          duration: data.duration,
+          criteria: data.criteria,
+        },
+      })
+
+      // Then create the area
+      return areaApi.createArea(data)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: areaKeys.all })
       queryClient.invalidateQueries({ queryKey: areaKeys.statistics() })
@@ -34,7 +72,9 @@ export function useCreateArea() {
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
       toast.error(
-        error.response?.data?.error?.message || 'Failed to create area',
+        error.response?.data?.error?.message ||
+          error.message ||
+          'Failed to create area',
       )
     },
   })

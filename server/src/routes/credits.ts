@@ -106,7 +106,7 @@ router.post('/purchase', authenticateToken, (req, res) => {
 // Deduct credits
 router.post('/deduct', authenticateToken, (req, res) => {
   const userId = req.user!.userId
-  const { amount, service, referenceId, description } = req.body
+  const { amount, description, serviceId, serviceType } = req.body
 
   const user = mockUsers.find((u) => u.id === userId)
   if (!user) {
@@ -116,6 +116,8 @@ router.post('/deduct', authenticateToken, (req, res) => {
   if (user.credits < amount) {
     return res.status(400).json({ error: { message: 'Insufficient credits' } })
   }
+
+  const previousBalance = user.credits
 
   // Deduct credits
   user.credits -= amount
@@ -127,8 +129,8 @@ router.post('/deduct', authenticateToken, (req, res) => {
     description,
     amount: -amount,
     balance: user.credits,
-    service,
-    referenceId,
+    service: serviceType,
+    referenceId: serviceId,
     createdAt: new Date().toISOString(),
   }
 
@@ -136,10 +138,16 @@ router.post('/deduct', authenticateToken, (req, res) => {
   userTransactions.unshift(transaction)
   creditTransactions.set(userId, userTransactions)
 
+  // Return response matching our expected format
   res.json({
+    data: {
+      transactionId: transaction.id,
+      previousBalance,
+      newBalance: user.credits,
+      deductedAmount: amount,
+      timestamp: transaction.createdAt,
+    },
     success: true,
-    newBalance: user.credits,
-    transactionId: transaction.id,
   })
 })
 

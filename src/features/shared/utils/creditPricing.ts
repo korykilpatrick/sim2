@@ -130,3 +130,24 @@ export function getCreditPackageValue(credits: number): {
     pricePerCredit,
   }
 }
+
+// Export CREDIT_COSTS for compatibility with creditService
+export const CREDIT_COSTS = {
+  VESSEL_TRACKING: {
+    PER_CRITERIA_PER_DAY: PRICING.vessel.tracking.baseRate,
+  },
+  AREA_MONITORING: {
+    BASE_PER_DAY: PRICING.area.monitoring.baseRate,
+  },
+  FLEET_TRACKING: {
+    PER_VESSEL_PER_MONTH: PRICING.vessel.fleet.monthlyRate,
+  },
+  REPORTS: {
+    COMPLIANCE: PRICING.reports.compliance,
+    CHRONOLOGY: PRICING.reports.chronology,
+  },
+  INVESTIGATION: {
+    STANDARD: 5000,
+    COMPLEX: 10000,
+  },
+}

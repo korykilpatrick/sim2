@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { reportApi } from '../services/reportService'
 import type { ReportFilters, ReportRequest, BulkReportRequest } from '../types'
+import { useCreditDeduction } from '@/features/shared/hooks'
+import { creditService } from '@/features/shared/services'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import type { AxiosError } from 'axios'
@@ -34,9 +36,46 @@ export function useReportById(id: string) {
 export function useCreateReport() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { deductCredits } = useCreditDeduction()
 
   return useMutation({
-    mutationFn: (request: ReportRequest) => reportApi.createReport(request),
+    mutationFn: async (request: ReportRequest) => {
+      // Calculate credit cost based on report type
+      const creditCost = creditService.calculateServiceCost(
+        request.reportType === 'compliance'
+          ? 'compliance_report'
+          : 'chronology_report',
+        {},
+      )
+
+      // Check if user has sufficient credits
+      const hasSufficientCredits =
+        await creditService.checkSufficientCredits(creditCost)
+      if (!hasSufficientCredits) {
+        throw new Error(
+          `Insufficient credits. This report requires ${creditCost} credits.`,
+        )
+      }
+
+      // First deduct credits
+      await deductCredits({
+        amount: creditCost,
+        description: `${request.reportType === 'compliance' ? 'Compliance' : 'Chronology'} report`,
+        serviceId: `report_${request.vesselId}_${Date.now()}`,
+        serviceType:
+          request.reportType === 'compliance'
+            ? 'compliance_report'
+            : 'chronology_report',
+        metadata: {
+          vesselId: request.vesselId,
+          reportType: request.reportType,
+          options: request.options,
+        },
+      })
+
+      // Then create the report
+      return reportApi.createReport(request)
+    },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: reportKeys.all })
       queryClient.invalidateQueries({ queryKey: reportKeys.statistics() })
@@ -45,7 +84,9 @@ export function useCreateReport() {
     },
     onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
-        error.response?.data?.error?.message || 'Failed to create report',
+        error.response?.data?.error?.message ||
+          error.message ||
+          'Failed to create report',
       )
     },
   })

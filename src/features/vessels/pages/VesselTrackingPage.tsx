@@ -7,19 +7,44 @@ import {
   TrackingWizard,
   TrackingWizardData,
 } from '../components/tracking-wizard'
+import { useCreditDeduction } from '@/features/shared/hooks'
+import { creditService } from '@/features/shared/services'
+import { differenceInDays } from '@/utils/date'
 import type { AxiosError } from 'axios'
 import type { ApiResponse } from '@/api/types'
 
 export default function VesselTrackingPage() {
   const navigate = useNavigate()
+  const { deductCredits } = useCreditDeduction()
 
   // Create tracking mutation
   const createTrackingMutation = useMutation({
-    mutationFn: (data: {
+    mutationFn: async (data: {
       vesselId: string
       criteria: string[]
       endDate: string
-    }) => vesselsApi.createTracking(data),
+      creditCost: number
+    }) => {
+      // First deduct credits
+      await deductCredits({
+        amount: data.creditCost,
+        description: `Vessel tracking for ${data.criteria.length} criteria`,
+        serviceId: `tracking_${data.vesselId}_${Date.now()}`,
+        serviceType: 'vessel_tracking',
+        metadata: {
+          vesselId: data.vesselId,
+          criteria: data.criteria,
+          endDate: data.endDate,
+        },
+      })
+
+      // Then create the tracking
+      return vesselsApi.createTracking({
+        vesselId: data.vesselId,
+        criteria: data.criteria,
+        endDate: data.endDate,
+      })
+    },
     onSuccess: () => {
       toast.success('Vessel tracking created successfully!')
       navigate('/vessels')
@@ -42,10 +67,28 @@ export default function VesselTrackingPage() {
       return
     }
 
+    // Calculate credit cost
+    const days = differenceInDays(new Date(data.endDate), new Date()) + 1
+    const creditCost = creditService.calculateServiceCost('vessel_tracking', {
+      criteria: data.criteria,
+      days,
+    })
+
+    // Check if user has sufficient credits
+    const hasSufficientCredits =
+      await creditService.checkSufficientCredits(creditCost)
+    if (!hasSufficientCredits) {
+      toast.error(
+        `Insufficient credits. This tracking requires ${creditCost} credits.`,
+      )
+      return
+    }
+
     await createTrackingMutation.mutateAsync({
       vesselId: data.vessel.id,
       criteria: data.criteria,
       endDate: data.endDate,
+      creditCost,
     })
   }
 

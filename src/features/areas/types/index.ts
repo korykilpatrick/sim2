@@ -1,4 +1,9 @@
 /**
+ * GeoJSON geometry type for area definitions
+ */
+export type AreaGeometry = GeoJSON.Polygon | GeoJSON.MultiPolygon
+
+/**
  * Represents a geographic area for maritime monitoring.
  */
 export interface Area {
