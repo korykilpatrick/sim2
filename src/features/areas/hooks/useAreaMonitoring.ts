@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { areaApi } from '../services/areaService'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
-import type { ApiError } from '@/types/api'
+import type { ApiError } from '@/api/types'
 import { areaKeys } from './'
 
 export function useAreaMonitoring(areaId: string) {

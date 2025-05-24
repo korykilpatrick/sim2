@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import type { ApiResponse, PaginatedResponse } from '@/types/api'
+import type { ApiResponse, PaginatedResponse } from '@/api/types'
 import type {
   Area,
   AreaMonitoring,

@@ -1,6 +1,6 @@
 import { apiClient } from '@/api/client'
 import { AuthResponse, LoginCredentials, RegisterData } from '../types/auth'
-import { ApiResponse } from '@/types/api'
+import { ApiResponse } from '@/api/types'
 
 /**
  * Authentication API service providing auth-related HTTP operations.

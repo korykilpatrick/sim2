@@ -6,37 +6,63 @@
 import type { User } from '@/features/auth/types'
 
 /**
- * Standard API response wrapper
+ * Standard API response wrapper for all endpoints.
+ *
+ * @template T - The type of data returned in the response
  */
-export interface ApiResponse<T> {
+export interface ApiResponse<T = unknown> {
+  /** Indicates whether the request was successful */
+  success: boolean
+  /** The response payload */
   data: T
-  message?: string
-  status: 'success' | 'error'
+  /** ISO timestamp of when the response was generated */
+  timestamp: string
+  /** Error details if the request failed */
+  error?: {
+    /** Human-readable error message */
+    message: string
+    /** Machine-readable error code for client handling */
+    code: string
+    /** Additional error context or validation details */
+    details?: unknown
+  }
 }
 
 /**
- * Paginated API response
+ * API response wrapper for paginated data sets.
+ * Extends ApiResponse with pagination metadata.
+ *
+ * @template T - The type of items in the paginated array
+ *
+ * @example
+ * // Response type for paginated vessel list
+ * type VesselListResponse = PaginatedResponse<Vessel>
  */
-export interface PaginatedResponse<T> {
-  data: T[]
-  pagination: {
+export interface PaginatedResponse<T = unknown> extends ApiResponse<T[]> {
+  /** Pagination metadata */
+  meta: {
+    /** Current page number (1-indexed) */
     page: number
-    pageSize: number
-    totalItems: number
+    /** Number of items per page */
+    limit: number
+    /** Total number of items across all pages */
+    total: number
+    /** Total number of pages available */
     totalPages: number
   }
 }
 
 /**
- * API Error response
+ * Standardized error object for API error responses.
+ * Used by error interceptors and error handling utilities.
  */
-export interface ApiErrorResponse {
-  error: {
-    code: string
-    message: string
-    details?: Record<string, unknown>
-  }
-  status: 'error'
+export interface ApiError {
+  /** User-friendly error message */
+  message: string
+  /** Error code for programmatic handling (e.g., 'AUTH_EXPIRED', 'VALIDATION_ERROR') */
+  code: string
+  /** HTTP status code */
+  status: number
 }
 
 /**

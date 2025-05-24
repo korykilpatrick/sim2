@@ -1,6 +1,6 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/features/auth/services/authStore'
-import { ApiError } from '@/types/api'
+import { ApiError } from '@/api/types'
 
 /**
  * Base URL for all API requests.

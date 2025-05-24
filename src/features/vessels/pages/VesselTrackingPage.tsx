@@ -8,7 +8,7 @@ import {
   TrackingWizardData,
 } from '../components/tracking-wizard'
 import type { AxiosError } from 'axios'
-import type { ApiResponse } from '@/types/api'
+import type { ApiResponse } from '@/api/types'
 
 export default function VesselTrackingPage() {
   const navigate = useNavigate()

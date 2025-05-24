@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import { ApiResponse, PaginatedResponse } from '@/types/api'
+import { ApiResponse, PaginatedResponse } from '@/api/types'
 import {
   Vessel,
   VesselTracking,

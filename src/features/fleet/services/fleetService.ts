@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import type { ApiResponse } from '@/types/api'
+import type { ApiResponse } from '@/api/types'
 import type {
   Fleet,
   FleetStats,

@@ -5,7 +5,7 @@ import { authApi } from '../services/auth'
 import { useAuthStore, authSelectors } from '../services/authStore'
 import { LoginCredentials, RegisterData } from '../types/auth'
 import type { AxiosError } from 'axios'
-import type { ApiResponse } from '@/types/api'
+import type { ApiResponse } from '@/api/types'
 import { authKeys } from './'
 
 /**

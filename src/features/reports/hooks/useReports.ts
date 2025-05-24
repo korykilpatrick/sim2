@@ -4,7 +4,7 @@ import type { ReportFilters, ReportRequest, BulkReportRequest } from '../types'
 import toast from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
 import type { AxiosError } from 'axios'
-import type { ApiResponse } from '@/types/api'
+import type { ApiResponse } from '@/api/types'
 import { reportKeys } from './'
 
 export function useReports(filters?: ReportFilters) {
