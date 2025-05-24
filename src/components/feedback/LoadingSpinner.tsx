@@ -23,21 +23,21 @@ interface LoadingSpinnerProps {
 /**
  * A customizable loading spinner component with support for different sizes
  * and full-screen display mode.
- * 
+ *
  * @param {LoadingSpinnerProps} props - The component props
  * @returns {JSX.Element} The rendered loading spinner
- * 
+ *
  * @example
  * ```tsx
  * // Basic usage
  * <LoadingSpinner />
- * 
+ *
  * // Small spinner
  * <LoadingSpinner size="sm" />
- * 
+ *
  * // Full screen loading
  * <LoadingSpinner fullScreen />
- * 
+ *
  * // Custom styling
  * <LoadingSpinner className="text-blue-500" />
  * ```

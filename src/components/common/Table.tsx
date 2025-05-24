@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 /**
  * Column configuration for table rendering.
- * 
+ *
  * @template T - The type of data items in the table
  */
 export interface Column<T> {
@@ -23,7 +23,7 @@ export interface Column<T> {
 
 /**
  * Props for the Table component.
- * 
+ *
  * @template T - The type of data items to display
  */
 export interface TableProps<T> {
@@ -52,9 +52,9 @@ export interface TableProps<T> {
 /**
  * Flexible data table component with responsive design.
  * Supports custom column rendering, row interactions, and various display modes.
- * 
+ *
  * @template T - The type of data items to display
- * 
+ *
  * @component
  * @example
  * const columns: Column<User>[] = [
@@ -64,7 +64,7 @@ export interface TableProps<T> {
  *     <StatusBadge status={user.status} />
  *   )}
  * ];
- * 
+ *
  * <Table
  *   data={users}
  *   columns={columns}

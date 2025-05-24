@@ -11,7 +11,7 @@ import {
   CreditCard,
   Settings,
   HelpCircle,
-  X
+  X,
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -88,7 +88,10 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                       )
                     }
                   >
-                    <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+                    <item.icon
+                      className="h-6 w-6 shrink-0"
+                      aria-hidden="true"
+                    />
                     {item.name}
                   </NavLink>
                 </li>
@@ -110,7 +113,10 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
                       )
                     }
                   >
-                    <item.icon className="h-6 w-6 shrink-0" aria-hidden="true" />
+                    <item.icon
+                      className="h-6 w-6 shrink-0"
+                      aria-hidden="true"
+                    />
                     {item.name}
                   </NavLink>
                 </li>

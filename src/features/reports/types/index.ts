@@ -1,4 +1,22 @@
 /**
+ * Base report interface for all report types
+ */
+export interface Report {
+  id: string
+  type: 'compliance' | 'chronology' | 'investigation'
+  status: 'pending' | 'processing' | 'completed' | 'failed'
+  vesselIds: string[]
+  vesselNames: string[]
+  createdAt: string
+  completedAt?: string
+  fileUrl?: string
+  error?: string
+  progress: number
+  userId: string
+  options?: Record<string, unknown>
+}
+
+/**
  * Comprehensive compliance report for a vessel containing risk assessments,
  * regulatory compliance status, and operational history analysis.
  */
@@ -170,7 +188,15 @@ export interface ChronologyEvent {
   /** When the event occurred (ISO 8601 format) */
   timestamp: string
   /** Type of event that occurred */
-  type: 'port_call' | 'sts_transfer' | 'dark_period' | 'spoofing' | 'flag_change' | 'ownership_change' | 'bunkering' | 'risk_change'
+  type:
+    | 'port_call'
+    | 'sts_transfer'
+    | 'dark_period'
+    | 'spoofing'
+    | 'flag_change'
+    | 'ownership_change'
+    | 'bunkering'
+    | 'risk_change'
   /** Brief title describing the event */
   title: string
   /** Detailed description of what happened */

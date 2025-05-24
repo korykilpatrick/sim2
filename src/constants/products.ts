@@ -1,4 +1,4 @@
-import { Product } from '@/types/product';
+import { Product } from '@/types/product'
 
 export const PRODUCTS: Record<string, Product> = {
   'vessel-tracking': {
@@ -9,12 +9,15 @@ export const PRODUCTS: Record<string, Product> = {
     pricing: {
       monthly: null,
       annual: null,
-      enterprise: 'Per-vessel, duration, and criteria-based pricing. Bulk discounts and tiered packages (Platinum, Gold, Silver, Bronze) available.',
+      enterprise:
+        'Per-vessel, duration, and criteria-based pricing. Bulk discounts and tiered packages (Platinum, Gold, Silver, Bronze) available.',
     },
     descriptions: {
       brief: 'Flexible, customized vessel tracking solution by IMO number.',
-      standard: 'Track vessels based on criteria like AIS reporting, dark events, spoofing, STS events, port calls, distress signals, ownership/flag changes, AOI/geofencing, and risk alerts.',
-      detailed: "Leveraging Theia's existing capabilities, SIM's Vessel Tracking Service (VTS) offers a flexible, customized solution to monitor vessels by IMO number. Users can track based on various criteria, with alerts delivered to their SIMw account and email. This service ensures reliable tracking even amid flag or MMSI changes, providing precise and adaptable monitoring tailored to specific needs.",
+      standard:
+        'Track vessels based on criteria like AIS reporting, dark events, spoofing, STS events, port calls, distress signals, ownership/flag changes, AOI/geofencing, and risk alerts.',
+      detailed:
+        "Leveraging Theia's existing capabilities, SIM's Vessel Tracking Service (VTS) offers a flexible, customized solution to monitor vessels by IMO number. Users can track based on various criteria, with alerts delivered to their SIMw account and email. This service ensures reliable tracking even amid flag or MMSI changes, providing precise and adaptable monitoring tailored to specific needs.",
       features: [
         'AIS reporting (3-6-12-24hr intervals)',
         'Dark Event detection (AIS signal loss)',
@@ -53,12 +56,16 @@ export const PRODUCTS: Record<string, Product> = {
     pricing: {
       monthly: null,
       annual: null,
-      enterprise: 'Tiered pricing based on AOI size, update frequency, criteria count, and duration. Bulk discounts and subscription packages (Platinum, Gold, Silver, Bronze) available.',
+      enterprise:
+        'Tiered pricing based on AOI size, update frequency, criteria count, and duration. Bulk discounts and subscription packages (Platinum, Gold, Silver, Bronze) available.',
     },
     descriptions: {
-      brief: 'Flexible, customizable ocean area monitoring solution with real-time alerts.',
-      standard: 'Monitor custom Areas of Interest (AOI) with alerts for vessel entry/exit, AIS reporting, dark ship events, spoofing, STS transfers, port activity, distress signals, ownership/registration changes, risk updates, and area risk assessment.',
-      detailed: "The Area Monitoring Service (AMS) provides a flexible, customizable solution to track specific ocean regions (AOIs) with real-time alerts. Tailored for maritime security, regulatory enforcement, risk assessment, and commercial intelligence, users define AOIs and receive notifications for key maritime events. Alerts are delivered to the user's SIM account and email, with a basic GUI for visual representation of the AOI, AIS data, and alerts.",
+      brief:
+        'Flexible, customizable ocean area monitoring solution with real-time alerts.',
+      standard:
+        'Monitor custom Areas of Interest (AOI) with alerts for vessel entry/exit, AIS reporting, dark ship events, spoofing, STS transfers, port activity, distress signals, ownership/registration changes, risk updates, and area risk assessment.',
+      detailed:
+        "The Area Monitoring Service (AMS) provides a flexible, customizable solution to track specific ocean regions (AOIs) with real-time alerts. Tailored for maritime security, regulatory enforcement, risk assessment, and commercial intelligence, users define AOIs and receive notifications for key maritime events. Alerts are delivered to the user's SIM account and email, with a basic GUI for visual representation of the AOI, AIS data, and alerts.",
       features: [
         'Vessel Entry & Exit alerts for AOI',
         'AIS Reporting (3, 6, 12, or 24-hour intervals)',
@@ -95,12 +102,16 @@ export const PRODUCTS: Record<string, Product> = {
     pricing: {
       monthly: null,
       annual: null,
-      enterprise: 'Per-vessel pricing based on fleet size (min 10 vessels), criteria, and duration (min 12-month contract). Bulk discounts and tiered packages available.',
+      enterprise:
+        'Per-vessel pricing based on fleet size (min 10 vessels), criteria, and duration (min 12-month contract). Bulk discounts and tiered packages available.',
     },
     descriptions: {
-      brief: 'Customized fleet monitoring solution with a centralized dashboard and tailored alerts.',
-      standard: 'Monitor entire fleets with criteria like AIS reporting, dark ship events, spoofing, STS events, port calls, distress signals, ownership/registration changes, vessel-specific geofencing, and risk assessment changes.',
-      detailed: "The Fleet Tracking Service (FTS) offers a customized solution for fleet operators to monitor multiple vessels (minimum 10) via a centralized dashboard/GUI. It provides tailored alerts and real-time insights across the entire fleet, ensuring efficient management and comprehensive visibility. Designed for large commercial clients like P&I clubs, FTS automates fleet oversight and risk detection, requiring a minimum 12-month contract.",
+      brief:
+        'Customized fleet monitoring solution with a centralized dashboard and tailored alerts.',
+      standard:
+        'Monitor entire fleets with criteria like AIS reporting, dark ship events, spoofing, STS events, port calls, distress signals, ownership/registration changes, vessel-specific geofencing, and risk assessment changes.',
+      detailed:
+        'The Fleet Tracking Service (FTS) offers a customized solution for fleet operators to monitor multiple vessels (minimum 10) via a centralized dashboard/GUI. It provides tailored alerts and real-time insights across the entire fleet, ensuring efficient management and comprehensive visibility. Designed for large commercial clients like P&I clubs, FTS automates fleet oversight and risk detection, requiring a minimum 12-month contract.',
       features: [
         'AIS Reporting for all fleet vessels (3, 6, 12, or 24-hour intervals)',
         'Dark Ship Event detection for fleet vessels',
@@ -138,12 +149,15 @@ export const PRODUCTS: Record<string, Product> = {
     pricing: {
       monthly: null,
       annual: null,
-      enterprise: 'Available via individual purchase, monthly/annual subscription plans, and fleet discounts.',
+      enterprise:
+        'Available via individual purchase, monthly/annual subscription plans, and fleet discounts.',
     },
     descriptions: {
       brief: "On-demand assessment of a vessel's compliance status.",
-      standard: 'Detailed report covering sanctions screening (OFAC, EU, UN), regulatory compliance (IMO, SOLAS, MARPOL), AIS integrity, ownership/control, operational history, PSC inspections, and a quantified risk score.',
-      detailed: "Vessel Compliance Reports (VCR) from SIM offer a detailed, on-demand assessment of a vessel's compliance status, ensuring regulatory adherence and risk mitigation. Ideal for insurers, financial institutions, legal firms, and compliance teams, these reports provide instant access to critical insights without lengthy sales cycles. Reports are instantly available on the SIM platform upon purchase.",
+      standard:
+        'Detailed report covering sanctions screening (OFAC, EU, UN), regulatory compliance (IMO, SOLAS, MARPOL), AIS integrity, ownership/control, operational history, PSC inspections, and a quantified risk score.',
+      detailed:
+        "Vessel Compliance Reports (VCR) from SIM offer a detailed, on-demand assessment of a vessel's compliance status, ensuring regulatory adherence and risk mitigation. Ideal for insurers, financial institutions, legal firms, and compliance teams, these reports provide instant access to critical insights without lengthy sales cycles. Reports are instantly available on the SIM platform upon purchase.",
       features: [
         'Sanctions Screening (OFAC, EU, UN, etc.)',
         'Regulatory Compliance (IMO, SOLAS, MARPOL)',
@@ -176,12 +190,16 @@ export const PRODUCTS: Record<string, Product> = {
     pricing: {
       monthly: null,
       annual: null,
-      enterprise: 'Pricing based on report depth (Basic, Standard, Premium) and selected time period. Fleet discounts available.',
+      enterprise:
+        'Pricing based on report depth (Basic, Standard, Premium) and selected time period. Fleet discounts available.',
     },
     descriptions: {
-      brief: "Comprehensive timeline of a vessel's activities over a selected period.",
-      standard: 'Customizable chronology report covering ports of call, STS transfers, bunkering, dark voyages, spoofing, risk profile changes, and ownership/registration changes within a defined timeframe.',
-      detailed: "The Vessel Chronology Report (VChR) delivers a comprehensive, timestamped timeline of a vessel's activities over a user-selected period. It includes details on ports of call, STS transfers, bunkering activity, dark voyages, spoofing/GPS anomalies, risk profile changes, and ownership/registration updates. Essential for due diligence and historical analysis, reports are instantly available via SIM.",
+      brief:
+        "Comprehensive timeline of a vessel's activities over a selected period.",
+      standard:
+        'Customizable chronology report covering ports of call, STS transfers, bunkering, dark voyages, spoofing, risk profile changes, and ownership/registration changes within a defined timeframe.',
+      detailed:
+        "The Vessel Chronology Report (VChR) delivers a comprehensive, timestamped timeline of a vessel's activities over a user-selected period. It includes details on ports of call, STS transfers, bunkering activity, dark voyages, spoofing/GPS anomalies, risk profile changes, and ownership/registration updates. Essential for due diligence and historical analysis, reports are instantly available via SIM.",
       features: [
         'Ports of Call (PoC) log',
         'Ship-to-Ship (STS) Transfer identification',
@@ -216,12 +234,16 @@ export const PRODUCTS: Record<string, Product> = {
     pricing: {
       monthly: null,
       annual: null,
-      enterprise: 'Custom pricing based on scope, complexity, timeframe, and data/imagery needs. Discounted contract pricing available.',
+      enterprise:
+        'Custom pricing based on scope, complexity, timeframe, and data/imagery needs. Discounted contract pricing available.',
     },
     descriptions: {
-      brief: 'Comprehensive, intelligence-driven deep-dive analysis by SynMax experts.',
-      standard: 'In-depth investigations into vessel activity, maritime areas of interest (AOI), or high-risk events, utilizing satellite imagery, OSINT, SIGINT, webcams/sensors, HUMINT, and proprietary analytical tools.',
-      detailed: "SynMax's Maritime Investigations Service (MIS) offers unparalleled deep-dive analysis conducted by intelligence experts. It covers vessel activity, maritime AOIs, and high-risk events, leveraging a fusion of intelligence sources (SATINT, OSINT, SIGINT, HUMINT, etc.). Investigations are custom-tailored, initiated via an RFI form on SIM, with final reports delivered securely.",
+      brief:
+        'Comprehensive, intelligence-driven deep-dive analysis by SynMax experts.',
+      standard:
+        'In-depth investigations into vessel activity, maritime areas of interest (AOI), or high-risk events, utilizing satellite imagery, OSINT, SIGINT, webcams/sensors, HUMINT, and proprietary analytical tools.',
+      detailed:
+        "SynMax's Maritime Investigations Service (MIS) offers unparalleled deep-dive analysis conducted by intelligence experts. It covers vessel activity, maritime AOIs, and high-risk events, leveraging a fusion of intelligence sources (SATINT, OSINT, SIGINT, HUMINT, etc.). Investigations are custom-tailored, initiated via an RFI form on SIM, with final reports delivered securely.",
       features: [
         'Vessel Activity Analysis (historical/real-time, compliance, risk)',
         'Maritime Area of Interest (AOI) Intelligence Gathering',
@@ -247,20 +269,22 @@ export const PRODUCTS: Record<string, Product> = {
     ],
     path: '/products/sim/maritime-investigation',
   },
-};
+}
 
-export const PRODUCT_LIST = Object.values(PRODUCTS);
+export const PRODUCT_LIST = Object.values(PRODUCTS)
 
-export const getProductById = (id: string): Product | undefined => PRODUCTS[id];
+export const getProductById = (id: string): Product | undefined => PRODUCTS[id]
 
-export const getProductsByCategory = (category: Product['category']): Product[] =>
-  PRODUCT_LIST.filter(product => product.category === category);
+export const getProductsByCategory = (
+  category: Product['category'],
+): Product[] => PRODUCT_LIST.filter((product) => product.category === category)
 
 export const searchProducts = (query: string): Product[] => {
-  const lowercaseQuery = query.toLowerCase();
-  return PRODUCT_LIST.filter(product =>
-    product.name.toLowerCase().includes(lowercaseQuery) ||
-    product.descriptions.standard.toLowerCase().includes(lowercaseQuery) ||
-    product.category.toLowerCase().includes(lowercaseQuery)
-  );
-};
+  const lowercaseQuery = query.toLowerCase()
+  return PRODUCT_LIST.filter(
+    (product) =>
+      product.name.toLowerCase().includes(lowercaseQuery) ||
+      product.descriptions.standard.toLowerCase().includes(lowercaseQuery) ||
+      product.category.toLowerCase().includes(lowercaseQuery),
+  )
+}

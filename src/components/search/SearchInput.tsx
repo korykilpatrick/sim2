@@ -1,13 +1,14 @@
-import React from 'react';
-import { Search, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from 'react'
+import { Search, X } from 'lucide-react'
+import { cn } from '@/utils/cn'
 
-interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  value: string;
-  onValueChange: (value: string) => void;
-  onClear?: () => void;
-  showClearButton?: boolean;
-  containerClassName?: string;
+interface SearchInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  value: string
+  onValueChange: (value: string) => void
+  onClear?: () => void
+  showClearButton?: boolean
+  containerClassName?: string
 }
 
 export function SearchInput({
@@ -21,9 +22,9 @@ export function SearchInput({
   ...props
 }: SearchInputProps) {
   const handleClear = () => {
-    onValueChange('');
-    onClear?.();
-  };
+    onValueChange('')
+    onClear?.()
+  }
 
   return (
     <div className={cn('relative', containerClassName)}>
@@ -36,7 +37,7 @@ export function SearchInput({
           'w-full rounded-lg border border-gray-200 bg-white py-2 pl-10 pr-10 text-sm',
           'placeholder:text-gray-500',
           'focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500',
-          className
+          className,
         )}
         placeholder={placeholder}
         {...props}
@@ -51,5 +52,5 @@ export function SearchInput({
         </button>
       )}
     </div>
-  );
+  )
 }

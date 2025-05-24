@@ -3,7 +3,7 @@ import { ComplianceReport, ChronologyReport } from '../types'
 import { Card, CardContent } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { FileText, Download, RefreshCw, X, Clock } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 import ReportStatusBadge from '@/features/compliance/components/ReportStatusBadge'
 
 interface ReportListProps {
@@ -35,7 +35,9 @@ export const ReportList: React.FC<ReportListProps> = ({
     )
   }
 
-  const getReportType = (report: ComplianceReport | ChronologyReport): 'compliance' | 'chronology' => {
+  const getReportType = (
+    report: ComplianceReport | ChronologyReport,
+  ): 'compliance' | 'chronology' => {
     return 'sanctionsScreening' in report ? 'compliance' : 'chronology'
   }
 
@@ -60,7 +62,9 @@ export const ReportList: React.FC<ReportListProps> = ({
               'cursor-pointer transition-all hover:shadow-md',
               report.status === 'failed' && 'border-red-200',
             )}
-            onClick={() => report.status === 'completed' && onViewReport(report)}
+            onClick={() =>
+              report.status === 'completed' && onViewReport(report)
+            }
           >
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
@@ -74,7 +78,7 @@ export const ReportList: React.FC<ReportListProps> = ({
                     </h3>
                     <ReportStatusBadge status={report.status} />
                   </div>
-                  
+
                   <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
                     <div>
                       <span className="font-medium">Vessel:</span>{' '}
@@ -94,31 +98,53 @@ export const ReportList: React.FC<ReportListProps> = ({
                     </div>
                   </div>
 
-                  {reportType === 'compliance' && report.status === 'completed' && (
-                    <div className="mt-3 flex items-center gap-4">
-                      <div className={cn(
-                        'text-sm font-medium',
-                        (report as ComplianceReport).riskAssessment.level === 'low' && 'text-green-600',
-                        (report as ComplianceReport).riskAssessment.level === 'medium' && 'text-yellow-600',
-                        (report as ComplianceReport).riskAssessment.level === 'high' && 'text-orange-600',
-                        (report as ComplianceReport).riskAssessment.level === 'critical' && 'text-red-600',
-                      )}>
-                        Risk Level: {(report as ComplianceReport).riskAssessment.level.toUpperCase()}
+                  {reportType === 'compliance' &&
+                    report.status === 'completed' && (
+                      <div className="mt-3 flex items-center gap-4">
+                        <div
+                          className={cn(
+                            'text-sm font-medium',
+                            (report as ComplianceReport).riskAssessment
+                              .level === 'low' && 'text-green-600',
+                            (report as ComplianceReport).riskAssessment
+                              .level === 'medium' && 'text-yellow-600',
+                            (report as ComplianceReport).riskAssessment
+                              .level === 'high' && 'text-orange-600',
+                            (report as ComplianceReport).riskAssessment
+                              .level === 'critical' && 'text-red-600',
+                          )}
+                        >
+                          Risk Level:{' '}
+                          {(
+                            report as ComplianceReport
+                          ).riskAssessment.level.toUpperCase()}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Score:{' '}
+                          {
+                            (report as ComplianceReport).riskAssessment
+                              .overallScore
+                          }
+                          /100
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-500">
-                        Score: {(report as ComplianceReport).riskAssessment.overallScore}/100
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {reportType === 'chronology' && report.status === 'completed' && (
-                    <div className="mt-3 text-sm text-gray-600">
-                      <span className="font-medium">Period:</span>{' '}
-                      {new Date((report as ChronologyReport).timeRange.start).toLocaleDateString()} -{' '}
-                      {new Date((report as ChronologyReport).timeRange.end).toLocaleDateString()} ({' '}
-                      {(report as ChronologyReport).summary.totalEvents} events)
-                    </div>
-                  )}
+                  {reportType === 'chronology' &&
+                    report.status === 'completed' && (
+                      <div className="mt-3 text-sm text-gray-600">
+                        <span className="font-medium">Period:</span>{' '}
+                        {new Date(
+                          (report as ChronologyReport).timeRange.start,
+                        ).toLocaleDateString()}{' '}
+                        -{' '}
+                        {new Date(
+                          (report as ChronologyReport).timeRange.end,
+                        ).toLocaleDateString()}{' '}
+                        ( {(report as ChronologyReport).summary.totalEvents}{' '}
+                        events)
+                      </div>
+                    )}
 
                   {report.status === 'processing' && (
                     <div className="mt-3 flex items-center text-sm text-blue-600">
@@ -173,7 +199,8 @@ export const ReportList: React.FC<ReportListProps> = ({
                       <RefreshCw className="h-4 w-4" />
                     </Button>
                   )}
-                  {(report.status === 'pending' || report.status === 'processing') && (
+                  {(report.status === 'pending' ||
+                    report.status === 'processing') && (
                     <Button
                       variant="ghost"
                       size="sm"

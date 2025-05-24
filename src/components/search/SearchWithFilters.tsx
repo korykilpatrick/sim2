@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import { SearchInput } from './SearchInput';
+import { ReactNode } from 'react'
+import { cn } from '@/utils/cn'
+import { SearchInput } from './SearchInput'
 
 interface SearchWithFiltersProps {
-  searchValue: string;
-  onSearchChange: (value: string) => void;
-  searchPlaceholder?: string;
-  filters?: ReactNode;
-  className?: string;
-  searchClassName?: string;
-  filtersClassName?: string;
+  searchValue: string
+  onSearchChange: (value: string) => void
+  searchPlaceholder?: string
+  filters?: ReactNode
+  className?: string
+  searchClassName?: string
+  filtersClassName?: string
 }
 
 export function SearchWithFilters({
@@ -22,7 +22,12 @@ export function SearchWithFilters({
   filtersClassName,
 }: SearchWithFiltersProps) {
   return (
-    <div className={cn('flex flex-col gap-4 sm:flex-row sm:items-center', className)}>
+    <div
+      className={cn(
+        'flex flex-col gap-4 sm:flex-row sm:items-center',
+        className,
+      )}
+    >
       <SearchInput
         value={searchValue}
         onValueChange={onSearchChange}
@@ -35,5 +40,5 @@ export function SearchWithFilters({
         </div>
       )}
     </div>
-  );
+  )
 }

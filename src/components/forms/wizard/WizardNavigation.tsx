@@ -1,18 +1,18 @@
-import Button from '@/components/common/Button';
-import { cn } from '@/lib/utils';
+import Button from '@/components/common/Button'
+import { cn } from '@/utils/cn'
 
 interface WizardNavigationProps {
-  onPrevious?: () => void;
-  onNext?: () => void;
-  onComplete?: () => void;
-  isFirstStep?: boolean;
-  isLastStep?: boolean;
-  isPreviousDisabled?: boolean;
-  isNextDisabled?: boolean;
-  previousLabel?: string;
-  nextLabel?: string;
-  completeLabel?: string;
-  className?: string;
+  onPrevious?: () => void
+  onNext?: () => void
+  onComplete?: () => void
+  isFirstStep?: boolean
+  isLastStep?: boolean
+  isPreviousDisabled?: boolean
+  isNextDisabled?: boolean
+  previousLabel?: string
+  nextLabel?: string
+  completeLabel?: string
+  className?: string
 }
 
 export function WizardNavigation({
@@ -39,24 +39,16 @@ export function WizardNavigation({
       >
         {previousLabel}
       </Button>
-      
+
       {isLastStep ? (
-        <Button
-          type="button"
-          onClick={onComplete}
-          disabled={isNextDisabled}
-        >
+        <Button type="button" onClick={onComplete} disabled={isNextDisabled}>
           {completeLabel}
         </Button>
       ) : (
-        <Button
-          type="button"
-          onClick={onNext}
-          disabled={isNextDisabled}
-        >
+        <Button type="button" onClick={onNext} disabled={isNextDisabled}>
           {nextLabel}
         </Button>
       )}
     </div>
-  );
+  )
 }

@@ -7,7 +7,7 @@ import {
 } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { VesselTracking } from '../types/vessel'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
 interface VesselTrackingCardProps {
   tracking: VesselTracking

@@ -1,6 +1,6 @@
-import { cn } from '@/lib/utils';
-import Button from '@/components/common/Button';
-import type { EmptyStateProps } from './types';
+import { cn } from '@/utils/cn'
+import Button from '@/components/common/Button'
+import type { EmptyStateProps } from './types'
 
 export function EmptyState({
   icon: Icon,
@@ -14,7 +14,7 @@ export function EmptyState({
     <div
       className={cn(
         'flex flex-col items-center justify-center py-12 text-center',
-        className
+        className,
       )}
     >
       {Icon && (
@@ -33,5 +33,5 @@ export function EmptyState({
       )}
       {children}
     </div>
-  );
+  )
 }

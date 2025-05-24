@@ -11,7 +11,9 @@ interface AreaWizardProps {
 }
 
 export function AreaWizard({ onComplete }: AreaWizardProps) {
-  const [areaGeometry, setAreaGeometry] = useState<GeoJSON.Polygon | undefined>()
+  const [areaGeometry, setAreaGeometry] = useState<
+    GeoJSON.Polygon | undefined
+  >()
   const [areaName, setAreaName] = useState('')
   const [description, setDescription] = useState('')
   const [monitoringCriteria, setMonitoringCriteria] = useState<string[]>([])
@@ -20,7 +22,7 @@ export function AreaWizard({ onComplete }: AreaWizardProps) {
 
   const handleComplete = () => {
     if (!areaGeometry || !areaName || monitoringCriteria.length === 0) return
-    
+
     onComplete({
       name: areaName,
       description,
@@ -34,9 +36,21 @@ export function AreaWizard({ onComplete }: AreaWizardProps) {
 
   const wizard = useWizard({
     steps: [
-      { id: 'define', label: 'Define Area', description: 'Draw the area on the map' },
-      { id: 'configure', label: 'Configure Monitoring', description: 'Set monitoring parameters' },
-      { id: 'review', label: 'Review & Confirm', description: 'Review your configuration' },
+      {
+        id: 'define',
+        label: 'Define Area',
+        description: 'Draw the area on the map',
+      },
+      {
+        id: 'configure',
+        label: 'Configure Monitoring',
+        description: 'Set monitoring parameters',
+      },
+      {
+        id: 'review',
+        label: 'Review & Confirm',
+        description: 'Review your configuration',
+      },
     ],
     onComplete: handleComplete,
   })
@@ -53,7 +67,6 @@ export function AreaWizard({ onComplete }: AreaWizardProps) {
         return false
     }
   }
-
 
   return (
     <FormWizard

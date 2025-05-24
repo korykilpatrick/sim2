@@ -7,8 +7,14 @@ interface ReportFiltersProps {
   onFiltersChange: (filters: ReportFilters) => void
 }
 
-export function ReportFiltersPanel({ filters, onFiltersChange }: ReportFiltersProps) {
-  const handleChange = (key: keyof ReportFilters, value: string | undefined) => {
+export function ReportFiltersPanel({
+  filters,
+  onFiltersChange,
+}: ReportFiltersProps) {
+  const handleChange = (
+    key: keyof ReportFilters,
+    value: string | undefined,
+  ) => {
     onFiltersChange({
       ...filters,
       [key]: value,

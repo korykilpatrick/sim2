@@ -20,7 +20,9 @@ export const AreaMap: React.FC<AreaMapProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
-  const [currentPolygon, setCurrentPolygon] = useState<{ lat: number; lng: number }[]>([])
+  const [currentPolygon, setCurrentPolygon] = useState<
+    { lat: number; lng: number }[]
+  >([])
 
   useEffect(() => {
     // Note: In a real implementation, you would integrate with a mapping library
@@ -45,13 +47,13 @@ export const AreaMap: React.FC<AreaMapProps> = ({
         type: 'Polygon',
         coordinates: [currentPolygon.map((p) => [p.lng, p.lat])],
       }
-      
+
       if (isEditing && onAreaUpdate) {
         onAreaUpdate(polygon)
       } else if (onAreaCreate) {
         onAreaCreate(polygon)
       }
-      
+
       setIsDrawing(false)
       setCurrentPolygon([])
     }
@@ -92,11 +94,7 @@ export const AreaMap: React.FC<AreaMapProps> = ({
           {/* Drawing controls */}
           <div className="absolute top-4 right-4 z-10">
             {!isDrawing ? (
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleStartDrawing}
-              >
+              <Button variant="primary" size="sm" onClick={handleStartDrawing}>
                 <Pencil className="h-4 w-4 mr-2" />
                 {isEditing ? 'Edit Area' : 'Draw Area'}
               </Button>

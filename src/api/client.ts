@@ -11,11 +11,11 @@ const API_BASE_URL = '/api/v1'
 /**
  * Pre-configured axios instance for API requests.
  * Automatically handles authentication tokens and token refresh.
- * 
+ *
  * @example
  * // Making an authenticated API request
  * const response = await apiClient.get('/users/profile');
- * 
+ *
  * @example
  * // POST request with data
  * const result = await apiClient.post('/vessels/track', { vesselId, criteria });
@@ -50,7 +50,9 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<ApiError>) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean }
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true

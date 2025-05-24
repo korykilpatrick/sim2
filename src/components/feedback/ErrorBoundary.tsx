@@ -26,7 +26,7 @@ interface ErrorBoundaryState {
 /**
  * React error boundary component that catches JavaScript errors in child components.
  * Prevents the entire app from crashing and displays a fallback UI.
- * 
+ *
  * @component
  * @example
  * <ErrorBoundary
@@ -36,7 +36,10 @@ interface ErrorBoundaryState {
  *   <App />
  * </ErrorBoundary>
  */
-export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export default class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = { hasError: false, error: null }
@@ -44,7 +47,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
 
   /**
    * Updates state to render fallback UI on next render.
-   * 
+   *
    * @param error - The error that was thrown
    * @returns New state with error information
    */
@@ -54,12 +57,16 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
 
   /**
    * Logs error information and calls optional error handler.
-   * 
+   *
    * @param error - The error that was thrown
    * @param errorInfo - Stack trace information
    */
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo)
+
+    // Log error details for debugging
+    // Error tracking service can be integrated here if needed
+
     this.props.onError?.(error, errorInfo)
   }
 
@@ -100,7 +107,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
             <p className="mb-4 text-sm text-gray-600">
               {this.state.error.message || 'An unexpected error occurred'}
             </p>
-            {process.env.NODE_ENV === 'development' && (
+            {import.meta.env.DEV && (
               <details className="mb-4 rounded-md bg-gray-50 p-4 text-left">
                 <summary className="cursor-pointer text-sm font-medium text-gray-700">
                   Error details

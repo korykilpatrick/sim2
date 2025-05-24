@@ -1,4 +1,4 @@
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/api/client'
 import { AuthResponse, LoginCredentials, RegisterData } from '../types/auth'
 import { ApiResponse } from '@/types/api'
 
@@ -8,7 +8,7 @@ import { ApiResponse } from '@/types/api'
 export const authApi = {
   /**
    * Authenticates user with email and password.
-   * 
+   *
    * @param credentials - User login credentials
    * @returns Authentication response with user data and tokens
    */
@@ -22,7 +22,7 @@ export const authApi = {
 
   /**
    * Creates a new user account.
-   * 
+   *
    * @param data - Registration data including credentials and profile info
    * @returns Authentication response with user data and tokens
    */
@@ -36,7 +36,7 @@ export const authApi = {
 
   /**
    * Logs out the current user and invalidates tokens.
-   * 
+   *
    * @returns Success response
    */
   logout: async () => {
@@ -46,7 +46,7 @@ export const authApi = {
 
   /**
    * Refreshes the access token using a refresh token.
-   * 
+   *
    * @param refreshToken - Valid refresh token
    * @returns New access and refresh tokens
    */
@@ -59,7 +59,7 @@ export const authApi = {
 
   /**
    * Fetches the current authenticated user's data.
-   * 
+   *
    * @returns Current user data
    */
   getCurrentUser: async () => {

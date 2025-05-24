@@ -69,7 +69,11 @@ export interface MonitoringCriteria {
   name: string
   description: string
   /** Criterion category for grouping and filtering */
-  category: 'vessel_activity' | 'risk_assessment' | 'compliance' | 'environmental'
+  category:
+    | 'vessel_activity'
+    | 'risk_assessment'
+    | 'compliance'
+    | 'environmental'
   creditsPerAlert: number
   enabled: boolean
 }

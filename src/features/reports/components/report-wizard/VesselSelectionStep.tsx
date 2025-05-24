@@ -88,8 +88,8 @@ export function VesselSelectionStep({
             </div>
             <div className="ml-3">
               <p className="text-sm text-gray-600">
-                Search and select a vessel to generate reports for. You can search
-                by vessel name, IMO number, or MMSI.
+                Search and select a vessel to generate reports for. You can
+                search by vessel name, IMO number, or MMSI.
               </p>
             </div>
           </div>

@@ -1,10 +1,11 @@
-import { Search, FileText, Ship, MapPin, Users, BarChart } from 'lucide-react';
-import { EmptyState } from './EmptyState';
-import type { EmptyStateProps } from './types';
+import { Search, FileText, Ship, MapPin, Users, BarChart } from 'lucide-react'
+import { EmptyState } from './EmptyState'
+import type { EmptyStateProps } from './types'
 
-interface PresetProps extends Omit<EmptyStateProps, 'icon' | 'title' | 'description'> {
-  title?: string;
-  description?: string;
+interface PresetProps
+  extends Omit<EmptyStateProps, 'icon' | 'title' | 'description'> {
+  title?: string
+  description?: string
 }
 
 export function NoSearchResults(props: PresetProps) {
@@ -15,7 +16,7 @@ export function NoSearchResults(props: PresetProps) {
       description={props.description || 'Try adjusting your search or filters'}
       {...props}
     />
-  );
+  )
 }
 
 export function NoReports(props: PresetProps) {
@@ -23,10 +24,12 @@ export function NoReports(props: PresetProps) {
     <EmptyState
       icon={FileText}
       title={props.title || 'No reports yet'}
-      description={props.description || 'Generate your first report to get started'}
+      description={
+        props.description || 'Generate your first report to get started'
+      }
       {...props}
     />
-  );
+  )
 }
 
 export function NoVessels(props: PresetProps) {
@@ -34,10 +37,12 @@ export function NoVessels(props: PresetProps) {
     <EmptyState
       icon={Ship}
       title={props.title || 'No vessels'}
-      description={props.description || 'Start tracking vessels to see them here'}
+      description={
+        props.description || 'Start tracking vessels to see them here'
+      }
       {...props}
     />
-  );
+  )
 }
 
 export function NoAreas(props: PresetProps) {
@@ -45,10 +50,13 @@ export function NoAreas(props: PresetProps) {
     <EmptyState
       icon={MapPin}
       title={props.title || 'No monitoring areas'}
-      description={props.description || 'Create an area to start monitoring vessel activity'}
+      description={
+        props.description ||
+        'Create an area to start monitoring vessel activity'
+      }
       {...props}
     />
-  );
+  )
 }
 
 export function NoFleets(props: PresetProps) {
@@ -56,10 +64,12 @@ export function NoFleets(props: PresetProps) {
     <EmptyState
       icon={Users}
       title={props.title || 'No fleets'}
-      description={props.description || 'Create a fleet to organize your vessels'}
+      description={
+        props.description || 'Create a fleet to organize your vessels'
+      }
       {...props}
     />
-  );
+  )
 }
 
 export function NoData(props: PresetProps) {
@@ -70,5 +80,5 @@ export function NoData(props: PresetProps) {
       description={props.description || 'Data will appear here once available'}
       {...props}
     />
-  );
+  )
 }

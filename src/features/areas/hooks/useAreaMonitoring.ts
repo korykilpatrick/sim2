@@ -70,14 +70,17 @@ export function useResumeMonitoring(areaId: string) {
   })
 }
 
-export function useAreaAlerts(areaId: string, filters?: {
-  enabled?: boolean
-  severity?: 'low' | 'medium' | 'high' | 'critical'
-  type?: string
-  isRead?: boolean
-  limit?: number
-  page?: number
-}) {
+export function useAreaAlerts(
+  areaId: string,
+  filters?: {
+    enabled?: boolean
+    severity?: 'low' | 'medium' | 'high' | 'critical'
+    type?: string
+    isRead?: boolean
+    limit?: number
+    page?: number
+  },
+) {
   return useQuery({
     queryKey: areaKeys.alerts(areaId, filters),
     queryFn: () => areaApi.getAreaAlerts(areaId, filters),

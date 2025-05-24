@@ -24,9 +24,9 @@ export function AreaReviewStep({
 }: AreaReviewStepProps) {
   const { data: criteriaData } = useMonitoringCriteria()
   const allCriteria = criteriaData || []
-  
+
   const selectedCriteriaDetails = allCriteria.filter((c: MonitoringCriteria) =>
-    monitoringCriteria.includes(c.id)
+    monitoringCriteria.includes(c.id),
   )
 
   return (
@@ -43,12 +43,16 @@ export function AreaReviewStep({
       <Card>
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-medium text-gray-900 mb-2">Area Details</h4>
+            <h4 className="text-sm font-medium text-gray-900 mb-2">
+              Area Details
+            </h4>
             <div className="space-y-2">
               <div className="flex items-start">
                 <MapPin className="h-4 w-4 text-gray-400 mt-0.5 mr-2" />
                 <div>
-                  <p className="text-sm font-medium text-gray-900">{areaName}</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    {areaName}
+                  </p>
                   {description && (
                     <p className="text-sm text-gray-500 mt-1">{description}</p>
                   )}
@@ -87,7 +91,9 @@ export function AreaReviewStep({
                 <Clock className="h-4 w-4 mr-1" />
                 Update Frequency
               </p>
-              <p className="text-sm font-medium">Every {updateFrequency} hours</p>
+              <p className="text-sm font-medium">
+                Every {updateFrequency} hours
+              </p>
             </div>
             <div>
               <p className="text-sm text-gray-500 flex items-center">

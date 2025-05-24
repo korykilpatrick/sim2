@@ -1,8 +1,13 @@
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/Card'
 import { AreaAlert } from '../types'
 import { AlertCircle, Ship, Clock, MapPin } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 import Button from '@/components/common/Button'
 
 interface AreaAlertsProps {
@@ -78,7 +83,7 @@ export const AreaAlerts: React.FC<AreaAlertsProps> = ({
                     <p className="mt-1 text-sm text-gray-600">
                       {alert.description}
                     </p>
-                    
+
                     {alert.vesselInfo && (
                       <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
                         <div className="flex items-center">
@@ -89,7 +94,7 @@ export const AreaAlerts: React.FC<AreaAlertsProps> = ({
                         <span>Flag: {alert.vesselInfo.flag}</span>
                       </div>
                     )}
-                    
+
                     <div className="mt-2 flex items-center space-x-4 text-xs text-gray-500">
                       <div className="flex items-center">
                         <Clock className="mr-1 h-3 w-3" />
@@ -97,12 +102,13 @@ export const AreaAlerts: React.FC<AreaAlertsProps> = ({
                       </div>
                       <div className="flex items-center">
                         <MapPin className="mr-1 h-3 w-3" />
-                        {alert.location.lat.toFixed(4)}, {alert.location.lng.toFixed(4)}
+                        {alert.location.lat.toFixed(4)},{' '}
+                        {alert.location.lng.toFixed(4)}
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
                 {!alert.isRead && (
                   <Button
                     variant="ghost"

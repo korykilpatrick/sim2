@@ -2,8 +2,8 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import Button from '@/components/common/Button'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { productApi } from '@/services/products'
-import { productKeys } from '@/services/productKeys'
+import { productApi } from '@/features/products/services'
+import { productKeys } from '@/features/products/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
 
 export default function DashboardPage() {
@@ -19,8 +19,8 @@ export default function DashboardPage() {
   // Mock user's active products (in real app, this would come from user data)
   const activeProductIds = ['vessel-tracking', 'area-monitoring']
   const userProducts = allProducts
-    .filter(product => activeProductIds.includes(product.id))
-    .map(product => ({
+    .filter((product) => activeProductIds.includes(product.id))
+    .map((product) => ({
       ...product,
       isActive: product.id === 'vessel-tracking', // Mock: only VTS is active
     }))
@@ -45,19 +45,19 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         <nav className="text-sm text-gray-600 space-x-4">
           <button className="font-semibold text-gray-900">My Products</button>
-          <button 
+          <button
             onClick={() => navigate('/team')}
             className="hover:text-gray-900"
           >
             My Team
           </button>
-          <button 
+          <button
             onClick={() => navigate('/billing')}
             className="hover:text-gray-900"
           >
             Billing & Plan
           </button>
-          <button 
+          <button
             onClick={() => navigate('/settings')}
             className="hover:text-gray-900"
           >
@@ -75,11 +75,10 @@ export default function DashboardPage() {
           </div>
         ) : userProducts.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
-            <p className="text-gray-500 mb-4">You don't have any active products yet</p>
-            <Button
-              variant="synmax"
-              onClick={() => navigate('/')}
-            >
+            <p className="text-gray-500 mb-4">
+              You don't have any active products yet
+            </p>
+            <Button variant="synmax" onClick={() => navigate('/')}>
               Browse Products
             </Button>
           </div>
@@ -92,10 +91,11 @@ export default function DashboardPage() {
               >
                 <div className="w-32 h-32 bg-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center">
                   <span className="text-gray-400 text-xl font-semibold">
-                    {product.shortName || product.name.substring(0, 3).toUpperCase()}
+                    {product.shortName ||
+                      product.name.substring(0, 3).toUpperCase()}
                   </span>
                 </div>
-                
+
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold text-gray-900">
                     {product.name}
@@ -104,8 +104,9 @@ export default function DashboardPage() {
                     {product.descriptions.detailed}
                   </p>
                   <div className="mt-3 text-sm text-gray-500">
-                    {product.category.charAt(0).toUpperCase() + product.category.slice(1)} • 
-                    {getPricingDisplayText(product)}
+                    {product.category.charAt(0).toUpperCase() +
+                      product.category.slice(1)}{' '}
+                    •{getPricingDisplayText(product)}
                   </div>
                 </div>
 

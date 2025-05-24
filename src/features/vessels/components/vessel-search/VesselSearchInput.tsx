@@ -1,22 +1,22 @@
-import { SearchInput } from '@/components/search';
-import LoadingSpinner from '@/components/feedback/LoadingSpinner';
-import Alert from '@/components/feedback/Alert';
-import { Card } from '@/components/common/Card';
-import VesselSearchResults from '../VesselSearchResults';
-import type { Vessel } from '../../types';
+import { SearchInput } from '@/components/search'
+import LoadingSpinner from '@/components/feedback/LoadingSpinner'
+import Alert from '@/components/feedback/Alert'
+import { Card } from '@/components/common/Card'
+import VesselSearchResults from '../VesselSearchResults'
+import type { Vessel } from '../../types'
 
 interface VesselSearchInputProps {
-  searchTerm: string;
-  onSearchChange: (value: string) => void;
-  searchResults: Vessel[];
-  isSearching: boolean;
-  selectedVessel: Vessel | null;
-  onSelectVessel: (vessel: Vessel) => void;
-  onClearSelection?: () => void;
-  error?: string | null;
-  placeholder?: string;
-  label?: string;
-  required?: boolean;
+  searchTerm: string
+  onSearchChange: (value: string) => void
+  searchResults: Vessel[]
+  isSearching: boolean
+  selectedVessel: Vessel | null
+  onSelectVessel: (vessel: Vessel) => void
+  onClearSelection?: () => void
+  error?: string | null
+  placeholder?: string
+  label?: string
+  required?: boolean
 }
 
 export function VesselSearchInput({
@@ -49,9 +49,7 @@ export function VesselSearchInput({
         />
       </div>
 
-      {error && (
-        <Alert type="error" message={error} />
-      )}
+      {error && <Alert type="error" message={error} />}
 
       {isSearching && (
         <div className="flex justify-center py-4">
@@ -94,5 +92,5 @@ export function VesselSearchInput({
         </div>
       )}
     </div>
-  );
+  )
 }

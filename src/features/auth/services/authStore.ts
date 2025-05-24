@@ -25,11 +25,11 @@ interface AuthStore {
 /**
  * Global authentication state store with persistence.
  * Stores auth tokens and user data in localStorage.
- * 
+ *
  * @example
  * // Access auth state
  * const { user, isAuthenticated } = useAuthStore();
- * 
+ *
  * // Update auth state
  * const { setAuth, logout } = useAuthStore();
  * setAuth(userData, accessToken, refreshToken);

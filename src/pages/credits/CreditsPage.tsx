@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@/components/common/Card'
 import Button from '@/components/common/Button'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
 export default function CreditsPage() {
   const { user } = useAuth()
@@ -203,4 +203,3 @@ export default function CreditsPage() {
     </div>
   )
 }
-

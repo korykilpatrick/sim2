@@ -23,7 +23,7 @@ export function MonitoringCriteriaSelector({
     setExpandedCategories((prev) =>
       prev.includes(category)
         ? prev.filter((c) => c !== category)
-        : [...prev, category]
+        : [...prev, category],
     )
   }
 
@@ -31,7 +31,7 @@ export function MonitoringCriteriaSelector({
     onCriteriaChange(
       selectedCriteria.includes(criterionId)
         ? selectedCriteria.filter((id) => id !== criterionId)
-        : [...selectedCriteria, criterionId]
+        : [...selectedCriteria, criterionId],
     )
   }
 
@@ -44,14 +44,20 @@ export function MonitoringCriteriaSelector({
   }
 
   // Group criteria by category
-  const categorizedCriteria = criteria.reduce((acc: Record<string, MonitoringCriteria[]>, criterion: MonitoringCriteria) => {
-    const category = criterion.category || 'Other'
-    if (!acc[category]) {
-      acc[category] = []
-    }
-    acc[category].push(criterion)
-    return acc
-  }, {} as Record<string, MonitoringCriteria[]>)
+  const categorizedCriteria = criteria.reduce(
+    (
+      acc: Record<string, MonitoringCriteria[]>,
+      criterion: MonitoringCriteria,
+    ) => {
+      const category = criterion.category || 'Other'
+      if (!acc[category]) {
+        acc[category] = []
+      }
+      acc[category].push(criterion)
+      return acc
+    },
+    {} as Record<string, MonitoringCriteria[]>,
+  )
 
   return (
     <div className="space-y-4">
@@ -74,11 +80,15 @@ export function MonitoringCriteriaSelector({
           >
             <span className="font-medium text-gray-900">{category}</span>
             <span className="text-sm text-gray-500">
-              {(items as MonitoringCriteria[]).filter((item) => selectedCriteria.includes(item.id)).length}/
-              {(items as MonitoringCriteria[]).length}
+              {
+                (items as MonitoringCriteria[]).filter((item) =>
+                  selectedCriteria.includes(item.id),
+                ).length
+              }
+              /{(items as MonitoringCriteria[]).length}
             </span>
           </button>
-          
+
           {expandedCategories.includes(category) && (
             <div className="border-t border-gray-100">
               {(items as MonitoringCriteria[]).map((criterion) => (
@@ -96,7 +106,9 @@ export function MonitoringCriteriaSelector({
                     <p className="text-sm font-medium text-gray-900">
                       {criterion.name}
                     </p>
-                    <p className="text-sm text-gray-500">{criterion.description}</p>
+                    <p className="text-sm text-gray-500">
+                      {criterion.description}
+                    </p>
                     <p className="mt-1 text-xs text-gray-400">
                       {criterion.creditsPerAlert} credits per alert
                     </p>

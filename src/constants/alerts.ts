@@ -16,19 +16,22 @@ export const MARITIME_ALERT_TYPES: AlertType[] = [
   {
     id: 'ship',
     name: 'Ship Alert',
-    description: 'Monitor specific vessels and receive alerts on their activities and movements.',
+    description:
+      'Monitor specific vessels and receive alerts on their activities and movements.',
     active: true,
   },
   {
     id: 'area',
     name: 'Area Alert',
-    description: 'Monitor geographic areas for vessel traffic and maritime events.',
+    description:
+      'Monitor geographic areas for vessel traffic and maritime events.',
     active: false,
   },
   {
     id: 'ship-area',
     name: 'Ship & Area Alert',
-    description: 'Combine vessel and area monitoring for comprehensive maritime intelligence.',
+    description:
+      'Combine vessel and area monitoring for comprehensive maritime intelligence.',
     active: false,
   },
 ]

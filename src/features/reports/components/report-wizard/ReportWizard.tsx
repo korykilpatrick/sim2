@@ -18,12 +18,13 @@ interface ReportWizardProps {
 
 export function ReportWizard({ onComplete }: ReportWizardProps) {
   const [selectedVessel, setSelectedVessel] = useState<Vessel | null>(null)
-  const [selectedTemplate, setSelectedTemplate] = useState<ReportTemplate | null>(null)
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ReportTemplate | null>(null)
   const [configuration, setConfiguration] = useState<ReportConfiguration>({})
 
   const handleComplete = () => {
     if (!selectedVessel || !selectedTemplate) return
-    
+
     onComplete({
       vessel: selectedVessel,
       reportType: selectedTemplate.type,
@@ -33,9 +34,21 @@ export function ReportWizard({ onComplete }: ReportWizardProps) {
 
   const wizard = useWizard({
     steps: [
-      { id: 'vessel', label: 'Select Vessel', description: 'Choose the vessel for your report' },
-      { id: 'report-type', label: 'Report Type', description: 'Choose the type of report to generate' },
-      { id: 'configure', label: 'Configure Report', description: 'Configure report parameters' },
+      {
+        id: 'vessel',
+        label: 'Select Vessel',
+        description: 'Choose the vessel for your report',
+      },
+      {
+        id: 'report-type',
+        label: 'Report Type',
+        description: 'Choose the type of report to generate',
+      },
+      {
+        id: 'configure',
+        label: 'Configure Report',
+        description: 'Configure report parameters',
+      },
     ],
     onComplete: handleComplete,
   })
@@ -54,10 +67,7 @@ export function ReportWizard({ onComplete }: ReportWizardProps) {
   }
 
   return (
-    <FormWizard
-      wizard={wizard}
-      onStepValidate={handleStepValidation}
-    >
+    <FormWizard wizard={wizard} onStepValidate={handleStepValidation}>
       <VesselSelectionStep
         selectedVessel={selectedVessel}
         onSelectVessel={setSelectedVessel}

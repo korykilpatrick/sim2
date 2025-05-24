@@ -23,9 +23,7 @@ export function AreaDefinitionStep({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
-          Area Details
-        </h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-4">Area Details</h3>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -59,10 +57,7 @@ export function AreaDefinitionStep({
           Define Area Boundaries
         </h3>
         <div className="h-96 rounded-lg overflow-hidden border border-gray-200">
-          <AreaMap
-            onAreaCreate={onAreaGeometryChange}
-            area={areaGeometry}
-          />
+          <AreaMap onAreaCreate={onAreaGeometryChange} area={areaGeometry} />
         </div>
         {!areaGeometry && (
           <div className="mt-4 rounded-lg bg-blue-50 p-4">
@@ -72,8 +67,9 @@ export function AreaDefinitionStep({
               </div>
               <div className="ml-3">
                 <p className="text-sm text-blue-700">
-                  Click on the map to start drawing your monitoring area. Click multiple
-                  points to create a polygon, then double-click to finish.
+                  Click on the map to start drawing your monitoring area. Click
+                  multiple points to create a polygon, then double-click to
+                  finish.
                 </p>
               </div>
             </div>

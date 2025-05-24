@@ -1,4 +1,4 @@
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/api/client'
 import type { ApiResponse, PaginatedResponse } from '@/types/api'
 import type {
   ComplianceReport,
@@ -15,7 +15,9 @@ const BASE_URL = '/api/v1/reports'
 export const reportApi = {
   // Get reports
   getReports: async (filters?: ReportFilters) => {
-    const response = await apiClient.get<PaginatedResponse<ComplianceReport | ChronologyReport>>(BASE_URL, { params: filters })
+    const response = await apiClient.get<
+      PaginatedResponse<ComplianceReport | ChronologyReport>
+    >(BASE_URL, { params: filters })
     return {
       items: response.data.data,
       meta: response.data.meta,
@@ -24,24 +26,25 @@ export const reportApi = {
 
   // Get specific report
   getReport: async (id: string) => {
-    const response = await apiClient.get<ApiResponse<ComplianceReport | ChronologyReport>>(
-      `${BASE_URL}/${id}`,
-    )
+    const response = await apiClient.get<
+      ApiResponse<ComplianceReport | ChronologyReport>
+    >(`${BASE_URL}/${id}`)
     return response.data.data
   },
 
   // Create report
   createReport: async (request: ReportRequest) => {
-    const response = await apiClient.post<ApiResponse<{ reportId: string; estimatedTime: number }>>(
-      BASE_URL,
-      request,
-    )
+    const response = await apiClient.post<
+      ApiResponse<{ reportId: string; estimatedTime: number }>
+    >(BASE_URL, request)
     return response.data.data
   },
 
   // Create bulk reports
   createBulkReports: async (request: BulkReportRequest) => {
-    const response = await apiClient.post<ApiResponse<{ reportIds: string[]; estimatedTime: number }>>(`${BASE_URL}/bulk`, request)
+    const response = await apiClient.post<
+      ApiResponse<{ reportIds: string[]; estimatedTime: number }>
+    >(`${BASE_URL}/bulk`, request)
     return response.data.data
   },
 
@@ -56,35 +59,45 @@ export const reportApi = {
 
   // Get report templates
   getReportTemplates: async () => {
-    const response = await apiClient.get<ApiResponse<ReportTemplate[]>>(`${BASE_URL}/templates`)
+    const response = await apiClient.get<ApiResponse<ReportTemplate[]>>(
+      `${BASE_URL}/templates`,
+    )
     return response.data.data
   },
 
   // Get report statistics
   getReportStatistics: async () => {
-    const response = await apiClient.get<ApiResponse<ReportStatistics>>(`${BASE_URL}/statistics`)
+    const response = await apiClient.get<ApiResponse<ReportStatistics>>(
+      `${BASE_URL}/statistics`,
+    )
     return response.data.data
   },
 
   // Get report status
   getReportStatus: async (id: string) => {
-    const response = await apiClient.get<ApiResponse<{
-      status: 'pending' | 'processing' | 'completed' | 'failed'
-      progress: number
-      estimatedTimeRemaining?: number
-    }>>(`${BASE_URL}/${id}/status`)
+    const response = await apiClient.get<
+      ApiResponse<{
+        status: 'pending' | 'processing' | 'completed' | 'failed'
+        progress: number
+        estimatedTimeRemaining?: number
+      }>
+    >(`${BASE_URL}/${id}/status`)
     return response.data.data
   },
 
   // Cancel report
   cancelReport: async (id: string) => {
-    const response = await apiClient.post<ApiResponse<void>>(`${BASE_URL}/${id}/cancel`)
+    const response = await apiClient.post<ApiResponse<void>>(
+      `${BASE_URL}/${id}/cancel`,
+    )
     return response.data.data
   },
 
   // Retry failed report
   retryReport: async (id: string) => {
-    const response = await apiClient.post<ApiResponse<void>>(`${BASE_URL}/${id}/retry`)
+    const response = await apiClient.post<ApiResponse<void>>(
+      `${BASE_URL}/${id}/retry`,
+    )
     return response.data.data
   },
 
@@ -106,13 +119,17 @@ export const reportApi = {
 
   // Preview report cost
   previewReportCost: async (request: ReportRequest) => {
-    const response = await apiClient.post<ApiResponse<{ credits: number; processingTime: string }>>(`${BASE_URL}/preview-cost`, request)
+    const response = await apiClient.post<
+      ApiResponse<{ credits: number; processingTime: string }>
+    >(`${BASE_URL}/preview-cost`, request)
     return response.data.data
   },
 
   // Get recent vessel reports
   getVesselReports: async (vesselId: string) => {
-    const response = await apiClient.get<ApiResponse<Array<ComplianceReport | ChronologyReport>>>(`${BASE_URL}/vessel/${vesselId}`)
+    const response = await apiClient.get<
+      ApiResponse<Array<ComplianceReport | ChronologyReport>>
+    >(`${BASE_URL}/vessel/${vesselId}`)
     return response.data.data
   },
 }

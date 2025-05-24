@@ -132,10 +132,10 @@ export interface AISIntegrity {
 export interface AISAnomaly {
   /** Type of AIS anomaly detected */
   type:
-    | 'location_jump'      // Impossible position change
-    | 'speed_anomaly'      // Speed exceeds vessel capability
-    | 'duplicate_mmsi'     // MMSI used by multiple vessels
-    | 'identity_mismatch'  // AIS data doesn't match vessel records
+    | 'location_jump' // Impossible position change
+    | 'speed_anomaly' // Speed exceeds vessel capability
+    | 'duplicate_mmsi' // MMSI used by multiple vessels
+    | 'identity_mismatch' // AIS data doesn't match vessel records
   /** ISO timestamp when anomaly was detected */
   timestamp: string
   /** Human-readable anomaly description */
@@ -201,12 +201,12 @@ export interface ChronologyEvent {
   timestamp: string
   /** Type of chronology event */
   type:
-    | 'port_call'        // Vessel visited a port
-    | 'sts_transfer'     // Ship-to-ship transfer
-    | 'dark_period'      // AIS turned off
+    | 'port_call' // Vessel visited a port
+    | 'sts_transfer' // Ship-to-ship transfer
+    | 'dark_period' // AIS turned off
     | 'ownership_change' // Vessel ownership changed
-    | 'flag_change'      // Vessel flag changed
-    | 'incident'         // Maritime incident
+    | 'flag_change' // Vessel flag changed
+    | 'incident' // Maritime incident
   /** Event location (if applicable) */
   location?: {
     /** Latitude in decimal degrees */

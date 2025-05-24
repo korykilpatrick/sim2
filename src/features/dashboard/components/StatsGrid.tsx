@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/common/Card'
 import { DashboardStat } from '../types'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
 interface StatsGridProps {
   stats: DashboardStat[]

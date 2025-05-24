@@ -11,7 +11,7 @@
     --synmax-calypso: 0 164 189;
     --synmax-green: 0 233 108;
     --synmax-lime: 139 255 91;
-    
+
     /* Light mode */
     --background: 255 255 255;
     --foreground: 19 28 42;
@@ -33,7 +33,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 188 100% 37%;
     --radius: 0.5rem;
-    
+
     /* Component-specific variables */
     --header-height: 64px;
     --sidebar-width: 280px;
@@ -66,41 +66,50 @@
 @layer base {
   body {
     @apply antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
   }
-  
+
   /* Synmax gradient backgrounds */
   .bg-gradient-synmax {
     background: linear-gradient(135deg, #00e96c 0%, #8bff5b 100%);
   }
-  
+
   .bg-gradient-synmax-dark {
     background: linear-gradient(180deg, #131c2a 0%, #0f1622 100%);
   }
-  
+
   /* Typography */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold;
   }
-  
+
   /* Synmax button styles */
   .btn-synmax {
     @apply relative overflow-hidden transition-all duration-300;
     background: linear-gradient(135deg, #00a4bd 0%, #00e96c 100%);
   }
-  
+
   .btn-synmax:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px -5px rgba(0, 164, 189, 0.3);
   }
-  
+
   /* Card hover effects */
   .card-hover {
     @apply transition-all duration-300;
   }
-  
+
   .card-hover:hover {
     @apply shadow-lg;
     transform: translateY(-4px);

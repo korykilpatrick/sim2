@@ -1,5 +1,5 @@
-export { TrackingWizard } from './TrackingWizard';
-export type { TrackingWizardData } from './TrackingWizard';
-export { VesselSelectionStep } from './VesselSelectionStep';
-export { CriteriaSelectionStep } from './CriteriaSelectionStep';
-export { DurationConfigStep } from './DurationConfigStep';
+export { TrackingWizard } from './TrackingWizard'
+export type { TrackingWizardData } from './TrackingWizard'
+export { VesselSelectionStep } from './VesselSelectionStep'
+export { CriteriaSelectionStep } from './CriteriaSelectionStep'
+export { DurationConfigStep } from './DurationConfigStep'

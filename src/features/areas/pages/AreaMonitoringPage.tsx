@@ -135,10 +135,7 @@ export default function AreaMonitoringPage() {
                   area={selectedArea.geometry}
                   vesselsInArea={[]} // Would fetch from API
                 />
-                <AreaAlerts
-                  alerts={alerts}
-                  onMarkRead={handleMarkAlertRead}
-                />
+                <AreaAlerts alerts={alerts} onMarkRead={handleMarkAlertRead} />
               </>
             ) : (
               <div className="bg-gray-50 rounded-lg p-8 text-center">
@@ -176,10 +173,7 @@ export default function AreaMonitoringPage() {
           all monitoring and remove all associated data.
         </p>
         <div className="mt-6 flex justify-end space-x-3">
-          <Button
-            variant="outline"
-            onClick={() => setDeleteModalOpen(false)}
-          >
+          <Button variant="outline" onClick={() => setDeleteModalOpen(false)}>
             Cancel
           </Button>
           <Button

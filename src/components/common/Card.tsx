@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
 /**
  * Props for the Card component.
@@ -39,7 +39,7 @@ interface CardFooterProps {
 
 /**
  * Container component with consistent styling, shadow, and border.
- * 
+ *
  * @component
  * @example
  * <Card padding="lg">
@@ -73,7 +73,7 @@ export function Card({ children, className, padding = 'md' }: CardProps) {
 /**
  * Card header section with title and optional action buttons.
  * Includes bottom border for visual separation.
- * 
+ *
  * @component
  * @example
  * <CardHeader actions={<Button size="sm">Edit</Button>}>
@@ -96,7 +96,7 @@ export function CardHeader({ children, actions, className }: CardHeaderProps) {
 
 /**
  * Styled title component for use within CardHeader.
- * 
+ *
  * @component
  */
 export function CardTitle({
@@ -117,7 +117,7 @@ export function CardTitle({
 
 /**
  * Main content area of the card with appropriate spacing.
- * 
+ *
  * @component
  */
 export function CardContent({
@@ -135,7 +135,7 @@ export function CardContent({
 /**
  * Card footer section for action buttons.
  * Right-aligned with top border for visual separation.
- * 
+ *
  * @component
  */
 export function CardFooter({ children, className }: CardFooterProps) {

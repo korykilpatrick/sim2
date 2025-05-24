@@ -16,23 +16,24 @@ export function AreaCostSummary({
   durationMonths,
 }: AreaCostSummaryProps) {
   const { calculateAreaMonitoring } = useCostCalculation()
-  
+
   const costDetailsResult = calculateAreaMonitoring({
     areaSize,
     criteriaCount,
     updateFrequency,
     durationMonths,
   })
-  
+
   // Check if we got the detailed result or just a number
-  const costDetails = typeof costDetailsResult === 'number' 
-    ? {
-        baseCredits: 0,
-        criteriaCredits: 0,
-        creditsPerDay: 0,
-        totalCredits: costDetailsResult
-      }
-    : costDetailsResult
+  const costDetails =
+    typeof costDetailsResult === 'number'
+      ? {
+          baseCredits: 0,
+          criteriaCredits: 0,
+          creditsPerDay: 0,
+          totalCredits: costDetailsResult,
+        }
+      : costDetailsResult
 
   return (
     <Card className="bg-gray-50 border-gray-200">
@@ -52,7 +53,7 @@ export function AreaCostSummary({
               {costDetails.baseCredits} credits
             </span>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">
               Criteria checks ({criteriaCount} selected)
@@ -90,7 +91,8 @@ export function AreaCostSummary({
               <div className="flex items-center space-x-2">
                 <TrendingUp className="h-4 w-4 text-primary-600" />
                 <span className="text-sm font-medium text-primary-900">
-                  Total for {durationMonths} {durationMonths === 1 ? 'month' : 'months'}
+                  Total for {durationMonths}{' '}
+                  {durationMonths === 1 ? 'month' : 'months'}
                 </span>
               </div>
               <span className="text-lg font-bold text-primary-600">

@@ -1,4 +1,4 @@
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/api/client'
 import { ApiResponse, PaginatedResponse } from '@/types/api'
 import {
   Vessel,
@@ -13,7 +13,7 @@ import {
 export const vesselsApi = {
   /**
    * Searches for vessels by various criteria.
-   * 
+   *
    * @param params - Search parameters (name, IMO, MMSI, etc.)
    * @returns Paginated list of matching vessels
    */
@@ -32,7 +32,7 @@ export const vesselsApi = {
 
   /**
    * Fetches detailed information for a specific vessel.
-   * 
+   *
    * @param id - Vessel ID
    * @returns Complete vessel data
    */
@@ -43,7 +43,7 @@ export const vesselsApi = {
 
   /**
    * Fetches all active vessel trackings for the current user.
-   * 
+   *
    * @returns List of user's vessel trackings
    */
   getMyTrackings: async () => {
@@ -59,7 +59,7 @@ export const vesselsApi = {
 
   /**
    * Creates a new vessel tracking subscription.
-   * 
+   *
    * @param data - Tracking configuration
    * @param data.vesselId - ID of vessel to track
    * @param data.criteria - Array of monitoring criteria IDs
@@ -80,7 +80,7 @@ export const vesselsApi = {
 
   /**
    * Fetches details of a specific tracking subscription.
-   * 
+   *
    * @param id - Tracking ID
    * @returns Tracking subscription details
    */
@@ -93,7 +93,7 @@ export const vesselsApi = {
 
   /**
    * Updates tracking subscription settings.
-   * 
+   *
    * @param id - Tracking ID
    * @param data - Fields to update
    * @returns Updated tracking subscription
@@ -108,7 +108,7 @@ export const vesselsApi = {
 
   /**
    * Pauses an active tracking subscription.
-   * 
+   *
    * @param id - Tracking ID
    * @returns Updated tracking subscription
    */
@@ -121,7 +121,7 @@ export const vesselsApi = {
 
   /**
    * Resumes a paused tracking subscription.
-   * 
+   *
    * @param id - Tracking ID
    * @returns Updated tracking subscription
    */
@@ -134,7 +134,7 @@ export const vesselsApi = {
 
   /**
    * Permanently deletes a tracking subscription.
-   * 
+   *
    * @param id - Tracking ID
    * @returns Success response
    */
@@ -147,7 +147,7 @@ export const vesselsApi = {
 
   /**
    * Fetches all available tracking criteria options.
-   * 
+   *
    * @returns List of tracking criteria with descriptions and costs
    */
   getTrackingCriteria: async () => {
@@ -158,7 +158,7 @@ export const vesselsApi = {
 
   /**
    * Calculates credit cost for a tracking configuration.
-   * 
+   *
    * @param data - Cost calculation parameters
    * @param data.vesselId - Target vessel ID
    * @param data.criteria - Selected criteria IDs

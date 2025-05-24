@@ -81,17 +81,17 @@ export interface TrackingCriteria {
   id: string
   /** Type of monitoring criterion */
   type:
-    | 'ais_reporting'      // AIS signal loss/gain
-    | 'dark_event'         // Extended AIS darkness
-    | 'spoofing'           // Location manipulation detection
-    | 'sts_event'          // Ship-to-ship transfer
-    | 'port_call'          // Port arrival/departure
-    | 'distress'           // Distress signal broadcast
-    | 'ownership_change'   // Vessel ownership transfer
-    | 'flag_change'        // Flag state change
-    | 'geofence'           // Geographic boundary crossing
-    | 'risk_change'        // Risk level escalation
-    | 'high_risk_area'     // Entry into high-risk zones
+    | 'ais_reporting' // AIS signal loss/gain
+    | 'dark_event' // Extended AIS darkness
+    | 'spoofing' // Location manipulation detection
+    | 'sts_event' // Ship-to-ship transfer
+    | 'port_call' // Port arrival/departure
+    | 'distress' // Distress signal broadcast
+    | 'ownership_change' // Vessel ownership transfer
+    | 'flag_change' // Flag state change
+    | 'geofence' // Geographic boundary crossing
+    | 'risk_change' // Risk level escalation
+    | 'high_risk_area' // Entry into high-risk zones
   /** Human-readable criterion name */
   name: string
   /** Detailed description of what this criterion monitors */

@@ -7,7 +7,7 @@ const router = Router()
 interface VesselTracking {
   id: string
   vesselId: string
-  vessel: typeof mockVessels[0]
+  vessel: (typeof mockVessels)[0]
   criteria: typeof mockTrackingCriteria
   status: 'active' | 'paused' | 'ended'
   startDate: string

@@ -1,12 +1,20 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import Input from '@/components/forms/Input'
 import Select from '@/components/forms/Select'
-import { useMonitoringCriteria, useAreaCostCalculation } from '../hooks/useAreaMonitoring'
+import {
+  useMonitoringCriteria,
+  useAreaCostCalculation,
+} from '../hooks/useAreaMonitoring'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 import type { CreateAreaRequest, MonitoringCriteria } from '../types'
 
 interface AreaConfigFormData {
@@ -48,8 +56,9 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
     },
   })
 
-  const { data: criteriaData, isLoading: isLoadingCriteria } = useMonitoringCriteria()
-  
+  const { data: criteriaData, isLoading: isLoadingCriteria } =
+    useMonitoringCriteria()
+
   const { data: costData } = useAreaCostCalculation({
     sizeKm2: areaSize,
     criteria: selectedCriteria,
@@ -81,13 +90,16 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
   const criteria = criteriaData || []
 
   // Group criteria by category
-  const criteriaByCategory = criteria.reduce((acc: Record<string, MonitoringCriteria[]>, criterion) => {
-    if (!acc[criterion.category]) {
-      acc[criterion.category] = []
-    }
-    acc[criterion.category].push(criterion)
-    return acc
-  }, {} as Record<string, typeof criteria>)
+  const criteriaByCategory = criteria.reduce(
+    (acc: Record<string, MonitoringCriteria[]>, criterion) => {
+      if (!acc[criterion.category]) {
+        acc[criterion.category] = []
+      }
+      acc[criterion.category].push(criterion)
+      return acc
+    },
+    {} as Record<string, typeof criteria>,
+  )
 
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
@@ -102,7 +114,7 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             {...register('name', { required: 'Area name is required' })}
             error={errors.name?.message}
           />
-          
+
           <Input
             label="Description (optional)"
             placeholder="Brief description of this monitoring area"
@@ -113,7 +125,9 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             <Select
               label="Update Frequency"
               {...register('updateFrequency')}
-              onChange={(e) => setUpdateFrequency(Number(e.target.value) as 3 | 6 | 12 | 24)}
+              onChange={(e) =>
+                setUpdateFrequency(Number(e.target.value) as 3 | 6 | 12 | 24)
+              }
               error={errors.updateFrequency?.message}
             >
               <option value="3">Every 3 hours</option>
@@ -156,7 +170,12 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             </div>
           ) : (
             <div className="space-y-6">
-              {(Object.entries(criteriaByCategory) as [string, MonitoringCriteria[]][]).map(([category, items]) => (
+              {(
+                Object.entries(criteriaByCategory) as [
+                  string,
+                  MonitoringCriteria[],
+                ][]
+              ).map(([category, items]) => (
                 <div key={category}>
                   <h4 className="text-sm font-medium text-gray-900 mb-3 capitalize">
                     {category.replace('_', ' ')}
@@ -208,10 +227,14 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Credits per day</span>
-                <span className="font-medium">{costData?.creditsPerDay || 0}</span>
+                <span className="font-medium">
+                  {costData?.creditsPerDay || 0}
+                </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Total credits ({duration} days)</span>
+                <span className="text-sm text-gray-600">
+                  Total credits ({duration} days)
+                </span>
                 <span className="text-lg font-bold text-primary-600">
                   {costData?.totalCredits || 0}
                 </span>

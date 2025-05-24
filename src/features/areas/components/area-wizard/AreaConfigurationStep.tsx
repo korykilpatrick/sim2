@@ -28,7 +28,7 @@ export function AreaConfigurationStep({
         <h3 className="text-lg font-medium text-gray-900 mb-4">
           Monitoring Configuration
         </h3>
-        
+
         <MonitoringCriteriaSelector
           selectedCriteria={monitoringCriteria}
           onCriteriaChange={onMonitoringCriteriaChange}
@@ -39,7 +39,7 @@ export function AreaConfigurationStep({
         <h3 className="text-lg font-medium text-gray-900 mb-4">
           Update Settings
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -48,7 +48,11 @@ export function AreaConfigurationStep({
             </label>
             <Select
               value={updateFrequency.toString()}
-              onChange={(e) => onUpdateFrequencyChange(Number(e.target.value) as 3 | 6 | 12 | 24)}
+              onChange={(e) =>
+                onUpdateFrequencyChange(
+                  Number(e.target.value) as 3 | 6 | 12 | 24,
+                )
+              }
             >
               <option value="3">Every 3 hours</option>
               <option value="6">Every 6 hours</option>

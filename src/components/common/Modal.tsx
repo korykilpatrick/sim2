@@ -29,7 +29,7 @@ export interface ModalProps {
 /**
  * Accessible modal dialog component with overlay.
  * Supports keyboard navigation, focus management, and customizable behavior.
- * 
+ *
  * @component
  * @example
  * <Modal

@@ -1,19 +1,19 @@
-import { Children, ReactElement, cloneElement } from 'react';
-import { cn } from '@/lib/utils';
-import { WizardProgress } from './WizardProgress';
-import { WizardNavigation } from './WizardNavigation';
-import type { UseWizardReturn } from './useWizard';
+import { Children, ReactElement, cloneElement } from 'react'
+import { cn } from '@/utils/cn'
+import { WizardProgress } from './WizardProgress'
+import { WizardNavigation } from './WizardNavigation'
+import type { UseWizardReturn } from './useWizard'
 
 interface FormWizardProps<T = Record<string, unknown>> {
-  wizard: UseWizardReturn<T>;
-  children: ReactElement[];
-  showProgress?: boolean;
-  showNavigation?: boolean;
-  className?: string;
-  progressClassName?: string;
-  navigationClassName?: string;
-  contentClassName?: string;
-  onStepValidate?: (stepIndex: number) => boolean | Promise<boolean>;
+  wizard: UseWizardReturn<T>
+  children: ReactElement[]
+  showProgress?: boolean
+  showNavigation?: boolean
+  className?: string
+  progressClassName?: string
+  navigationClassName?: string
+  contentClassName?: string
+  onStepValidate?: (stepIndex: number) => boolean | Promise<boolean>
 }
 
 export function FormWizard<T = Record<string, unknown>>({
@@ -37,23 +37,23 @@ export function FormWizard<T = Record<string, unknown>>({
     goToPrevious,
     handleComplete,
     canGoToStep,
-  } = wizard;
+  } = wizard
 
   const handleNext = async () => {
     if (onStepValidate) {
-      const isValid = await onStepValidate(currentStep);
-      if (!isValid) return;
+      const isValid = await onStepValidate(currentStep)
+      if (!isValid) return
     }
-    goToNext();
-  };
+    goToNext()
+  }
 
   const handleStepClick = (index: number) => {
     if (canGoToStep(index)) {
-      goToStep(index);
+      goToStep(index)
     }
-  };
+  }
 
-  const activeChild = Children.toArray(children)[currentStep] as ReactElement;
+  const activeChild = Children.toArray(children)[currentStep] as ReactElement
 
   return (
     <div className={cn('w-full', className)}>
@@ -65,11 +65,11 @@ export function FormWizard<T = Record<string, unknown>>({
           className={progressClassName}
         />
       )}
-      
+
       <div className={cn('min-h-[300px]', contentClassName)}>
         {activeChild && cloneElement(activeChild, { isActive: true })}
       </div>
-      
+
       {showNavigation && (
         <WizardNavigation
           onPrevious={goToPrevious}
@@ -81,5 +81,5 @@ export function FormWizard<T = Record<string, unknown>>({
         />
       )}
     </div>
-  );
+  )
 }

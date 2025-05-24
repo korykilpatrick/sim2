@@ -10,7 +10,8 @@ export const reportKeys = {
   status: (id: string) => [...reportKeys.all, 'status', id] as const,
   templates: () => [...reportKeys.all, 'templates'] as const,
   statistics: () => [...reportKeys.all, 'statistics'] as const,
-  vesselReports: (vesselId: string) => [...reportKeys.all, 'vessel', vesselId] as const,
+  vesselReports: (vesselId: string) =>
+    [...reportKeys.all, 'vessel', vesselId] as const,
 }
 
 export * from './useReports'

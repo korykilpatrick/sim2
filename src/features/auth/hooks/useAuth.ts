@@ -11,15 +11,15 @@ import { authKeys } from './'
 /**
  * Authentication hook providing login, register, logout functionality.
  * Manages authentication state and user data with React Query.
- * 
+ *
  * @returns Authentication methods and state
- * 
+ *
  * @example
  * const { login, logout, user, isAuthenticated } = useAuth();
- * 
+ *
  * // Login
  * login({ email: 'user@example.com', password: 'password' });
- * 
+ *
  * // Check auth state
  * if (isAuthenticated) {
  *   console.log('Logged in as:', user.name);

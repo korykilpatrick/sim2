@@ -1,23 +1,23 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import Button from '@/components/common/Button';
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { ReactNode } from 'react'
+import { cn } from '@/utils/cn'
+import Button from '@/components/common/Button'
+import { ArrowLeft } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 interface PageLayoutProps {
-  title: string;
-  subtitle?: string;
+  title: string
+  subtitle?: string
   action?: {
-    label: string;
-    onClick: () => void;
-    icon?: ReactNode;
-  };
-  backButton?: boolean;
-  backTo?: string;
-  children: ReactNode;
-  className?: string;
-  headerClassName?: string;
-  contentClassName?: string;
+    label: string
+    onClick: () => void
+    icon?: ReactNode
+  }
+  backButton?: boolean
+  backTo?: string
+  children: ReactNode
+  className?: string
+  headerClassName?: string
+  contentClassName?: string
 }
 
 export function PageLayout({
@@ -31,15 +31,15 @@ export function PageLayout({
   headerClassName,
   contentClassName,
 }: PageLayoutProps) {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleBack = () => {
     if (backTo) {
-      navigate(backTo);
+      navigate(backTo)
     } else {
-      navigate(-1);
+      navigate(-1)
     }
-  };
+  }
 
   return (
     <div className={cn('h-full', className)}>
@@ -53,7 +53,7 @@ export function PageLayout({
             Back
           </button>
         )}
-        
+
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">{title}</h1>
@@ -61,7 +61,7 @@ export function PageLayout({
               <p className="mt-1 text-sm text-gray-600">{subtitle}</p>
             )}
           </div>
-          
+
           {action && (
             <Button onClick={action.onClick}>
               {action.icon && <span className="mr-2">{action.icon}</span>}
@@ -70,10 +70,8 @@ export function PageLayout({
           )}
         </div>
       </div>
-      
-      <div className={cn('', contentClassName)}>
-        {children}
-      </div>
+
+      <div className={cn('', contentClassName)}>{children}</div>
     </div>
-  );
+  )
 }

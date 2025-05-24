@@ -17,7 +17,11 @@ import { PageLayout } from '@/components/layouts'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Modal from '@/components/common/Modal'
 import { Plus } from 'lucide-react'
-import type { ReportFilters, ComplianceReport, ChronologyReport } from '../types'
+import type {
+  ReportFilters,
+  ComplianceReport,
+  ChronologyReport,
+} from '../types'
 import type { ReportConfiguration } from '../components/report-wizard/ReportConfigurationStep'
 
 export default function ReportsMainPage() {
@@ -55,10 +59,18 @@ export default function ReportsMainPage() {
         vesselId: data.vessel.id,
         reportType: data.reportType,
         options: {
-          timeRange: data.configuration.timeRange ? {
-            start: data.configuration.startDate || data.configuration.startDateTime || '',
-            end: data.configuration.endDate || data.configuration.endDateTime || '',
-          } : undefined,
+          timeRange: data.configuration.timeRange
+            ? {
+                start:
+                  data.configuration.startDate ||
+                  data.configuration.startDateTime ||
+                  '',
+                end:
+                  data.configuration.endDate ||
+                  data.configuration.endDateTime ||
+                  '',
+              }
+            : undefined,
           includeDetails: true,
         },
       })
@@ -72,7 +84,10 @@ export default function ReportsMainPage() {
     navigate(`/reports/${report.id}`)
   }
 
-  const handleDownloadReport = (_reportId: string, _format: 'pdf' | 'excel' | 'json') => {
+  const handleDownloadReport = (
+    _reportId: string,
+    _format: 'pdf' | 'excel' | 'json',
+  ) => {
     // Download report logic would be implemented here
     // TODO: Implement download functionality
   }

@@ -117,13 +117,13 @@ router.post('/calculate-cost', async (req, res) => {
 
   // Convert duration in days to months
   const durationMonths = Math.ceil(duration / 30)
-  
+
   // Calculate detailed cost
   const costDetails = calculateAreaMonitoringCostDetailed(
     sizeKm2,
     criteria.length,
     updateFrequency,
-    durationMonths
+    durationMonths,
   )
 
   res.json({
@@ -186,7 +186,7 @@ router.get('/statistics', async (_req, res) => {
     success: true,
     data: {
       totalAreas: mockAreas.length,
-      activeMonitoring: mockAreas.filter(a => a.monitoring?.isActive).length,
+      activeMonitoring: mockAreas.filter((a) => a.monitoring?.isActive).length,
       totalAlerts: 0,
       creditsUsedToday: 0,
     },

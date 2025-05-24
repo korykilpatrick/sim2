@@ -1,5 +1,10 @@
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { ReportTemplate } from '../types'
 import { FileText, Clock, CreditCard } from 'lucide-react'

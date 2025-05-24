@@ -1,6 +1,6 @@
 /**
  * Standard API response wrapper for all endpoints.
- * 
+ *
  * @template T - The type of data returned in the response
  */
 export interface ApiResponse<T = unknown> {
@@ -24,9 +24,9 @@ export interface ApiResponse<T = unknown> {
 /**
  * API response wrapper for paginated data sets.
  * Extends ApiResponse with pagination metadata.
- * 
+ *
  * @template T - The type of items in the paginated array
- * 
+ *
  * @example
  * // Response type for paginated vessel list
  * type VesselListResponse = PaginatedResponse<Vessel>

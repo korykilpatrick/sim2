@@ -1,14 +1,14 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import { ReactNode } from 'react'
+import { cn } from '@/utils/cn'
 
 interface ListDetailLayoutProps {
-  list: ReactNode;
-  detail: ReactNode;
-  emptyDetail?: ReactNode;
-  hasSelection?: boolean;
-  className?: string;
-  listClassName?: string;
-  detailClassName?: string;
+  list: ReactNode
+  detail: ReactNode
+  emptyDetail?: ReactNode
+  hasSelection?: boolean
+  className?: string
+  listClassName?: string
+  detailClassName?: string
 }
 
 export function ListDetailLayout({
@@ -22,13 +22,11 @@ export function ListDetailLayout({
 }: ListDetailLayoutProps) {
   return (
     <div className={cn('flex h-full gap-6', className)}>
-      <div className={cn('w-96 flex-shrink-0', listClassName)}>
-        {list}
-      </div>
-      
+      <div className={cn('w-96 flex-shrink-0', listClassName)}>{list}</div>
+
       <div className={cn('flex-1', detailClassName)}>
-        {hasSelection ? detail : (emptyDetail || detail)}
+        {hasSelection ? detail : emptyDetail || detail}
       </div>
     </div>
-  );
+  )
 }

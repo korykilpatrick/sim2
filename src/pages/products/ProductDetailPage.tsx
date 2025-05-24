@@ -5,18 +5,23 @@ import Header from '@/components/layout/Header'
 import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { productApi } from '@/services/products'
-import { productKeys } from '@/services/productKeys'
+import { productApi } from '@/features/products/services'
+import { productKeys } from '@/features/products/services/productKeys'
 import { useCartStore, cartSelectors } from '@/stores/cartStore'
-import { formatPrice, hasStandardPricing, getProductPrice } from '@/utils/formatPrice'
-
+import {
+  formatPrice,
+  hasStandardPricing,
+  getProductPrice,
+} from '@/utils/formatPrice'
 
 export default function ProductDetailPage() {
   const { productId } = useParams<{ productId: string }>()
   const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
   const [addedToCart, setAddedToCart] = useState(false)
-  const [selectedBilling, setSelectedBilling] = useState<'monthly' | 'annual'>('monthly')
+  const [selectedBilling, setSelectedBilling] = useState<'monthly' | 'annual'>(
+    'monthly',
+  )
   const addItem = useCartStore(cartSelectors.addItem)
 
   const { data: product, isLoading } = useQuery({
@@ -40,7 +45,9 @@ export default function ProductDetailPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Product not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Product not found
+          </h1>
           <Button onClick={() => navigate('/')} className="mt-4">
             Back to Home
           </Button>
@@ -72,7 +79,7 @@ export default function ProductDetailPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       {/* Back Navigation */}
       <div className="bg-gray-100 border-b">
         <div className="mx-auto max-w-7xl px-4 py-3">
@@ -97,7 +104,9 @@ export default function ProductDetailPage() {
 
             {/* Product Info */}
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {product.name}
+              </h1>
               <div className="mt-4">
                 {hasStandardPricing(product) ? (
                   <>
@@ -129,13 +138,22 @@ export default function ProductDetailPage() {
                     </div>
                     <p className="mt-2 text-2xl font-semibold text-primary-600">
                       {formatPrice(getProductPrice(product, selectedBilling))}
-                      <span className="text-base">/{selectedBilling === 'monthly' ? 'month' : 'year'}</span>
-                      {selectedBilling === 'annual' && product.pricing.annual && product.pricing.monthly && 
-                       product.pricing.annual < product.pricing.monthly * 12 && (
-                        <span className="text-sm text-secondary-600 ml-2">
-                          Save ${(product.pricing.monthly * 12 - product.pricing.annual).toLocaleString()}
-                        </span>
-                      )}
+                      <span className="text-base">
+                        /{selectedBilling === 'monthly' ? 'month' : 'year'}
+                      </span>
+                      {selectedBilling === 'annual' &&
+                        product.pricing.annual &&
+                        product.pricing.monthly &&
+                        product.pricing.annual <
+                          product.pricing.monthly * 12 && (
+                          <span className="text-sm text-secondary-600 ml-2">
+                            Save $
+                            {(
+                              product.pricing.monthly * 12 -
+                              product.pricing.annual
+                            ).toLocaleString()}
+                          </span>
+                        )}
                     </p>
                   </>
                 ) : (
@@ -144,15 +162,17 @@ export default function ProductDetailPage() {
                   </p>
                 )}
               </div>
-              
+
               <div className="mt-6 space-y-4">
                 <p className="text-gray-600 leading-relaxed">
                   {product.descriptions.detailed}
                 </p>
-                
+
                 {product.descriptions.features && (
                   <div className="mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Features</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      Key Features
+                    </h3>
                     <ul className="space-y-2">
                       {product.descriptions.features.map((feature, index) => (
                         <li key={index} className="flex items-start">
@@ -163,17 +183,25 @@ export default function ProductDetailPage() {
                     </ul>
                   </div>
                 )}
-                
+
                 {product.specifications && (
                   <div className="mt-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">Specifications</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                      Specifications
+                    </h3>
                     <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <div key={key}>
-                          <dt className="text-sm text-gray-500 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}:</dt>
-                          <dd className="text-sm font-medium text-gray-900">{value}</dd>
-                        </div>
-                      ))}
+                      {Object.entries(product.specifications).map(
+                        ([key, value]) => (
+                          <div key={key}>
+                            <dt className="text-sm text-gray-500 capitalize">
+                              {key.replace(/([A-Z])/g, ' $1').trim()}:
+                            </dt>
+                            <dd className="text-sm font-medium text-gray-900">
+                              {value}
+                            </dd>
+                          </div>
+                        ),
+                      )}
                     </dl>
                   </div>
                 )}

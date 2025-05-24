@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import LoadingSpinner from '@/components/feedback/LoadingSpinner';
+import { ReactNode } from 'react'
+import { cn } from '@/utils/cn'
+import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 
 interface SearchResultsProps<T> {
-  results: T[];
-  isLoading?: boolean;
-  renderItem: (item: T, index: number) => ReactNode;
-  onItemClick?: (item: T) => void;
-  emptyMessage?: string;
-  className?: string;
-  itemClassName?: string;
+  results: T[]
+  isLoading?: boolean
+  renderItem: (item: T, index: number) => ReactNode
+  onItemClick?: (item: T) => void
+  emptyMessage?: string
+  className?: string
+  itemClassName?: string
 }
 
 export function SearchResults<T>({
@@ -26,7 +26,7 @@ export function SearchResults<T>({
       <div className={cn('flex items-center justify-center py-8', className)}>
         <LoadingSpinner size="sm" />
       </div>
-    );
+    )
   }
 
   if (results.length === 0) {
@@ -34,7 +34,7 @@ export function SearchResults<T>({
       <div className={cn('py-8 text-center text-sm text-gray-500', className)}>
         {emptyMessage}
       </div>
-    );
+    )
   }
 
   return (
@@ -47,12 +47,12 @@ export function SearchResults<T>({
             'cursor-pointer transition-colors',
             'hover:bg-gray-50',
             onItemClick && 'cursor-pointer',
-            itemClassName
+            itemClassName,
           )}
         >
           {renderItem(item, index)}
         </div>
       ))}
     </div>
-  );
+  )
 }

@@ -7,13 +7,13 @@ export const DATE_FORMATS = {
   },
   input: {
     date: 'yyyy-MM-dd',
-    dateTime: 'yyyy-MM-dd\'T\'HH:mm',
+    dateTime: "yyyy-MM-dd'T'HH:mm",
   },
   api: {
     date: 'yyyy-MM-dd',
-    dateTime: 'yyyy-MM-dd\'T\'HH:mm:ss\'Z\'',
+    dateTime: "yyyy-MM-dd'T'HH:mm:ss'Z'",
   },
-} as const;
+} as const
 
 export const DURATION_OPTIONS = [
   { value: 7, label: '1 week' },
@@ -23,7 +23,7 @@ export const DURATION_OPTIONS = [
   { value: 90, label: '3 months' },
   { value: 180, label: '6 months' },
   { value: 365, label: '1 year' },
-] as const;
+] as const
 
 export const TIME_UNITS = {
   second: 1000,
@@ -33,4 +33,4 @@ export const TIME_UNITS = {
   week: 7 * 24 * 60 * 60 * 1000,
   month: 30 * 24 * 60 * 60 * 1000,
   year: 365 * 24 * 60 * 60 * 1000,
-} as const;
+} as const

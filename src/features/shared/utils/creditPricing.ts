@@ -37,89 +37,96 @@ export const PRICING = {
       { credits: 10000, price: 6000, bonus: 4000 },
     ],
   },
-} as const;
+} as const
 
 // Helper functions
 export function calculateVesselTrackingCost(
   criteriaCount: number,
-  durationDays: number
+  durationDays: number,
 ): number {
-  return criteriaCount * PRICING.vessel.tracking.baseRate * durationDays;
+  return criteriaCount * PRICING.vessel.tracking.baseRate * durationDays
 }
 
 export function calculateAreaMonitoringCost(
   size: 'small' | 'medium' | 'large' | 'veryLarge',
   durationDays: number,
-  criteriaCount: number = 1
+  criteriaCount: number = 1,
 ): number {
-  const sizeMultiplier = PRICING.area.monitoring.multipliers[size];
-  return PRICING.area.monitoring.baseRate * sizeMultiplier * durationDays * criteriaCount;
+  const sizeMultiplier = PRICING.area.monitoring.multipliers[size]
+  return (
+    PRICING.area.monitoring.baseRate *
+    sizeMultiplier *
+    durationDays *
+    criteriaCount
+  )
 }
 
 export function calculateAreaMonitoringCostDetailed(
   areaSize: number,
   criteriaCount: number,
   updateFrequency: number,
-  durationMonths: number
+  durationMonths: number,
 ): {
-  baseCredits: number;
-  criteriaCredits: number;
-  creditsPerDay: number;
-  totalCredits: number;
+  baseCredits: number
+  criteriaCredits: number
+  creditsPerDay: number
+  totalCredits: number
 } {
   // Determine area size category based on area size in square km
-  let sizeCategory: 'small' | 'medium' | 'large' | 'veryLarge';
-  if (areaSize < 1000) sizeCategory = 'small';
-  else if (areaSize < 5000) sizeCategory = 'medium';
-  else if (areaSize < 10000) sizeCategory = 'large';
-  else sizeCategory = 'veryLarge';
+  let sizeCategory: 'small' | 'medium' | 'large' | 'veryLarge'
+  if (areaSize < 1000) sizeCategory = 'small'
+  else if (areaSize < 5000) sizeCategory = 'medium'
+  else if (areaSize < 10000) sizeCategory = 'large'
+  else sizeCategory = 'veryLarge'
 
-  const sizeMultiplier = PRICING.area.monitoring.multipliers[sizeCategory];
-  const updatesPerDay = Math.floor(24 / updateFrequency);
-  const durationDays = durationMonths * 30;
-  
-  const baseCredits = PRICING.area.monitoring.baseRate * sizeMultiplier;
-  const criteriaCredits = criteriaCount * 2; // 2 credits per criteria
-  const creditsPerDay = (baseCredits + criteriaCredits) * updatesPerDay;
-  const totalCredits = creditsPerDay * durationDays;
+  const sizeMultiplier = PRICING.area.monitoring.multipliers[sizeCategory]
+  const updatesPerDay = Math.floor(24 / updateFrequency)
+  const durationDays = durationMonths * 30
+
+  const baseCredits = PRICING.area.monitoring.baseRate * sizeMultiplier
+  const criteriaCredits = criteriaCount * 2 // 2 credits per criteria
+  const creditsPerDay = (baseCredits + criteriaCredits) * updatesPerDay
+  const totalCredits = creditsPerDay * durationDays
 
   return {
     baseCredits,
     criteriaCredits,
     creditsPerDay,
     totalCredits,
-  };
+  }
 }
 
 export function calculateFleetTrackingCost(
   vesselCount: number,
-  months: number
+  months: number,
 ): number {
-  return vesselCount * PRICING.vessel.fleet.monthlyRate * months;
+  return vesselCount * PRICING.vessel.fleet.monthlyRate * months
 }
 
-export function getReportCost(reportType: keyof typeof PRICING.reports): number {
-  return PRICING.reports[reportType];
+export function getReportCost(
+  reportType: keyof typeof PRICING.reports,
+): number {
+  return PRICING.reports[reportType]
 }
 
 export function getCreditPackageValue(credits: number): {
-  basePrice: number;
-  bonus: number;
-  totalCredits: number;
-  pricePerCredit: number;
+  basePrice: number
+  bonus: number
+  totalCredits: number
+  pricePerCredit: number
 } {
-  const pkg = PRICING.credits.packages.find(p => p.credits === credits);
+  const pkg = PRICING.credits.packages.find((p) => p.credits === credits)
   if (!pkg) {
-    throw new Error(`No package found for ${credits} credits`);
+    throw new Error(`No package found for ${credits} credits`)
   }
 
-  const totalCredits = pkg.credits + pkg.bonus;
-  const pricePerCredit = pkg.price / totalCredits;
+  const totalCredits = pkg.credits + pkg.bonus
+  const pricePerCredit = pkg.price / totalCredits
 
   return {
     basePrice: pkg.price,
     bonus: pkg.bonus,
     totalCredits,
     pricePerCredit,
-  };
+  }
 }

@@ -1,10 +1,15 @@
 import React from 'react'
 import { ComplianceReport } from '../types'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/common/Card'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import RiskScoreBadge from '@/features/compliance/components/RiskScoreBadge'
 import { Download, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
 interface ComplianceReportViewProps {
   report: ComplianceReport
@@ -39,11 +44,7 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
           </p>
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onDownload('pdf')}
-          >
+          <Button variant="outline" size="sm" onClick={() => onDownload('pdf')}>
             <Download className="h-4 w-4 mr-1" />
             PDF
           </Button>
@@ -92,9 +93,15 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
             <CardTitle>Risk Assessment</CardTitle>
             <RiskScoreBadge
               score={report.riskAssessment.overallScore}
-              level={report.riskAssessment.overallScore >= 75 ? 'critical' : 
-                     report.riskAssessment.overallScore >= 50 ? 'high' :
-                     report.riskAssessment.overallScore >= 25 ? 'medium' : 'low'}
+              level={
+                report.riskAssessment.overallScore >= 75
+                  ? 'critical'
+                  : report.riskAssessment.overallScore >= 50
+                    ? 'high'
+                    : report.riskAssessment.overallScore >= 25
+                      ? 'medium'
+                      : 'low'
+              }
             />
           </div>
         </CardHeader>
@@ -192,7 +199,8 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
               </div>
             )}
             <div className="text-xs text-gray-500">
-              Last checked: {new Date(report.sanctionsScreening.lastChecked).toLocaleString()}
+              Last checked:{' '}
+              {new Date(report.sanctionsScreening.lastChecked).toLocaleString()}
             </div>
           </div>
         </CardContent>

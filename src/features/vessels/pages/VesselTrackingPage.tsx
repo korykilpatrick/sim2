@@ -3,7 +3,10 @@ import { useMutation } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { vesselsApi } from '../services/vessels'
 import { PageLayout } from '@/components/layouts'
-import { TrackingWizard, TrackingWizardData } from '../components/tracking-wizard'
+import {
+  TrackingWizard,
+  TrackingWizardData,
+} from '../components/tracking-wizard'
 import type { AxiosError } from 'axios'
 import type { ApiResponse } from '@/types/api'
 

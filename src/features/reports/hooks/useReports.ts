@@ -56,8 +56,7 @@ export function useCreateBulkReports() {
     },
     onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
-        error.response?.data?.error?.message ||
-          'Failed to create bulk reports',
+        error.response?.data?.error?.message || 'Failed to create bulk reports',
       )
     },
   })

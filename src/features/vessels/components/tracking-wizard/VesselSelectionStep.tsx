@@ -1,10 +1,10 @@
-import React from 'react';
-import { useVesselSearch, VesselSearchInput } from '../vessel-search';
-import type { Vessel } from '../../types';
+import React from 'react'
+import { useVesselSearch, VesselSearchInput } from '../vessel-search'
+import type { Vessel } from '../../types'
 
 interface VesselSelectionStepProps {
-  initialVessel?: Vessel | null;
-  onVesselSelect: (vessel: Vessel | null) => void;
+  initialVessel?: Vessel | null
+  onVesselSelect: (vessel: Vessel | null) => void
 }
 
 export function VesselSelectionStep({
@@ -20,17 +20,17 @@ export function VesselSelectionStep({
     selectVessel,
     clearSelection,
     error,
-  } = useVesselSearch();
+  } = useVesselSearch()
 
   React.useEffect(() => {
     if (initialVessel) {
-      selectVessel(initialVessel);
+      selectVessel(initialVessel)
     }
-  }, [initialVessel, selectVessel]);
+  }, [initialVessel, selectVessel])
 
   React.useEffect(() => {
-    onVesselSelect(selectedVessel);
-  }, [selectedVessel, onVesselSelect]);
+    onVesselSelect(selectedVessel)
+  }, [selectedVessel, onVesselSelect])
 
   return (
     <div className="space-y-4">
@@ -55,5 +55,5 @@ export function VesselSelectionStep({
         required
       />
     </div>
-  );
+  )
 }

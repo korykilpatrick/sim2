@@ -1,12 +1,11 @@
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/api/client'
 import type { ApiResponse } from '@/types/api'
 import { DashboardStat, DashboardActivity, DashboardData } from '../types'
 
 export const dashboardService = {
   async getStats(): Promise<DashboardStat[]> {
-    const response = await apiClient.get<ApiResponse<DashboardStat[]>>(
-      '/dashboard/stats',
-    )
+    const response =
+      await apiClient.get<ApiResponse<DashboardStat[]>>('/dashboard/stats')
     return response.data.data
   },
 
@@ -18,7 +17,8 @@ export const dashboardService = {
   },
 
   async getDashboardData(): Promise<DashboardData> {
-    const response = await apiClient.get<ApiResponse<DashboardData>>('/dashboard')
+    const response =
+      await apiClient.get<ApiResponse<DashboardData>>('/dashboard')
     return response.data.data
   },
 }

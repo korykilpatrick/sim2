@@ -29,7 +29,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       {/* Checkout Form */}
       <div className="mx-auto max-w-2xl px-4 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-8">Payment</h1>
@@ -126,12 +126,7 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              variant="synmax"
-              size="lg"
-              fullWidth
-            >
+            <Button type="submit" variant="synmax" size="lg" fullWidth>
               Pay Now
             </Button>
           </form>

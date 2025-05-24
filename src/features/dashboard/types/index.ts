@@ -48,10 +48,10 @@ export interface DashboardActivity {
   id: string
   /** Type of activity */
   type:
-    | 'vessel_tracked'    // New vessel tracking started
-    | 'area_created'      // New monitoring area created
-    | 'report_generated'  // Compliance/chronology report generated
-    | 'alert_triggered'   // Monitoring alert triggered
+    | 'vessel_tracked' // New vessel tracking started
+    | 'area_created' // New monitoring area created
+    | 'report_generated' // Compliance/chronology report generated
+    | 'alert_triggered' // Monitoring alert triggered
   /** Activity title */
   title: string
   /** Detailed activity description */

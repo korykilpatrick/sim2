@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
-import { cn } from '@/lib/utils';
+import { ReactNode } from 'react'
+import { cn } from '@/utils/cn'
 
 interface DashboardLayoutProps {
-  stats?: ReactNode;
-  filters?: ReactNode;
-  content: ReactNode;
-  sidebar?: ReactNode;
-  className?: string;
-  statsClassName?: string;
-  filtersClassName?: string;
-  contentClassName?: string;
-  sidebarClassName?: string;
+  stats?: ReactNode
+  filters?: ReactNode
+  content: ReactNode
+  sidebar?: ReactNode
+  className?: string
+  statsClassName?: string
+  filtersClassName?: string
+  contentClassName?: string
+  sidebarClassName?: string
 }
 
 export function DashboardLayout({
@@ -26,23 +26,13 @@ export function DashboardLayout({
 }: DashboardLayoutProps) {
   return (
     <div className={cn('flex h-full flex-col', className)}>
-      {stats && (
-        <div className={cn('mb-6', statsClassName)}>
-          {stats}
-        </div>
-      )}
-      
-      {filters && (
-        <div className={cn('mb-6', filtersClassName)}>
-          {filters}
-        </div>
-      )}
-      
+      {stats && <div className={cn('mb-6', statsClassName)}>{stats}</div>}
+
+      {filters && <div className={cn('mb-6', filtersClassName)}>{filters}</div>}
+
       <div className="flex flex-1 gap-6">
-        <div className={cn('flex-1', contentClassName)}>
-          {content}
-        </div>
-        
+        <div className={cn('flex-1', contentClassName)}>{content}</div>
+
         {sidebar && (
           <div className={cn('w-80 flex-shrink-0', sidebarClassName)}>
             {sidebar}
@@ -50,5 +40,5 @@ export function DashboardLayout({
         )}
       </div>
     </div>
-  );
+  )
 }

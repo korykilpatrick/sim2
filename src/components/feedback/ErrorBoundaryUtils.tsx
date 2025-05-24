@@ -3,14 +3,14 @@ import ErrorBoundary, { ErrorBoundaryProps } from './ErrorBoundary'
 
 /**
  * Hook for programmatically triggering error boundaries.
- * 
+ *
  * @returns {Function} A function that throws the provided error when called
- * 
+ *
  * @example
  * ```tsx
  * const Component = () => {
  *   const handleError = useErrorHandler();
- *   
+ *
  *   const fetchData = async () => {
  *     try {
  *       const data = await api.getData();
@@ -30,17 +30,17 @@ export const useErrorHandler = () => {
 /**
  * Higher-order component that wraps a component with an ErrorBoundary.
  * Provides a convenient way to add error handling to any component.
- * 
+ *
  * @template P - The props type of the wrapped component
  * @param {React.ComponentType<P>} Component - The component to wrap with error boundary
  * @param {Omit<ErrorBoundaryProps, 'children'>} [errorBoundaryProps] - Optional props to pass to the ErrorBoundary
  * @returns {React.ComponentType<P>} The wrapped component with error boundary functionality
- * 
+ *
  * @example
  * ```tsx
  * // Basic usage
  * const SafeComponent = withErrorBoundary(MyComponent);
- * 
+ *
  * // With custom error handling
  * const SafeComponent = withErrorBoundary(MyComponent, {
  *   onError: (error, errorInfo) => {

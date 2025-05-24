@@ -12,7 +12,7 @@ export const DEFAULT_DASHBOARD_STATS: DashboardStat[] = [
     changeType: 'positive',
   },
   {
-    name: 'Area Monitoring', 
+    name: 'Area Monitoring',
     value: '0',
     change: '+0%',
     changeType: 'positive',

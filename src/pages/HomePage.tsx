@@ -3,8 +3,8 @@ import Button from '@/components/common/Button'
 import Header from '@/components/layout/Header'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { productApi } from '@/services/products'
-import { productKeys } from '@/services/productKeys'
+import { productApi } from '@/features/products/services'
+import { productKeys } from '@/features/products/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
 
 export default function HomePage() {
@@ -15,17 +15,20 @@ export default function HomePage() {
     {
       id: 1,
       title: 'Welcome to SynMax Intelligence Marketplace',
-      description: 'Access maritime intelligence and analytics with our pay-as-you-go platform. No contracts, no commitments.',
+      description:
+        'Access maritime intelligence and analytics with our pay-as-you-go platform. No contracts, no commitments.',
     },
     {
       id: 2,
       title: 'Price-Sensitive Maritime Solutions',
-      description: 'Event-driven intelligence for banks, insurers, traders, and logistics firms. Only pay for what you need.',
+      description:
+        'Event-driven intelligence for banks, insurers, traders, and logistics firms. Only pay for what you need.',
     },
     {
       id: 3,
       title: '🎉 New Users Get 100 Free Credits!',
-      description: 'Start monitoring vessels today with our flexible credit-based system. Sign up and claim your credits.',
+      description:
+        'Start monitoring vessels today with our flexible credit-based system. Sign up and claim your credits.',
     },
   ]
 
@@ -93,7 +96,9 @@ export default function HomePage() {
                 <h3 className="text-lg font-semibold text-gray-900">
                   {product.name}
                 </h3>
-                <p className="mt-1 text-sm text-gray-600">{product.descriptions.standard}</p>
+                <p className="mt-1 text-sm text-gray-600">
+                  {product.descriptions.standard}
+                </p>
                 <div className="mt-3 text-sm text-gray-500">
                   {getPricingDisplayText(product)}
                 </div>

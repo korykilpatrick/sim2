@@ -18,13 +18,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 /**
  * Versatile button component with multiple style variants and sizes.
  * Supports loading states and full-width layouts.
- * 
+ *
  * @component
  * @example
  * <Button variant="primary" size="md" onClick={handleClick}>
  *   Click me
  * </Button>
- * 
+ *
  * @example
  * <Button variant="synmax" loading fullWidth>
  *   Processing...

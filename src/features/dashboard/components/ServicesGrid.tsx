@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Card, CardContent } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { DashboardService } from '../types'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
 interface ServicesGridProps {
   services: DashboardService[]

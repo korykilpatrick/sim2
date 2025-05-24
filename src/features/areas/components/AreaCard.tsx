@@ -1,7 +1,7 @@
 import { Card } from '@/components/common'
 import Button from '@/components/common/Button'
 import { MapPin, AlertTriangle, Edit2, Trash2, Clock } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 import type { Area } from '../types'
 
 interface AreaCardProps {
@@ -25,7 +25,7 @@ export function AreaCard({
         'cursor-pointer transition-all',
         isSelected
           ? 'ring-2 ring-primary-500 border-primary-500'
-          : 'hover:shadow-md'
+          : 'hover:shadow-md',
       )}
       onClick={onSelect}
     >
@@ -88,7 +88,7 @@ export function AreaCard({
               'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
               area.isActive
                 ? 'bg-green-100 text-green-800'
-                : 'bg-gray-100 text-gray-800'
+                : 'bg-gray-100 text-gray-800',
             )}
           >
             {area.isActive ? 'Active' : 'Inactive'}

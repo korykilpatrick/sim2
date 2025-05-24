@@ -5,7 +5,7 @@ import Input from '@/components/forms/Input'
 import { FleetStatsCard, FleetList } from '../components'
 import { useFleets, useFleetStats, useSearchFleets } from '../hooks'
 import type { Fleet, FleetTab } from '../types'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/cn'
 
 export default function FleetsPage() {
   const [activeTab, setActiveTab] = useState<FleetTab>('fleets')
@@ -121,4 +121,3 @@ export default function FleetsPage() {
     </div>
   )
 }
-

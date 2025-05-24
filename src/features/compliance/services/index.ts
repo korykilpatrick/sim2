@@ -1,4 +1,4 @@
-import { apiClient } from '@/lib/api/client'
+import { apiClient } from '@/api/client'
 import type { ComplianceReport, ReportRequest, ReportFilter } from '../types'
 
 export const complianceService = {

@@ -33,7 +33,10 @@ export function ReportConfigurationStep({
   configuration,
   onConfigurationChange,
 }: ReportConfigurationStepProps) {
-  const handleChange = (key: keyof ReportConfiguration, value: string | boolean) => {
+  const handleChange = (
+    key: keyof ReportConfiguration,
+    value: string | boolean,
+  ) => {
     onConfigurationChange({
       ...configuration,
       [key]: value,
@@ -121,8 +124,16 @@ export function ReportConfigurationStep({
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-primary-600"
-                    checked={configuration[section.id as keyof ReportConfiguration] !== false}
-                    onChange={(e) => handleChange(section.id as keyof ReportConfiguration, e.target.checked)}
+                    checked={
+                      configuration[section.id as keyof ReportConfiguration] !==
+                      false
+                    }
+                    onChange={(e) =>
+                      handleChange(
+                        section.id as keyof ReportConfiguration,
+                        e.target.checked,
+                      )
+                    }
                   />
                   <span className="ml-2 text-sm text-gray-700">
                     {section.label}
@@ -160,7 +171,9 @@ export function ReportConfigurationStep({
                 <Input
                   type="datetime-local"
                   value={configuration.startDateTime || ''}
-                  onChange={(e) => handleChange('startDateTime', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('startDateTime', e.target.value)
+                  }
                 />
               </div>
               <div>
@@ -206,8 +219,17 @@ export function ReportConfigurationStep({
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-primary-600"
-                    checked={configuration[dataType.id as keyof ReportConfiguration] !== false}
-                    onChange={(e) => handleChange(dataType.id as keyof ReportConfiguration, e.target.checked)}
+                    checked={
+                      configuration[
+                        dataType.id as keyof ReportConfiguration
+                      ] !== false
+                    }
+                    onChange={(e) =>
+                      handleChange(
+                        dataType.id as keyof ReportConfiguration,
+                        e.target.checked,
+                      )
+                    }
                   />
                   <span className="ml-2 text-sm text-gray-700">
                     {dataType.label}
@@ -223,12 +245,10 @@ export function ReportConfigurationStep({
         <div className="flex items-start space-x-3">
           <FileText className="h-5 w-5 text-blue-600 mt-0.5" />
           <div className="flex-1">
-            <h4 className="text-sm font-medium text-blue-900">
-              Report Format
-            </h4>
+            <h4 className="text-sm font-medium text-blue-900">Report Format</h4>
             <p className="mt-1 text-sm text-blue-700">
-              Your report will be available in PDF, Excel, and JSON formats
-              once generated.
+              Your report will be available in PDF, Excel, and JSON formats once
+              generated.
             </p>
           </div>
         </div>

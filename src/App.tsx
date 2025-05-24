@@ -20,13 +20,17 @@ const VesselTrackingPage = lazy(
 )
 
 // Area pages
-const AreasPage = lazy(() => import('@pages/areas/AreasPage'))
+const AreaMonitoringPage = lazy(
+  () => import('@features/areas/pages/AreaMonitoringPage'),
+)
 
 // Fleet pages
 const FleetsPage = lazy(() => import('@features/fleet/pages/FleetsPage'))
 
 // Reports pages
-const ReportsPage = lazy(() => import('@pages/reports/ReportsPage'))
+const ReportsPage = lazy(
+  () => import('@features/reports/pages/ReportsPage'),
+)
 
 // Credits pages
 const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
@@ -35,11 +39,15 @@ const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
 const CartPage = lazy(() => import('@pages/CartPage'))
 
 // Product pages
-const ProductDetailPage = lazy(() => import('@pages/products/ProductDetailPage'))
+const ProductDetailPage = lazy(
+  () => import('@pages/products/ProductDetailPage'),
+)
 
 // Payment pages
 const CheckoutPage = lazy(() => import('@pages/CheckoutPage'))
-const PaymentConfirmationPage = lazy(() => import('@pages/PaymentConfirmationPage'))
+const PaymentConfirmationPage = lazy(
+  () => import('@pages/PaymentConfirmationPage'),
+)
 
 function App() {
   return (
@@ -52,7 +60,10 @@ function App() {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/products/:productId" element={<ProductDetailPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
-        <Route path="/payment-confirmation" element={<PaymentConfirmationPage />} />
+        <Route
+          path="/payment-confirmation"
+          element={<PaymentConfirmationPage />}
+        />
 
         {/* Protected routes */}
         <Route
@@ -69,7 +80,7 @@ function App() {
           <Route path="/vessels/track" element={<VesselTrackingPage />} />
 
           {/* Areas */}
-          <Route path="/areas" element={<AreasPage />} />
+          <Route path="/areas" element={<AreaMonitoringPage />} />
 
           {/* Fleets */}
           <Route path="/fleets" element={<FleetsPage />} />
