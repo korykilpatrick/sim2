@@ -11,6 +11,7 @@ import trackingRoutes from './routes/tracking'
 import productsRoutes from './routes/products'
 import areasRoutes from './routes/areas'
 import reportsRoutes from './routes/reports'
+import investigationsRoutes from './routes/investigations'
 
 const app = express()
 const httpServer = createServer(app)
@@ -44,6 +45,7 @@ app.use('/api/v1/tracking', trackingRoutes)
 app.use('/api/v1/products', productsRoutes)
 app.use('/api/v1/areas', areasRoutes)
 app.use('/api/v1/reports', reportsRoutes)
+app.use('/api/v1/investigations', investigationsRoutes)
 
 // Socket.io connection
 io.on('connection', (socket) => {

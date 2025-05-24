@@ -25,6 +25,13 @@ export function useDashboardServices() {
       color: 'bg-purple-500',
     },
     {
+      name: 'Maritime Investigations',
+      description: 'Request expert analysis and intelligence',
+      href: '/investigations',
+      icon: '🔍',
+      color: 'bg-indigo-500',
+    },
+    {
       name: 'Compliance Reports',
       description: 'Generate detailed vessel compliance reports',
       href: '/reports',

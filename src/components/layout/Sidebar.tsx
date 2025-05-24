@@ -12,6 +12,7 @@ import {
   Settings,
   HelpCircle,
   X,
+  Search,
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -39,6 +40,11 @@ const navigation = [
     name: 'Fleet Tracking',
     href: '/fleets',
     icon: Users,
+  },
+  {
+    name: 'Investigations',
+    href: '/investigations',
+    icon: Search,
   },
   {
     name: 'Reports',

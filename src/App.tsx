@@ -31,6 +31,20 @@ const FleetsPage = lazy(() => import('@features/fleet/pages/FleetsPage'))
 const ReportsPage = lazy(() => import('@features/reports/pages/ReportsPage'))
 const ReportDetailPage = lazy(() => import('@pages/reports/ReportDetailPage'))
 
+// Investigations pages
+const InvestigationsPage = lazy(
+  () => import('@features/investigations/pages/InvestigationsPage'),
+)
+const InvestigationDetailPage = lazy(
+  () => import('@features/investigations/pages/InvestigationDetailPage'),
+)
+const InvestigationWizard = lazy(
+  () =>
+    import(
+      '@features/investigations/components/investigation-wizard/InvestigationWizard'
+    ),
+)
+
 // Credits pages
 const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
 
@@ -90,6 +104,14 @@ function App() {
           {/* Reports */}
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/reports/:id" element={<ReportDetailPage />} />
+
+          {/* Investigations */}
+          <Route path="/investigations" element={<InvestigationsPage />} />
+          <Route path="/investigations/new" element={<InvestigationWizard />} />
+          <Route
+            path="/investigations/:id"
+            element={<InvestigationDetailPage />}
+          />
 
           {/* Credits */}
           <Route path="/credits" element={<CreditsPage />} />

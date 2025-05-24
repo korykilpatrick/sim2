@@ -61,12 +61,12 @@ The PRD specifies 6 products, but only 3 are truly implemented. Complete the mis
 - [x] Generate downloadable reports
 - [x] Implement date range selection
 
-#### 1.3 Maritime Investigations Service (MIS) - 1-2 days
-- [ ] Design investigation request form
-- [ ] Create expert consultation interface
-- [ ] Build investigation status tracking
-- [ ] Implement secure document upload
-- [ ] Add investigation report viewer
+#### 1.3 Maritime Investigations Service (MIS) - 1-2 days ✅ COMPLETED
+- [x] Design investigation request form with multi-step wizard
+- [x] Create expert consultation interface with scheduling
+- [x] Build investigation status tracking with progress updates
+- [x] Implement secure document upload with drag-and-drop
+- [x] Add investigation report viewer and detail pages
 
 #### 1.4 Complete Report Generation Infrastructure - 1 day
 - [ ] Integrate PDF generation library (react-pdf)

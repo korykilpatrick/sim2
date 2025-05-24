@@ -39,10 +39,39 @@ export function useCreditPricing() {
     return Math.ceil(credits * bestPackage.pricePerCredit)
   }
 
+  const calculateInvestigationCost = (
+    scope: 'vessel' | 'area' | 'event',
+    sourceCount: number,
+    priority: 'standard' | 'urgent' | 'critical',
+  ) => {
+    // Base costs by scope
+    const baseCosts = {
+      vessel: 5000,
+      area: 7500,
+      event: 10000,
+    }
+
+    // Source multiplier (more sources = higher cost)
+    const sourceMultiplier = 1 + (sourceCount - 1) * 0.2
+
+    // Priority multiplier
+    const priorityMultipliers = {
+      standard: 1,
+      urgent: 1.5,
+      critical: 2,
+    }
+
+    const baseCost = baseCosts[scope]
+    const cost = baseCost * sourceMultiplier * priorityMultipliers[priority]
+
+    return Math.round(cost / 100) * 100 // Round to nearest 100
+  }
+
   return {
     packages,
     getBestValue,
     getPackageByCredits,
     calculateCustomPrice,
+    calculateInvestigationCost,
   }
 }
