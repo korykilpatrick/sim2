@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { productApi } from '@/features/products/services'
 import { productKeys } from '@/features/products/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
+import { LowBalanceWarning } from '@/features/credits'
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -68,6 +69,13 @@ export default function DashboardPage() {
 
       {/* Products Grid */}
       <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+        {/* Low Balance Warning */}
+        {user && (
+          <div className="mb-6">
+            <LowBalanceWarning currentBalance={user.credits} />
+          </div>
+        )}
+
         {isLoading ? (
           <div className="text-center py-12">
             <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary-600 border-r-transparent"></div>

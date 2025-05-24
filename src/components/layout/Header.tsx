@@ -1,13 +1,14 @@
 import { useAuth } from '@/features/auth/hooks/useAuth'
-import { Menu, ShoppingCart, User } from 'lucide-react'
+import { Menu, ShoppingCart, User, Coins } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { formatPrice } from '@/utils/formatPrice'
 
 interface HeaderProps {
   onMenuClick?: () => void
 }
 
 export default function Header({ onMenuClick }: HeaderProps) {
-  const { isAuthenticated } = useAuth()
+  const { user, isAuthenticated } = useAuth()
 
   return (
     <header className="sticky top-0 z-40 bg-dark-500 px-4 py-4">
@@ -30,6 +31,19 @@ export default function Header({ onMenuClick }: HeaderProps) {
         </Link>
 
         <div className="flex items-center gap-4">
+          {/* Credit Balance */}
+          {isAuthenticated && user && (
+            <Link
+              to="/credits"
+              className="flex items-center gap-2 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
+            >
+              <Coins className="h-4 w-4 text-synmax-500" />
+              <span className="text-sm font-medium text-white">
+                {formatPrice(user.credits)} Credits
+              </span>
+            </Link>
+          )}
+
           {/* User Icon */}
           <Link
             to={isAuthenticated ? '/dashboard' : '/account'}

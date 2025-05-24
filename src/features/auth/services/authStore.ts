@@ -18,6 +18,8 @@ interface AuthStore {
   setAuth: (user: User, accessToken: string, refreshToken: string) => void
   /** Updates current user data partially */
   updateUser: (user: Partial<User>) => void
+  /** Updates user credit balance */
+  updateCredits: (credits: number) => void
   /** Clears all authentication data */
   logout: () => void
 }
@@ -52,6 +54,10 @@ export const useAuthStore = create<AuthStore>()(
         set((state) => ({
           user: state.user ? { ...state.user, ...userData } : null,
         })),
+      updateCredits: (credits) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, credits } : null,
+        })),
       logout: () =>
         set({
           user: null,
@@ -84,5 +90,6 @@ export const authSelectors = {
   refreshToken: (state: AuthStore) => state.refreshToken,
   setAuth: (state: AuthStore) => state.setAuth,
   updateUser: (state: AuthStore) => state.updateUser,
+  updateCredits: (state: AuthStore) => state.updateCredits,
   logout: (state: AuthStore) => state.logout,
 }

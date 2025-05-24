@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import {
   Card,
@@ -8,47 +8,84 @@ import {
 } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { cn } from '@/utils/cn'
+import CreditPurchaseModal from '@/features/credits/components/CreditPurchaseModal'
+import CreditTransactionHistory from '@/features/credits/components/CreditTransactionHistory'
+import LowBalanceWarning from '@/features/credits/components/LowBalanceWarning'
+import { useCredits } from '@/features/credits/hooks/useCredits'
+import type { CreditTransaction } from '@/features/credits/components/CreditTransactionHistory'
 
 export default function CreditsPage() {
   const { user } = useAuth()
+  const { availablePackages } = useCredits()
   const [selectedPackage, setSelectedPackage] = useState<string>('')
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false)
+  const [mockTransactions, setMockTransactions] = useState<CreditTransaction[]>(
+    [],
+  )
 
-  const creditPackages = [
-    {
-      id: 'starter',
-      name: 'Starter Pack',
-      credits: 100,
-      price: 99,
-      savings: 0,
-      popular: false,
-    },
-    {
-      id: 'professional',
-      name: 'Professional',
-      credits: 500,
-      price: 449,
-      savings: 10,
-      popular: true,
-    },
-    {
-      id: 'business',
-      name: 'Business',
-      credits: 1000,
-      price: 849,
-      savings: 15,
-      popular: false,
-    },
-    {
-      id: 'enterprise',
-      name: 'Enterprise',
-      credits: 5000,
-      price: 3999,
-      savings: 20,
-      popular: false,
-    },
-  ]
+  // Mock transaction data for demo
+  useEffect(() => {
+    if (user && mockTransactions.length === 0) {
+      const initialTransactions: CreditTransaction[] = [
+        {
+          id: '1',
+          type: 'purchase',
+          description: 'Welcome bonus',
+          amount: 100,
+          balance: 1100,
+          createdAt: new Date(
+            Date.now() - 7 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+        },
+        {
+          id: '2',
+          type: 'usage',
+          description: 'Vessel Tracking - IMO 9876543',
+          amount: 150,
+          balance: 950,
+          service: 'Vessel Tracking Service',
+          createdAt: new Date(
+            Date.now() - 5 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+        },
+        {
+          id: '3',
+          type: 'usage',
+          description: 'Compliance Report - MV Ocean Star',
+          amount: 50,
+          balance: 900,
+          service: 'Vessel Compliance Report',
+          createdAt: new Date(
+            Date.now() - 2 * 24 * 60 * 60 * 1000,
+          ).toISOString(),
+        },
+      ]
+      setMockTransactions(initialTransactions)
+    }
+  }, [user, mockTransactions.length])
 
-  const usageHistory = []
+  const handlePurchaseClick = () => {
+    if (selectedPackage) {
+      setIsPurchaseModalOpen(true)
+    }
+  }
+
+  const handlePurchaseComplete = (creditsAdded: number) => {
+    // Update mock transactions
+    const newTransaction: CreditTransaction = {
+      id: Date.now().toString(),
+      type: 'purchase',
+      description: `Purchased ${creditsAdded} credits`,
+      amount: creditsAdded,
+      balance: (user?.credits || 0) + creditsAdded,
+      createdAt: new Date().toISOString(),
+    }
+    setMockTransactions([newTransaction, ...mockTransactions])
+  }
+
+  const selectedPackageData = availablePackages.find(
+    (pkg) => pkg.id === selectedPackage,
+  )
 
   return (
     <div className="space-y-8">
@@ -59,6 +96,17 @@ export default function CreditsPage() {
           Purchase credits to access our maritime intelligence services
         </p>
       </div>
+
+      {/* Low Balance Warning */}
+      {user && (
+        <LowBalanceWarning
+          currentBalance={user.credits}
+          onPurchaseClick={() => {
+            setSelectedPackage('professional')
+            setIsPurchaseModalOpen(true)
+          }}
+        />
+      )}
 
       {/* Current Balance */}
       <Card>
@@ -96,7 +144,7 @@ export default function CreditsPage() {
           Purchase Credits
         </h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {creditPackages.map((pkg) => (
+          {availablePackages.slice(0, 4).map((pkg) => (
             <div
               key={pkg.id}
               className={cn(
@@ -140,7 +188,12 @@ export default function CreditsPage() {
           ))}
         </div>
         <div className="mt-6 text-center">
-          <Button variant="primary" size="lg" disabled={!selectedPackage}>
+          <Button
+            variant="primary"
+            size="lg"
+            disabled={!selectedPackage}
+            onClick={handlePurchaseClick}
+          >
             Purchase Credits
           </Button>
         </div>
@@ -149,18 +202,10 @@ export default function CreditsPage() {
       {/* Usage History */}
       <Card>
         <CardHeader>
-          <CardTitle>Usage History</CardTitle>
+          <CardTitle>Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
-          {usageHistory.length === 0 ? (
-            <div className="text-center py-8">
-              <p className="text-gray-500">No usage history yet</p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Usage history items would go here */}
-            </div>
-          )}
+          <CreditTransactionHistory transactions={mockTransactions} />
         </CardContent>
       </Card>
 
@@ -200,6 +245,13 @@ export default function CreditsPage() {
           </div>
         </CardContent>
       </Card>
+      {/* Purchase Modal */}
+      <CreditPurchaseModal
+        isOpen={isPurchaseModalOpen}
+        onClose={() => setIsPurchaseModalOpen(false)}
+        selectedPackage={selectedPackageData || null}
+        onPurchaseComplete={handlePurchaseComplete}
+      />
     </div>
   )
 }
