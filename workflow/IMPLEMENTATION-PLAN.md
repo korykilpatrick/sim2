@@ -42,7 +42,38 @@ Based on the comprehensive codebase analysis, the project has achieved:
 
 ## Priority Implementation Plan
 
-### 🔴 Phase 1: Complete Core Products (5-7 days) - HIGHEST PRIORITY
+### 🔴 NEW PRIORITY: Features Without Third-Party Dependencies
+
+Since third-party integrations are deferred, here's the updated priority order focusing on features that can be built with existing tools:
+
+#### Immediate Priority 1: Credit Management UI (2 days)
+Build the credit system UI without payment processing:
+- [ ] Display credit balance in header
+- [ ] Create mock credit purchase flow (UI only)
+- [ ] Build credit transaction history page
+- [ ] Implement credit deduction on purchases
+- [ ] Add low balance warnings
+- [ ] Create usage analytics dashboard
+
+#### Immediate Priority 2: Real-time Features (3 days)
+Complete WebSocket integration (already have Socket.io):
+- [ ] Complete WebSocket client manager
+- [ ] Add authentication to WebSocket
+- [ ] Implement real-time vessel tracking updates
+- [ ] Create live area monitoring alerts
+- [ ] Build notification center UI
+- [ ] Add connection status indicator
+
+#### Immediate Priority 3: Testing & Quality (3 days)
+Critical for production readiness:
+- [ ] Write unit tests for core business logic
+- [ ] Add integration tests for API endpoints
+- [ ] Create E2E tests for critical user flows
+- [ ] Implement error boundaries throughout
+- [ ] Add comprehensive logging system
+- [ ] Build monitoring dashboard
+
+### ✅ Phase 1: Complete Core Products (5-7 days) - COMPLETED
 The PRD specifies 6 products, but only 3 are truly implemented. Complete the missing products:
 
 #### 1.1 Vessel Compliance Report (VCR) - 2 days ✅ COMPLETED
@@ -75,18 +106,18 @@ The PRD specifies 6 products, but only 3 are truly implemented. Complete the mis
 - [x] Implement email delivery
 - [x] Build report history viewer
 
-### 🟠 Phase 2: Implement Credits System (3-4 days) - HIGH PRIORITY
-Critical for business model - users can't purchase without this:
+### 🟠 Phase 2: Implement Credits System (3-4 days) - DEFERRED (Third-party integration)
+Critical for business model but requires external payment integration:
 
-#### 2.1 Credit Purchase Flow - 2 days
+#### 2.1 Credit Purchase Flow - 2 days [DEFERRED]
 - [ ] Create credit package selection UI
 - [ ] Build payment form integration
-- [ ] Implement Stripe/payment gateway
+- [ ] ~~Implement Stripe/payment gateway~~ (Third-party)
 - [ ] Add purchase confirmation flow
 - [ ] Create invoice generation
 - [ ] Send purchase receipts
 
-#### 2.2 Credit Management - 1-2 days
+#### 2.2 Credit Management - 1-2 days [PARTIAL - Can do UI only]
 - [ ] Display credit balance in header
 - [ ] Create credit transaction history
 - [ ] Implement credit deduction logic
@@ -94,8 +125,8 @@ Critical for business model - users can't purchase without this:
 - [ ] Build credit expiration system
 - [ ] Create usage analytics dashboard
 
-### 🟡 Phase 3: Real-time Features & Alerts (3-4 days) - MEDIUM PRIORITY
-WebSocket server exists but needs integration:
+### 🟡 Phase 3: Real-time Features & Alerts (3-4 days) - NOW HIGH PRIORITY
+WebSocket server exists but needs integration (no third-party dependencies):
 
 #### 3.1 WebSocket Integration - 2 days
 - [ ] Complete WebSocket client manager
@@ -108,7 +139,7 @@ WebSocket server exists but needs integration:
 #### 3.2 Alert System - 2 days
 - [ ] Create alert configuration UI
 - [ ] Build notification center
-- [ ] Implement email alerts
+- [ ] ~~Implement email alerts~~ (Requires third-party email service)
 - [ ] Add in-app notifications
 - [ ] Create alert preferences
 - [ ] Build alert history
@@ -123,13 +154,13 @@ WebSocket server exists but needs integration:
 - [ ] Add compliance overview
 - [ ] Build export functionality
 
-#### 4.2 Cart & Checkout - 2 days
+#### 4.2 Cart & Checkout - 2 days [PARTIAL - No payment processing]
 - [ ] Fix cart state management
 - [ ] Add promo code system
 - [ ] Create checkout validation
-- [ ] Implement payment processing
-- [ ] Add order confirmation
-- [ ] Generate receipts
+- [ ] ~~Implement payment processing~~ (Requires third-party)
+- [ ] Add order confirmation (mock only)
+- [ ] Generate receipts (mock only)
 
 #### 4.3 User Profile & Settings - 1 day
 - [ ] Create profile edit page
@@ -150,12 +181,12 @@ Ensure production readiness:
 - [ ] Security testing
 
 #### 5.2 Error Handling & Monitoring
-- [ ] Implement Sentry integration
+- [ ] ~~Implement Sentry integration~~ (Third-party)
 - [ ] Add error boundaries everywhere
 - [ ] Create fallback UI states
 - [ ] Add retry mechanisms
-- [ ] Implement logging
-- [ ] Build admin monitoring
+- [ ] Implement logging (console/local storage)
+- [ ] Build admin monitoring dashboard
 
 ### ⚪ Phase 6: Polish & Optimization (2-3 days) - LOWER PRIORITY
 
@@ -175,18 +206,24 @@ Ensure production readiness:
 - [ ] Create help tooltips
 - [ ] Build search (Cmd+K)
 
-## Estimated Timeline
+## Estimated Timeline (Updated - No Third-Party Dependencies)
 
-Based on the codebase analysis and remaining work:
+Based on the codebase analysis and deferring third-party integrations:
 
-- **Phase 1**: Complete Core Products (5-7 days) 🔴
-- **Phase 2**: Implement Credits System (3-4 days) 🟠
-- **Phase 3**: Real-time Features & Alerts (3-4 days) 🟡
-- **Phase 4**: Complete Existing Features (4-5 days) 🟢
-- **Phase 5**: Testing & Quality (3-4 days) 🔵
-- **Phase 6**: Polish & Optimization (2-3 days) ⚪
+### New Priority Order:
+- **Immediate Priority 1**: Credit Management UI (2 days) 🔴
+- **Immediate Priority 2**: Real-time Features (3 days) 🔴
+- **Immediate Priority 3**: Testing & Quality (3 days) 🔴
+- **Phase 4**: Complete Existing Features (3-4 days) 🟠
+- **Phase 6**: Polish & Optimization (2-3 days) 🟡
 
-**Total**: 3-4 weeks to feature-complete, production-ready application
+### Deferred (Requires Third-Party):
+- **Phase 2**: Payment Integration (3-4 days) ⚪
+- **Email Services**: SendGrid/SES integration ⚪
+- **Error Monitoring**: Sentry integration ⚪
+
+**New Total**: 2-3 weeks to feature-complete without third-party dependencies
+**With Third-Party**: Additional 1 week when ready to integrate
 
 ## Quick Wins (Can be done in parallel)
 
@@ -318,33 +355,37 @@ From the codebase analysis, these are the most important gaps:
 - **Loading**: Skeleton screens
 - **Success**: Toast notifications
 
-## Next Steps Summary
+## Next Steps Summary (Updated Without Third-Party Dependencies)
 
-Based on the codebase analysis, here's what to focus on:
+Based on the codebase analysis and deferring external integrations:
 
-### Week 1: Complete Core Products 🔴
-- Implement VCR with compliance engine
-- Build VChR with timeline visualization  
-- Create MIS request interface
-- Add PDF generation for all reports
+### Week 1: Credit UI & Real-time Features 🔴
+- Build credit management UI (balance, history, analytics)
+- Create mock purchase flow for demo purposes
+- Integrate WebSocket for real-time updates
+- Implement live vessel tracking
+- Build notification center
 
-### Week 2: Credits & Commerce 🟠
-- Build credit purchase flow with Stripe
-- Add credit balance management
-- Complete cart functionality
-- Implement checkout with payment
+### Week 2: Testing & Quality 🟠
+- Write comprehensive test suite
+- Add error boundaries throughout
+- Implement logging system
+- Build monitoring dashboard
+- Complete fleet tracking features
 
-### Week 3: Real-time & Polish 🟡
-- Integrate WebSocket for live updates
-- Build notification system
-- Add remaining UI polish
-- Complete test coverage
-
-### Week 4: Production Ready 🟢
-- Performance optimization
-- Security hardening
+### Week 3: Polish & Production Prep 🟡
+- Performance optimizations
+- Complete remaining UI features
+- Security hardening (without third-party)
 - Documentation updates
 - Deployment preparation
+
+### Future: When Ready for Third-Party 🔵
+- Stripe payment integration
+- SendGrid/SES email service
+- Sentry error monitoring
+- OAuth authentication
+- SMS notifications
 
 ---
 
