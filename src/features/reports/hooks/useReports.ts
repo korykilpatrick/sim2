@@ -32,7 +32,7 @@ export function useCreateReport() {
       queryClient.invalidateQueries({ queryKey: ['reports'] })
       queryClient.invalidateQueries({ queryKey: ['report-statistics'] })
       toast.success('Report generation started')
-      navigate(`/reports/${response.data.reportId}`)
+      navigate(`/reports/${response.data.data.reportId}`)
     },
     onError: (error: AxiosError<ApiResponse>) => {
       toast.error(
@@ -107,9 +107,11 @@ export function useReportStatus(id: string) {
     queryKey: ['report-status', id],
     queryFn: () => reportApi.getReportStatus(id),
     enabled: !!id,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Poll while processing
-      if (data?.data.status === 'processing' || data?.data.status === 'pending') {
+      const data = query.state.data
+      const status = data?.data?.data?.status
+      if (status === 'processing' || status === 'pending') {
         return 5000 // 5 seconds
       }
       return false

@@ -15,13 +15,18 @@ export function VesselSelectionStep({
   onSelectVessel,
 }: VesselSelectionStepProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const { searchResults, isSearching } = useVesselSearch(searchTerm)
+  const { searchResults, isSearching, searchVessels } = useVesselSearch()
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term)
+    searchVessels(term)
+  }
 
   return (
     <div className="space-y-6">
       <VesselSearchInput
         searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
+        onSearchChange={handleSearchChange}
         searchResults={searchResults}
         isSearching={isSearching}
         selectedVessel={selectedVessel}

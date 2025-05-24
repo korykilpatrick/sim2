@@ -3,6 +3,7 @@ import Button from '@/components/common/Button'
 import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
+import { getPricingDisplayText } from '@/utils/pricing'
 
 export default function DashboardPage() {
   const { user } = useAuth()
@@ -15,12 +16,12 @@ export default function DashboardPage() {
   })
 
   // Mock user's active products (in real app, this would come from user data)
-  const activeProductIds = ['vts', 'ams']
+  const activeProductIds = ['vessel-tracking', 'area-monitoring']
   const userProducts = allProducts
     .filter(product => activeProductIds.includes(product.id))
     .map(product => ({
       ...product,
-      isActive: product.id === 'vts', // Mock: only VTS is active
+      isActive: product.id === 'vessel-tracking', // Mock: only VTS is active
     }))
 
   return (
@@ -103,16 +104,16 @@ export default function DashboardPage() {
                   </p>
                   <div className="mt-3 text-sm text-gray-500">
                     {product.category.charAt(0).toUpperCase() + product.category.slice(1)} • 
-                    ${product.pricing.monthly.toLocaleString()}/month
+                    {getPricingDisplayText(product)}
                   </div>
                 </div>
 
                 <Button
                   variant={product.isActive ? 'secondary' : 'primary'}
                   onClick={() => {
-                    if (product.id === 'vts') {
+                    if (product.id === 'vessel-tracking') {
                       navigate('/vessels')
-                    } else if (product.id === 'ams') {
+                    } else if (product.id === 'area-monitoring') {
                       navigate('/areas')
                     } else {
                       // For other products, navigate to their detail page

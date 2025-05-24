@@ -1,14 +1,14 @@
 import { SearchInput } from '@/components/search'
 import Select from '@/components/forms/Select'
-import type { ReportFilters as ReportFiltersType } from '../types'
+import type { ReportFilters } from '../types'
 
 interface ReportFiltersProps {
-  filters: ReportFiltersType
-  onFiltersChange: (filters: ReportFiltersType) => void
+  filters: ReportFilters
+  onFiltersChange: (filters: ReportFilters) => void
 }
 
-export function ReportFilters({ filters, onFiltersChange }: ReportFiltersProps) {
-  const handleChange = (key: keyof ReportFiltersType, value: string) => {
+export function ReportFiltersPanel({ filters, onFiltersChange }: ReportFiltersProps) {
+  const handleChange = (key: keyof ReportFilters, value: string | undefined) => {
     onFiltersChange({
       ...filters,
       [key]: value,
@@ -24,8 +24,8 @@ export function ReportFilters({ filters, onFiltersChange }: ReportFiltersProps) 
           onValueChange={(value) => handleChange('search', value)}
         />
         <Select
-          value={filters.status}
-          onChange={(e) => handleChange('status', e.target.value as ReportFiltersType['status'])}
+          value={filters.status || 'all'}
+          onChange={(e) => handleChange('status', e.target.value)}
         >
           <option value="all">All Status</option>
           <option value="pending">Pending</option>
@@ -33,8 +33,8 @@ export function ReportFilters({ filters, onFiltersChange }: ReportFiltersProps) 
           <option value="failed">Failed</option>
         </Select>
         <Select
-          value={filters.reportType}
-          onChange={(e) => handleChange('reportType', e.target.value as ReportFiltersType['reportType'])}
+          value={filters.reportType || 'all'}
+          onChange={(e) => handleChange('reportType', e.target.value)}
         >
           <option value="all">All Types</option>
           <option value="compliance">Compliance</option>
@@ -42,7 +42,7 @@ export function ReportFilters({ filters, onFiltersChange }: ReportFiltersProps) 
         </Select>
         <Select
           value={filters.sortBy || 'createdAt'}
-          onChange={(e) => handleChange('sortBy', e.target.value as ReportFiltersType['sortBy'])}
+          onChange={(e) => handleChange('sortBy', e.target.value)}
         >
           <option value="createdAt">Recent First</option>
           <option value="vesselName">Vessel Name</option>

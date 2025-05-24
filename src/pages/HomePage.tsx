@@ -4,6 +4,7 @@ import Button from '@/components/common/Button'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
+import { getPricingDisplayText } from '@/utils/pricing'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -127,7 +128,7 @@ export default function HomePage() {
                 </h3>
                 <p className="mt-1 text-sm text-gray-600">{product.descriptions.standard}</p>
                 <div className="mt-3 text-sm text-gray-500">
-                  Starting at ${product.pricing.monthly.toLocaleString()}/month
+                  {getPricingDisplayText(product)}
                 </div>
                 <Button
                   variant={index === 0 ? 'synmax' : 'secondary'}

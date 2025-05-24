@@ -43,16 +43,16 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
             variant="outline"
             size="sm"
             onClick={() => onDownload('pdf')}
-            icon={<Download className="h-4 w-4" />}
           >
+            <Download className="h-4 w-4 mr-1" />
             PDF
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => onDownload('excel')}
-            icon={<Download className="h-4 w-4" />}
           >
+            <Download className="h-4 w-4 mr-1" />
             Excel
           </Button>
         </div>
@@ -92,7 +92,9 @@ export const ComplianceReportView: React.FC<ComplianceReportViewProps> = ({
             <CardTitle>Risk Assessment</CardTitle>
             <RiskScoreBadge
               score={report.riskAssessment.overallScore}
-              size="lg"
+              level={report.riskAssessment.overallScore >= 75 ? 'critical' : 
+                     report.riskAssessment.overallScore >= 50 ? 'high' :
+                     report.riskAssessment.overallScore >= 25 ? 'medium' : 'low'}
             />
           </div>
         </CardHeader>

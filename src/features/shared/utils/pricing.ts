@@ -56,6 +56,41 @@ export function calculateAreaMonitoringCost(
   return PRICING.area.monitoring.baseRate * sizeMultiplier * durationDays * criteriaCount;
 }
 
+export function calculateAreaMonitoringCostDetailed(
+  areaSize: number,
+  criteriaCount: number,
+  updateFrequency: number,
+  durationMonths: number
+): {
+  baseCredits: number;
+  criteriaCredits: number;
+  creditsPerDay: number;
+  totalCredits: number;
+} {
+  // Determine area size category based on area size in square km
+  let sizeCategory: 'small' | 'medium' | 'large' | 'veryLarge';
+  if (areaSize < 1000) sizeCategory = 'small';
+  else if (areaSize < 5000) sizeCategory = 'medium';
+  else if (areaSize < 10000) sizeCategory = 'large';
+  else sizeCategory = 'veryLarge';
+
+  const sizeMultiplier = PRICING.area.monitoring.multipliers[sizeCategory];
+  const updatesPerDay = Math.floor(24 / updateFrequency);
+  const durationDays = durationMonths * 30;
+  
+  const baseCredits = PRICING.area.monitoring.baseRate * sizeMultiplier;
+  const criteriaCredits = criteriaCount * 2; // 2 credits per criteria
+  const creditsPerDay = (baseCredits + criteriaCredits) * updatesPerDay;
+  const totalCredits = creditsPerDay * durationDays;
+
+  return {
+    baseCredits,
+    criteriaCredits,
+    creditsPerDay,
+    totalCredits,
+  };
+}
+
 export function calculateFleetTrackingCost(
   vesselCount: number,
   months: number

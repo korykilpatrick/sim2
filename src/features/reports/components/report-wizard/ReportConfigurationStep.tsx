@@ -121,8 +121,8 @@ export function ReportConfigurationStep({
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-primary-600"
-                    checked={configuration[section.id] !== false}
-                    onChange={(e) => handleChange(section.id, e.target.checked)}
+                    checked={configuration[section.id as keyof ReportConfiguration] !== false}
+                    onChange={(e) => handleChange(section.id as keyof ReportConfiguration, e.target.checked)}
                   />
                   <span className="ml-2 text-sm text-gray-700">
                     {section.label}
@@ -206,8 +206,8 @@ export function ReportConfigurationStep({
                   <input
                     type="checkbox"
                     className="rounded border-gray-300 text-primary-600"
-                    checked={configuration[dataType.id] !== false}
-                    onChange={(e) => handleChange(dataType.id, e.target.checked)}
+                    checked={configuration[dataType.id as keyof ReportConfiguration] !== false}
+                    onChange={(e) => handleChange(dataType.id as keyof ReportConfiguration, e.target.checked)}
                   />
                   <span className="ml-2 text-sm text-gray-700">
                     {dataType.label}

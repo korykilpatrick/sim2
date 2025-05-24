@@ -7,7 +7,7 @@ import Select from '@/components/forms/Select'
 import { useMonitoringCriteria, useAreaCostCalculation } from '../hooks/useAreaMonitoring'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { clsx } from '@/utils/clsx'
-import type { CreateAreaRequest } from '../types'
+import type { CreateAreaRequest, MonitoringCriteria } from '../types'
 
 interface AreaConfigFormData {
   name: string
@@ -74,14 +74,14 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
       ...data,
       geometry: area,
       criteria: selectedCriteria,
-      updateFrequency: Number(data.updateFrequency),
+      updateFrequency: Number(data.updateFrequency) as 3 | 6 | 12 | 24,
     })
   }
 
-  const criteria = criteriaData?.data || []
+  const criteria = Array.isArray(criteriaData?.data) ? criteriaData.data : criteriaData?.data?.data || []
 
   // Group criteria by category
-  const criteriaByCategory = criteria.reduce((acc, criterion) => {
+  const criteriaByCategory = criteria.reduce((acc: Record<string, MonitoringCriteria[]>, criterion) => {
     if (!acc[criterion.category]) {
       acc[criterion.category] = []
     }
@@ -156,7 +156,7 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             </div>
           ) : (
             <div className="space-y-6">
-              {Object.entries(criteriaByCategory).map(([category, items]) => (
+              {(Object.entries(criteriaByCategory) as [string, MonitoringCriteria[]][]).map(([category, items]) => (
                 <div key={category}>
                   <h4 className="text-sm font-medium text-gray-900 mb-3 capitalize">
                     {category.replace('_', ' ')}
@@ -208,12 +208,12 @@ export const AreaConfigForm: React.FC<AreaConfigFormProps> = ({
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Credits per day</span>
-                <span className="font-medium">{costData.data.creditsPerDay}</span>
+                <span className="font-medium">{costData?.data?.data?.creditsPerDay || 0}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Total credits ({duration} days)</span>
                 <span className="text-lg font-bold text-primary-600">
-                  {costData.data.totalCredits}
+                  {costData?.data?.data?.totalCredits || 0}
                 </span>
               </div>
             </div>

@@ -17,12 +17,22 @@ export function AreaCostSummary({
 }: AreaCostSummaryProps) {
   const { calculateAreaMonitoring } = useCostCalculation()
   
-  const costDetails = calculateAreaMonitoring({
+  const costDetailsResult = calculateAreaMonitoring({
     areaSize,
     criteriaCount,
     updateFrequency,
     durationMonths,
   })
+  
+  // Check if we got the detailed result or just a number
+  const costDetails = typeof costDetailsResult === 'number' 
+    ? {
+        baseCredits: 0,
+        criteriaCredits: 0,
+        creditsPerDay: 0,
+        totalCredits: costDetailsResult
+      }
+    : costDetailsResult
 
   return (
     <Card className="bg-gray-50 border-gray-200">

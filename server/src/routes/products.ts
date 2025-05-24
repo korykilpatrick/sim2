@@ -25,9 +25,17 @@ router.get('/', async (req, res) => {
   
   // Sort products
   if (sort === 'price-asc') {
-    products.sort((a, b) => a.pricing.monthly - b.pricing.monthly);
+    products.sort((a, b) => {
+      const aPrice = a.pricing.monthly ?? a.pricing.annual ?? Number.MAX_VALUE;
+      const bPrice = b.pricing.monthly ?? b.pricing.annual ?? Number.MAX_VALUE;
+      return aPrice - bPrice;
+    });
   } else if (sort === 'price-desc') {
-    products.sort((a, b) => b.pricing.monthly - a.pricing.monthly);
+    products.sort((a, b) => {
+      const aPrice = a.pricing.monthly ?? a.pricing.annual ?? 0;
+      const bPrice = b.pricing.monthly ?? b.pricing.annual ?? 0;
+      return bPrice - aPrice;
+    });
   } else if (sort === 'name') {
     products.sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -37,7 +45,7 @@ router.get('/', async (req, res) => {
     data: products,
     metadata: {
       total: products.length,
-      categories: ['trading', 'analytics', 'reporting', 'infrastructure'],
+      categories: ['tracking', 'monitoring', 'reporting', 'investigation'],
     },
     timestamp: new Date().toISOString(),
   });
@@ -76,7 +84,7 @@ router.get('/category/:category', async (req, res) => {
   // Simulate delay
   await new Promise((resolve) => setTimeout(resolve, 200));
   
-  const validCategories = ['trading', 'analytics', 'reporting', 'infrastructure'];
+  const validCategories = ['tracking', 'monitoring', 'reporting', 'investigation'];
   
   if (!validCategories.includes(category)) {
     return res.status(400).json({
@@ -107,7 +115,7 @@ router.get('/featured', async (_req, res) => {
   await new Promise((resolve) => setTimeout(resolve, 200));
   
   // Return a curated list of featured products
-  const featuredIds = ['vts', 'ams', 'mis'];
+  const featuredIds = ['vessel-tracking', 'area-monitoring', 'maritime-investigation'];
   const featured = featuredIds
     .map(id => getProductById(id))
     .filter(Boolean);
@@ -149,7 +157,7 @@ router.post('/:id/check-availability', async (req, res) => {
       productId: id,
       isAvailable,
       userHasAccess,
-      requiresApproval: product.pricing.enterprise === 'custom',
+      requiresApproval: !product.pricing.monthly && !product.pricing.annual,
     },
     timestamp: new Date().toISOString(),
   });

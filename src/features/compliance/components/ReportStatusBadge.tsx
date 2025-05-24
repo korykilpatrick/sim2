@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 interface ReportStatusBadgeProps {
-  status: 'pending' | 'completed' | 'failed'
+  status: 'pending' | 'processing' | 'completed' | 'failed'
   className?: string
 }
 
@@ -13,6 +13,10 @@ export default function ReportStatusBadge({
     pending: {
       label: 'Pending',
       className: 'bg-yellow-100 text-yellow-800',
+    },
+    processing: {
+      label: 'Processing',
+      className: 'bg-blue-100 text-blue-800',
     },
     completed: {
       label: 'Completed',

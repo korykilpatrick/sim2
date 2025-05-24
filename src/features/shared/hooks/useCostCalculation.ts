@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   calculateVesselTrackingCost,
   calculateAreaMonitoringCost,
+  calculateAreaMonitoringCostDetailed,
   calculateFleetTrackingCost,
   getReportCost,
 } from '../utils/pricing';
@@ -109,7 +110,17 @@ export function useCostCalculation() {
   );
 
   const calculateAreaMonitoring = useCallback(
-    (params: AreaMonitoringCostParams) => {
+    (params: AreaMonitoringCostParams | { areaSize: number; criteriaCount: number; updateFrequency: number; durationMonths: number }) => {
+      // If it has the detailed params, use the detailed function
+      if ('areaSize' in params && 'updateFrequency' in params && 'durationMonths' in params) {
+        return calculateAreaMonitoringCostDetailed(
+          params.areaSize,
+          params.criteriaCount || 1,
+          params.updateFrequency,
+          params.durationMonths
+        );
+      }
+      // Otherwise use the simple function
       return calculateAreaMonitoringCost(
         params.size,
         params.durationDays,

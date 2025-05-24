@@ -3,6 +3,7 @@ import Button from '@/components/common/Button'
 import Header from '@/components/layout/Header'
 import { useCartStore } from '@/stores/cartStore'
 import { Trash2 } from 'lucide-react'
+import { calculateProductTotal, hasStandardPricing } from '@/utils/pricing'
 
 
 export default function CartPage() {
@@ -52,14 +53,18 @@ export default function CartPage() {
                     </p>
                     
                     <div className="mt-3 flex items-center gap-4">
-                      <select
-                        value={item.billingCycle}
-                        onChange={(e) => updateBillingCycle(item.product.id, e.target.value as 'monthly' | 'annual')}
-                        className="text-sm border rounded px-2 py-1"
-                      >
-                        <option value="monthly">Monthly</option>
-                        <option value="annual">Annual</option>
-                      </select>
+                      {hasStandardPricing(item.product) ? (
+                        <select
+                          value={item.billingCycle}
+                          onChange={(e) => updateBillingCycle(item.product.id, e.target.value as 'monthly' | 'annual')}
+                          className="text-sm border rounded px-2 py-1"
+                        >
+                          {item.product.pricing.monthly !== null && <option value="monthly">Monthly</option>}
+                          {item.product.pricing.annual !== null && <option value="annual">Annual</option>}
+                        </select>
+                      ) : (
+                        <span className="text-sm text-gray-600">{item.product.pricing.enterprise || 'Custom pricing'}</span>
+                      )}
                       
                       <div className="flex items-center gap-2">
                         <label className="text-sm text-gray-600">Qty:</label>
@@ -83,16 +88,20 @@ export default function CartPage() {
 
                   <div className="text-right">
                     <p className="text-lg font-bold text-gray-900">
-                      ${
-                        item.billingCycle === 'monthly'
-                          ? (item.product.pricing.monthly * item.quantity).toLocaleString()
-                          : (item.product.pricing.annual * item.quantity).toLocaleString()
-                      }
-                      <span className="text-sm font-normal text-gray-500">
-                        /{item.billingCycle === 'monthly' ? 'month' : 'year'}
-                      </span>
+                      {(() => {
+                        const total = calculateProductTotal(item.product, item.quantity, item.billingCycle);
+                        if (total === null) return 'Contact for pricing';
+                        return (
+                          <>
+                            ${total.toLocaleString()}
+                            <span className="text-sm font-normal text-gray-500">
+                              /{item.billingCycle === 'monthly' ? 'month' : 'year'}
+                            </span>
+                          </>
+                        );
+                      })()}
                     </p>
-                    {item.billingCycle === 'annual' && (
+                    {item.billingCycle === 'annual' && item.product.pricing.monthly && item.product.pricing.annual && (
                       <p className="text-sm text-secondary-600">
                         Save ${((item.product.pricing.monthly * 12 - item.product.pricing.annual) * item.quantity).toLocaleString()}
                       </p>

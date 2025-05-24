@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productService } from '@/services/products'
 import { useCartStore } from '@/stores/cartStore'
+import { formatPrice, hasStandardPricing, getProductPrice } from '@/utils/pricing'
 
 
 export default function ProductDetailPage() {
@@ -121,38 +122,50 @@ export default function ProductDetailPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               <div className="mt-4">
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setSelectedBilling('monthly')}
-                    className={`px-4 py-2 rounded-lg font-medium ${
-                      selectedBilling === 'monthly'
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-200 text-gray-700'
-                    }`}
-                  >
-                    Monthly
-                  </button>
-                  <button
-                    onClick={() => setSelectedBilling('annual')}
-                    className={`px-4 py-2 rounded-lg font-medium ${
-                      selectedBilling === 'annual'
-                        ? 'bg-primary-600 text-white'
-                        : 'bg-gray-200 text-gray-700'
-                    }`}
-                  >
-                    Annual
-                  </button>
-                </div>
-                <p className="mt-2 text-2xl font-semibold text-primary-600">
-                  ${selectedBilling === 'monthly' 
-                    ? product.pricing.monthly.toLocaleString() + '/month'
-                    : product.pricing.annual.toLocaleString() + '/year'}
-                  {selectedBilling === 'annual' && product.pricing.annual < product.pricing.monthly * 12 && (
-                    <span className="text-sm text-secondary-600 ml-2">
-                      Save ${(product.pricing.monthly * 12 - product.pricing.annual).toLocaleString()}
-                    </span>
-                  )}
-                </p>
+                {hasStandardPricing(product) ? (
+                  <>
+                    <div className="flex gap-4">
+                      {product.pricing.monthly !== null && (
+                        <button
+                          onClick={() => setSelectedBilling('monthly')}
+                          className={`px-4 py-2 rounded-lg font-medium ${
+                            selectedBilling === 'monthly'
+                              ? 'bg-primary-600 text-white'
+                              : 'bg-gray-200 text-gray-700'
+                          }`}
+                        >
+                          Monthly
+                        </button>
+                      )}
+                      {product.pricing.annual !== null && (
+                        <button
+                          onClick={() => setSelectedBilling('annual')}
+                          className={`px-4 py-2 rounded-lg font-medium ${
+                            selectedBilling === 'annual'
+                              ? 'bg-primary-600 text-white'
+                              : 'bg-gray-200 text-gray-700'
+                          }`}
+                        >
+                          Annual
+                        </button>
+                      )}
+                    </div>
+                    <p className="mt-2 text-2xl font-semibold text-primary-600">
+                      {formatPrice(getProductPrice(product, selectedBilling))}
+                      <span className="text-base">/{selectedBilling === 'monthly' ? 'month' : 'year'}</span>
+                      {selectedBilling === 'annual' && product.pricing.annual && product.pricing.monthly && 
+                       product.pricing.annual < product.pricing.monthly * 12 && (
+                        <span className="text-sm text-secondary-600 ml-2">
+                          Save ${(product.pricing.monthly * 12 - product.pricing.annual).toLocaleString()}
+                        </span>
+                      )}
+                    </p>
+                  </>
+                ) : (
+                  <p className="mt-2 text-2xl font-semibold text-primary-600">
+                    {product.pricing.enterprise || 'Contact for pricing'}
+                  </p>
+                )}
               </div>
               
               <div className="mt-6 space-y-4">

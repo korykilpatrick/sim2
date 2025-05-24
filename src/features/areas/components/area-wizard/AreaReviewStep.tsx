@@ -1,7 +1,7 @@
 import { Card } from '@/components/common'
 import { AreaMap } from '../AreaMap'
 import { AreaCostSummary } from './AreaCostSummary'
-import { useMonitoringCriteria } from '../../hooks/useAreas'
+import { useMonitoringCriteria } from '../../hooks/useAreaMonitoring'
 import { MapPin, Clock, Shield, Calendar } from 'lucide-react'
 import type { MonitoringCriteria } from '../../types'
 

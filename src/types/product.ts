@@ -2,11 +2,11 @@ export interface Product {
   id: string;
   name: string;
   shortName?: string;
-  category: 'trading' | 'analytics' | 'reporting' | 'infrastructure';
+  category: 'trading' | 'analytics' | 'reporting' | 'infrastructure' | 'tracking' | 'monitoring' | 'investigation';
   pricing: {
-    monthly: number;
-    annual: number;
-    enterprise?: 'custom';
+    monthly: number | null;
+    annual: number | null;
+    enterprise?: string;
   };
   descriptions: {
     brief: string; // One-liner for lists

@@ -4,26 +4,25 @@ import {
   useReports,
   useReportStatistics,
   useCreateReport,
-  useDownloadReport,
   useRetryReport,
   useCancelReport,
 } from '../hooks'
 import {
   ReportList,
   ReportStats,
-  ReportFilters,
+  ReportFiltersPanel,
   ReportWizard,
 } from '../components'
 import { PageLayout } from '@/components/layouts'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Modal from '@/components/common/Modal'
 import { Plus } from 'lucide-react'
-import type { ReportFilters as ReportFiltersType, ComplianceReport, ChronologyReport } from '../types'
+import type { ReportFilters, ComplianceReport, ChronologyReport } from '../types'
 import type { ReportConfiguration } from '../components/report-wizard/ReportConfigurationStep'
 
 export default function ReportsMainPage() {
   const navigate = useNavigate()
-  const [filters, setFilters] = useState<ReportFiltersType>({
+  const [filters, setFilters] = useState<ReportFilters>({
     status: 'all',
     reportType: 'all',
   })
@@ -33,7 +32,6 @@ export default function ReportsMainPage() {
   const { data: reportsData, isLoading: isLoadingReports } = useReports(filters)
   const { data: statsData, isLoading: isLoadingStats } = useReportStatistics()
   const createReportMutation = useCreateReport()
-  const downloadReportMutation = useDownloadReport('')
   const retryReportMutation = useRetryReport()
   const cancelReportMutation = useCancelReport()
 
@@ -56,7 +54,13 @@ export default function ReportsMainPage() {
       await createReportMutation.mutateAsync({
         vesselId: data.vessel.id,
         reportType: data.reportType,
-        configuration: data.configuration,
+        options: {
+          timeRange: data.configuration.timeRange ? {
+            start: data.configuration.startDate || data.configuration.startDateTime || '',
+            end: data.configuration.endDate || data.configuration.endDateTime || '',
+          } : undefined,
+          includeDetails: true,
+        },
       })
       setIsCreating(false)
     } catch (error) {
@@ -68,8 +72,9 @@ export default function ReportsMainPage() {
     navigate(`/reports/${report.id}`)
   }
 
-  const handleDownloadReport = (id: string, format: 'pdf' | 'excel' | 'json') => {
-    downloadReportMutation.mutate(format)
+  const handleDownloadReport = (_reportId: string, _format: 'pdf' | 'excel' | 'json') => {
+    // Download report logic would be implemented here
+    // TODO: Implement download functionality
   }
 
   if (isLoadingReports || isLoadingStats) {
@@ -91,7 +96,7 @@ export default function ReportsMainPage() {
         <ReportStats stats={stats} />
 
         {/* Filters */}
-        <ReportFilters filters={filters} onFiltersChange={setFilters} />
+        <ReportFiltersPanel filters={filters} onFiltersChange={setFilters} />
 
         {/* Reports List */}
         <ReportList

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Card } from '@/components/common'
-import { useMonitoringCriteria } from '../../hooks/useAreas'
+import { useMonitoringCriteria } from '../../hooks/useAreaMonitoring'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { AlertCircle, Check } from 'lucide-react'
 import type { MonitoringCriteria } from '../../types'
@@ -17,7 +17,7 @@ export function MonitoringCriteriaSelector({
   const { data: criteriaData, isLoading } = useMonitoringCriteria()
   const [expandedCategories, setExpandedCategories] = useState<string[]>([])
 
-  const criteria = criteriaData?.data?.data || []
+  const criteria: MonitoringCriteria[] = criteriaData?.data?.data || []
 
   const toggleCategory = (category: string) => {
     setExpandedCategories((prev) =>
@@ -74,14 +74,14 @@ export function MonitoringCriteriaSelector({
           >
             <span className="font-medium text-gray-900">{category}</span>
             <span className="text-sm text-gray-500">
-              {items.filter((item: MonitoringCriteria) => selectedCriteria.includes(item.id)).length}/
-              {items.length}
+              {(items as MonitoringCriteria[]).filter((item) => selectedCriteria.includes(item.id)).length}/
+              {(items as MonitoringCriteria[]).length}
             </span>
           </button>
           
           {expandedCategories.includes(category) && (
             <div className="border-t border-gray-100">
-              {items.map((criterion: MonitoringCriteria) => (
+              {(items as MonitoringCriteria[]).map((criterion) => (
                 <label
                   key={criterion.id}
                   className="flex items-start p-4 hover:bg-gray-50 cursor-pointer"

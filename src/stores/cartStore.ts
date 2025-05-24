@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Product } from '@/types/product';
+import { getProductPrice } from '@/utils/pricing';
 
 export interface CartItem {
   product: Product;
@@ -91,11 +92,10 @@ export const useCartStore = create<CartStore>()(
       getTotal: () => {
         const items = get().items;
         const subtotal = items.reduce((sum, item) => {
-          const price =
-            item.billingCycle === 'monthly'
-              ? item.product.pricing.monthly
-              : item.product.pricing.annual / 12; // Monthly equivalent for display
-          return sum + price * item.quantity;
+          const price = getProductPrice(item.product, item.billingCycle);
+          if (price === null) return sum; // Skip products without pricing
+          const monthlyEquivalent = item.billingCycle === 'annual' ? price / 12 : price;
+          return sum + monthlyEquivalent * item.quantity;
         }, 0);
 
         const tax = subtotal * 0.08; // 8% tax
@@ -114,13 +114,13 @@ export const useCartStore = create<CartStore>()(
       partialize: (state) => ({
         items: state.items.map((item) => ({
           ...item,
-          addedAt: item.addedAt.toISOString(),
+          addedAt: item.addedAt instanceof Date ? item.addedAt.toISOString() : item.addedAt,
         })),
       }),
       // Deserialize dates
       onRehydrateStorage: () => (state) => {
         if (state) {
-          state.items = state.items.map((item: CartItem & { addedAt: string }) => ({
+          state.items = state.items.map((item) => ({
             ...item,
             addedAt: new Date(item.addedAt),
           }));
