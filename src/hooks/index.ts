@@ -12,3 +12,9 @@ export {
 } from './useMediaQuery'
 export { useClickOutside } from './useClickOutside'
 export { useToast, useToasts } from './useToast'
+export {
+  useWebSocket,
+  useWebSocketEvent,
+  useWebSocketStatus,
+  useWebSocketRoom,
+} from './useWebSocket'

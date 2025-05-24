@@ -30,6 +30,7 @@ export function useAuth() {
   const queryClient = useQueryClient()
   const user = useAuthStore(authSelectors.user)
   const isAuthenticated = useAuthStore(authSelectors.isAuthenticated)
+  const token = useAuthStore(authSelectors.accessToken)
   const setAuth = useAuthStore(authSelectors.setAuth)
   const logoutStore = useAuthStore(authSelectors.logout)
 
@@ -80,6 +81,7 @@ export function useAuth() {
   return {
     user,
     isAuthenticated,
+    token,
     isLoadingUser: false,
     login: loginMutation.mutate,
     register: registerMutation.mutate,

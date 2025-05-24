@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
 import LoadingSpinner from '@components/feedback/LoadingSpinner'
+import { ConnectionStatus } from '@components/feedback'
 import ProtectedRoute from '@routes/ProtectedRoute'
 import AppLayout from '@components/layout/AppLayout'
 
@@ -64,92 +65,98 @@ const PaymentConfirmationPage = lazy(
 
 function App() {
   return (
-    <Suspense fallback={<LoadingSpinner fullScreen />}>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route
-          path="/products/sim/:productId"
-          element={<ProductDetailPage />}
-        />
-        <Route path="/checkout" element={<CheckoutPage />} />
-        <Route
-          path="/payment-confirmation"
-          element={<PaymentConfirmationPage />}
-        />
-
-        {/* Protected routes */}
-        <Route
-          element={
-            <ProtectedRoute>
-              <AppLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route path="/dashboard" element={<DashboardPage />} />
-
-          {/* Vessels */}
-          <Route path="/vessels" element={<VesselsPage />} />
-          <Route path="/vessels/track" element={<VesselTrackingPage />} />
-
-          {/* Areas */}
-          <Route path="/areas" element={<AreaMonitoringPage />} />
-
-          {/* Fleets */}
-          <Route path="/fleets" element={<FleetsPage />} />
-
-          {/* Reports */}
-          <Route path="/reports" element={<ReportsPage />} />
-          <Route path="/reports/:id" element={<ReportDetailPage />} />
-
-          {/* Investigations */}
-          <Route path="/investigations" element={<InvestigationsPage />} />
-          <Route path="/investigations/new" element={<InvestigationWizard />} />
+    <>
+      <Suspense fallback={<LoadingSpinner fullScreen />}>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route
-            path="/investigations/:id"
-            element={<InvestigationDetailPage />}
+            path="/products/sim/:productId"
+            element={<ProductDetailPage />}
+          />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route
+            path="/payment-confirmation"
+            element={<PaymentConfirmationPage />}
           />
 
-          {/* Credits */}
-          <Route path="/credits" element={<CreditsPage />} />
-
-          {/* Account & Settings */}
+          {/* Protected routes */}
           <Route
-            path="/account"
             element={
-              <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                <p className="text-gray-500">Account settings coming soon</p>
-              </div>
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
             }
-          />
-          <Route
-            path="/settings"
-            element={
-              <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                <p className="text-gray-500">Settings coming soon</p>
-              </div>
-            }
-          />
-          <Route
-            path="/help"
-            element={
-              <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                <p className="text-gray-500">Help center coming soon</p>
-              </div>
-            }
-          />
-        </Route>
+          >
+            <Route path="/dashboard" element={<DashboardPage />} />
 
-        {/* Redirect root to dashboard if authenticated */}
-        <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+            {/* Vessels */}
+            <Route path="/vessels" element={<VesselsPage />} />
+            <Route path="/vessels/track" element={<VesselTrackingPage />} />
 
-        {/* 404 */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Suspense>
+            {/* Areas */}
+            <Route path="/areas" element={<AreaMonitoringPage />} />
+
+            {/* Fleets */}
+            <Route path="/fleets" element={<FleetsPage />} />
+
+            {/* Reports */}
+            <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/reports/:id" element={<ReportDetailPage />} />
+
+            {/* Investigations */}
+            <Route path="/investigations" element={<InvestigationsPage />} />
+            <Route
+              path="/investigations/new"
+              element={<InvestigationWizard />}
+            />
+            <Route
+              path="/investigations/:id"
+              element={<InvestigationDetailPage />}
+            />
+
+            {/* Credits */}
+            <Route path="/credits" element={<CreditsPage />} />
+
+            {/* Account & Settings */}
+            <Route
+              path="/account"
+              element={
+                <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                  <p className="text-gray-500">Account settings coming soon</p>
+                </div>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                  <p className="text-gray-500">Settings coming soon</p>
+                </div>
+              }
+            />
+            <Route
+              path="/help"
+              element={
+                <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                  <p className="text-gray-500">Help center coming soon</p>
+                </div>
+              }
+            />
+          </Route>
+
+          {/* Redirect root to dashboard if authenticated */}
+          <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+
+          {/* 404 */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+      <ConnectionStatus />
+    </>
   )
 }
 

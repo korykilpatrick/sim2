@@ -6,7 +6,7 @@ import { vesselKeys } from '../hooks'
 import type { VesselTracking } from '../types'
 import Button from '@/components/common/Button'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
-import VesselTrackingCard from '../components/VesselTrackingCard'
+import VesselTrackingCardRealtime from '../components/VesselTrackingCardRealtime'
 import EmptyTrackingState from '../components/EmptyTrackingState'
 import VesselSearchBar from '../components/VesselSearchBar'
 
@@ -71,7 +71,10 @@ export default function VesselsPage() {
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {activeTrackings.map((tracking: VesselTracking) => (
-              <VesselTrackingCard key={tracking.id} tracking={tracking} />
+              <VesselTrackingCardRealtime
+                key={tracking.id}
+                tracking={tracking}
+              />
             ))}
           </div>
         )}

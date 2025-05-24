@@ -14,6 +14,9 @@ import reportsRoutes from './routes/reports'
 import investigationsRoutes from './routes/investigations'
 import creditsRoutes from './routes/credits'
 
+// Import WebSocket setup
+import { setupWebSocket } from './websocket'
+
 const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
@@ -49,13 +52,8 @@ app.use('/api/v1/reports', reportsRoutes)
 app.use('/api/v1/investigations', investigationsRoutes)
 app.use('/api/v1/credits', creditsRoutes)
 
-// Socket.io connection
-io.on('connection', (socket) => {
-  // Client connected
-  socket.on('disconnect', () => {
-    // Client disconnected
-  })
-})
+// Setup WebSocket handlers
+setupWebSocket(io)
 
 // Error handling middleware
 app.use(

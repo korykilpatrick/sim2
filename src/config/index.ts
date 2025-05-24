@@ -36,9 +36,11 @@ export const config = {
   // API Configuration
   api: {
     baseUrl: getEnvVar('VITE_API_URL', 'http://localhost:3001/api/v1'),
-    websocketUrl: getEnvVar('VITE_WEBSOCKET_URL', 'ws://localhost:3001'),
     timeout: getEnvNumber('VITE_API_TIMEOUT_MS', 30000),
   },
+
+  // WebSocket Configuration
+  websocketUrl: getEnvVar('VITE_WEBSOCKET_URL', 'ws://localhost:3001'),
 
   // Authentication
   auth: {

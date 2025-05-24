@@ -1,6 +1,6 @@
 import React from 'react'
 import { Area } from '../types'
-import { AreaCard } from './AreaCard'
+import { AreaCardRealtime } from './AreaCardRealtime'
 import { AreaEmptyState } from './AreaEmptyState'
 
 interface AreaListProps {
@@ -25,7 +25,7 @@ export const AreaList: React.FC<AreaListProps> = ({
   return (
     <div className="space-y-4">
       {areas.map((area) => (
-        <AreaCard
+        <AreaCardRealtime
           key={area.id}
           area={area}
           isSelected={selectedAreaId === area.id}

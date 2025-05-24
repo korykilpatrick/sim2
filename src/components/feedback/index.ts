@@ -18,3 +18,5 @@ export type { SkeletonProps } from './Skeleton'
 
 export { default as ErrorBoundary } from './ErrorBoundary'
 export { useErrorHandler, withErrorBoundary } from './ErrorBoundaryUtils'
+
+export { ConnectionStatus, ConnectionIndicator } from './ConnectionStatus'

@@ -1,4 +1,5 @@
 export { default as VesselTrackingCard } from './VesselTrackingCard'
+export { default as VesselTrackingCardRealtime } from './VesselTrackingCardRealtime'
 export { default as EmptyTrackingState } from './EmptyTrackingState'
 export { default as VesselSearchBar } from './VesselSearchBar'
 export { default as VesselSearchResults } from './VesselSearchResults'

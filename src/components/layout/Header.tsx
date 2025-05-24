@@ -2,6 +2,8 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { Menu, ShoppingCart, User, Coins } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { formatPrice } from '@/utils/formatPrice'
+import { NotificationCenter } from '@/features/notifications'
+import { ConnectionIndicator } from '@/components/feedback'
 
 interface HeaderProps {
   onMenuClick?: () => void
@@ -43,6 +45,12 @@ export default function Header({ onMenuClick }: HeaderProps) {
               </span>
             </Link>
           )}
+
+          {/* Connection Status */}
+          {isAuthenticated && <ConnectionIndicator />}
+
+          {/* Notifications */}
+          {isAuthenticated && <NotificationCenter />}
 
           {/* User Icon */}
           <Link
