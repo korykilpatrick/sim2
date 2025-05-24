@@ -1,10 +1,19 @@
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 import Button from '@/components/common/Button'
 import Header from '@/components/layout/Header'
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, Package } from 'lucide-react'
 
 export default function PaymentConfirmationPage() {
   const navigate = useNavigate()
+  
+  // Generate a random order number
+  const orderNumber = Math.random().toString(36).substring(2, 10).toUpperCase()
+  
+  // Save order number to localStorage for demonstration
+  useEffect(() => {
+    localStorage.setItem('lastOrderNumber', orderNumber)
+  }, [orderNumber])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -19,30 +28,41 @@ export default function PaymentConfirmationPage() {
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Payment Confirmation
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Payment Successful!
           </h1>
+          
+          <p className="text-lg text-gray-600 mb-8">
+            Order #{orderNumber}
+          </p>
 
-          <div className="text-gray-600 space-y-4 mb-8">
-            <p>
-              Confirmation message goes here. Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. Nullam ut metus quis mi sodales
-              consectetur. Vivamus neque ligula, consectetur et orci congue,
-              aliquam varius ligula. Aenean faucibus, urna vel congue commodo,
-              orci tellus cursus metus, nec efficitur arcu nisl et justo. Morbi
-              ut arcu ac metus tempus bibendum et ante neque. Sint aliquam dolor
-              lacus, ut facilisis sem sagittis nulla. Maecenas vehicular aliquam
-              tellus id ornare. Suspendisse efficitur metus sit porttitor id.
-              Aliquam pellentesque cursus tellus. Pellentesque sodales, risus ut
-              sollicitudin porttitor, odio libero accumsan nibh, interdum
-              tristique nisl tellus eu est. Nulla nec ante mollis, imperdiet
-              tortor id, tempor nunc.
-            </p>
-            <p>
-              In velit libero, molestie in nisl quis, vulputate consequat ante.
-              Nunc quis sem sit amet tellus bibendum imperdiet vitae eget sem.
-              Aenean suscipit faucibus dapibus.
-            </p>
+          <div className="bg-gray-50 rounded-lg p-6 mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <Package className="h-5 w-5 text-gray-600" />
+              <h2 className="text-lg font-semibold text-gray-900">
+                What happens next?
+              </h2>
+            </div>
+            
+            <div className="space-y-3 text-gray-600">
+              <p>
+                • You'll receive a confirmation email with your order details and login credentials
+              </p>
+              <p>
+                • Your subscription is now active and ready to use
+              </p>
+              <p>
+                • Access your products anytime from the dashboard
+              </p>
+              <p>
+                • Monitor your usage and manage subscriptions in your account settings
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-center text-gray-600 mb-8">
+            <p className="font-medium">Need help getting started?</p>
+            <p>Contact our support team at support@synmax.com</p>
           </div>
 
           <div className="flex gap-4 justify-center">

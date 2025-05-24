@@ -56,7 +56,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/products/:productId" element={<ProductDetailPage />} />
+        <Route path="/products/sim/:productId" element={<ProductDetailPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route
           path="/payment-confirmation"
@@ -88,6 +88,11 @@ function App() {
 
           {/* Credits */}
           <Route path="/credits" element={<CreditsPage />} />
+          
+          {/* Account & Settings */}
+          <Route path="/account" element={<div className="flex items-center justify-center min-h-[calc(100vh-4rem)]"><p className="text-gray-500">Account settings coming soon</p></div>} />
+          <Route path="/settings" element={<div className="flex items-center justify-center min-h-[calc(100vh-4rem)]"><p className="text-gray-500">Settings coming soon</p></div>} />
+          <Route path="/help" element={<div className="flex items-center justify-center min-h-[calc(100vh-4rem)]"><p className="text-gray-500">Help center coming soon</p></div>} />
         </Route>
 
         {/* Redirect root to dashboard if authenticated */}

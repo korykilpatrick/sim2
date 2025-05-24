@@ -97,7 +97,7 @@ export default function CartPage() {
                       </div>
 
                       <button
-                        onClick={() => navigate(`/products/${item.product.id}`)}
+                        onClick={() => navigate(`/products/sim/${item.product.id}`)}
                         className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                       >
                         View Details

@@ -27,7 +27,7 @@ export function useDashboardServices() {
     {
       name: 'Compliance Reports',
       description: 'Generate detailed vessel compliance reports',
-      href: '/reports/compliance',
+      href: '/reports',
       icon: '📋',
       color: 'bg-yellow-500',
     },
