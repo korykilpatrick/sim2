@@ -7,12 +7,41 @@ import type { Notification, NotificationFilters } from '../types'
 const STORAGE_KEY = 'sim_notifications'
 const MAX_NOTIFICATIONS = 100
 
+/**
+ * Manages application notifications with WebSocket integration and localStorage persistence.
+ * Automatically listens for WebSocket events and converts them to notifications.
+ * Persists notifications across page reloads and browser sessions.
+ * 
+ * @returns Notification state and management functions
+ * 
+ * @example
+ * ```tsx
+ * const { 
+ *   notifications, 
+ *   unreadCount, 
+ *   markAsRead, 
+ *   addNotification 
+ * } = useNotifications()
+ * 
+ * // Manually add a notification
+ * addNotification({
+ *   type: 'system',
+ *   title: 'Update Available',
+ *   message: 'A new version is ready',
+ *   severity: 'info'
+ * })
+ * ```
+ * 
+ * @remarks
+ * - Automatically subscribes to WebSocket events: alert_created, area_alert, credit_balance_updated, etc.
+ * - Limits stored notifications to MAX_NOTIFICATIONS (100) to prevent excessive storage
+ * - Provides filtering capabilities via getFilteredNotifications
+ */
 export function useNotifications() {
-  const [storedNotifications, setStoredNotifications] = useLocalStorage<
-    Notification[]
-  >(STORAGE_KEY, [])
-  const [notifications, setNotifications] =
-    useState<Notification[]>(storedNotifications)
+  const [notifications, setNotifications] = useLocalStorage<Notification[]>(
+    STORAGE_KEY,
+    []
+  )
   const [unreadCount, setUnreadCount] = useState(0)
 
   // Update unread count
@@ -20,11 +49,6 @@ export function useNotifications() {
     const count = notifications.filter((n) => !n.read).length
     setUnreadCount(count)
   }, [notifications])
-
-  // Persist notifications to localStorage
-  useEffect(() => {
-    setStoredNotifications(notifications)
-  }, [notifications, setStoredNotifications])
 
   // Add notification helper
   const addNotification = useCallback(
@@ -42,7 +66,7 @@ export function useNotifications() {
         return updated.slice(0, MAX_NOTIFICATIONS)
       })
     },
-    [],
+    [setNotifications],
   )
 
   // Listen for WebSocket events
@@ -116,22 +140,22 @@ export function useNotifications() {
     setNotifications((prev) =>
       prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
     )
-  }, [])
+  }, [setNotifications])
 
   // Mark all as read
   const markAllAsRead = useCallback(() => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
-  }, [])
+  }, [setNotifications])
 
   // Delete notification
   const deleteNotification = useCallback((notificationId: string) => {
     setNotifications((prev) => prev.filter((n) => n.id !== notificationId))
-  }, [])
+  }, [setNotifications])
 
   // Clear all notifications
   const clearAll = useCallback(() => {
     setNotifications([])
-  }, [])
+  }, [setNotifications])
 
   // Get filtered notifications
   const getFilteredNotifications = useCallback(

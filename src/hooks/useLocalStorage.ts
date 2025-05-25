@@ -1,26 +1,57 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 
 /**
- * Hook for syncing state with localStorage
+ * Hook for syncing state with localStorage with automatic persistence
+ * and cross-tab synchronization support.
  *
- * @param key - The localStorage key
+ * @template T - The type of the stored value
+ * @param key - The localStorage key to store the value under
  * @param initialValue - The initial value if no stored value exists
  * @returns [storedValue, setValue] - Current value and setter function
  *
  * @example
- * const [theme, setTheme] = useLocalStorage('theme', 'light')
+ * const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light')
+ * 
+ * @remarks
+ * - Automatically syncs changes across multiple tabs/windows
+ * - Handles JSON serialization/deserialization
+ * - Provides error handling for localStorage failures
+ * - Uses functional updates to prevent stale closures
  */
 export function useLocalStorage<T>(
   key: string,
   initialValue: T,
 ): [T, (value: T | ((val: T) => T)) => void] {
+  // Store initial value in ref to avoid stale closures
+  const initialValueRef = useRef(initialValue)
+  
+  // Update ref when initialValue changes
+  useEffect(() => {
+    initialValueRef.current = initialValue
+  }, [initialValue])
+  
   // Get from local storage then parse stored json or return initialValue
   const readValue = useCallback((): T => {
     // Prevent build error "window is undefined" but keeps working
     if (typeof window === 'undefined') {
-      return initialValue
+      return initialValueRef.current
     }
 
+    try {
+      const item = window.localStorage.getItem(key)
+      return item ? JSON.parse(item) : initialValueRef.current
+    } catch (error) {
+      console.warn(`Error reading localStorage key "${key}":`, error)
+      return initialValueRef.current
+    }
+  }, [key])
+
+  // State to store our value
+  // Use lazy initial state to prevent reading localStorage on every render
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (typeof window === 'undefined') {
+      return initialValue
+    }
     try {
       const item = window.localStorage.getItem(key)
       return item ? JSON.parse(item) : initialValue
@@ -28,46 +59,42 @@ export function useLocalStorage<T>(
       console.warn(`Error reading localStorage key "${key}":`, error)
       return initialValue
     }
-  }, [initialValue, key])
-
-  // State to store our value
-  const [storedValue, setStoredValue] = useState<T>(readValue)
+  })
 
   // Return a wrapped version of useState's setter function that persists the new value to localStorage
   const setValue = useCallback(
     (value: T | ((val: T) => T)) => {
       try {
-        // Allow value to be a function so we have the same API as useState
-        const newValue = value instanceof Function ? value(storedValue) : value
-
-        // Save to local storage
-        window.localStorage.setItem(key, JSON.stringify(newValue))
-
-        // Save state
-        setStoredValue(newValue)
-
-        // We dispatch a custom event so every useLocalStorage hook are notified
-        window.dispatchEvent(new Event('local-storage'))
+        // Handle both value and function forms
+        setStoredValue((currentValue) => {
+          const newValue = value instanceof Function ? value(currentValue) : value
+          
+          // Save to local storage
+          window.localStorage.setItem(key, JSON.stringify(newValue))
+          
+          // Dispatch event to notify other hooks
+          window.dispatchEvent(new Event('local-storage'))
+          
+          return newValue
+        })
       } catch (error) {
         console.warn(`Error setting localStorage key "${key}":`, error)
       }
     },
-    [key, storedValue],
+    [key],
   )
-
-  useEffect(() => {
-    setStoredValue(readValue())
-  }, [readValue])
 
   useEffect(() => {
     const handleStorageChange = () => {
       setStoredValue(readValue())
     }
 
-    // This only works for other documents, not the current one
+    // Listen for storage changes from other tabs/windows
+    // Note: 'storage' event only fires for changes from other documents
     window.addEventListener('storage', handleStorageChange)
 
-    // This is a custom event, triggered in setValue
+    // Listen for storage changes from the current tab
+    // This custom event is dispatched in setValue to ensure same-tab updates
     window.addEventListener('local-storage', handleStorageChange)
 
     return () => {

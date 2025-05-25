@@ -1,13 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { useWebSocket } from '@/hooks/useWebSocket'
 import { config } from '@/config'
 
+/**
+ * Displays connection status for WebSocket with auto-hide functionality.
+ * Shows status briefly after connection changes, then automatically hides.
+ * Only renders when WebSocket feature is enabled.
+ * 
+ * @component
+ * @example
+ * <ConnectionStatus />
+ */
 export function ConnectionStatus() {
   const { status, isAuthenticated, reconnectAttempts } = useWebSocket()
   const [showStatus, setShowStatus] = useState(false)
-  const [hideTimeout, setHideTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [, setHideTimeout] = useState<NodeJS.Timeout | null>(null)
 
   // Show status when disconnected or reconnecting
   useEffect(() => {
@@ -17,26 +26,68 @@ export function ConnectionStatus() {
       status === 'error'
     ) {
       setShowStatus(true)
-      if (hideTimeout) {
-        clearTimeout(hideTimeout)
-        setHideTimeout(null)
-      }
-    } else if (status === 'connected') {
+      setHideTimeout((prev) => {
+        if (prev) clearTimeout(prev)
+        return null
+      })
+    } else if (status === 'connected' && showStatus) {
       // Show connected status briefly after reconnecting
-      if (showStatus) {
-        const timeout = setTimeout(() => {
+      setHideTimeout((prev) => {
+        if (prev) clearTimeout(prev)
+        return setTimeout(() => {
           setShowStatus(false)
         }, 3000)
-        setHideTimeout(timeout)
-      }
+      })
     }
 
     return () => {
-      if (hideTimeout) {
-        clearTimeout(hideTimeout)
-      }
+      setHideTimeout((prev) => {
+        if (prev) clearTimeout(prev)
+        return null
+      })
     }
-  }, [status, showStatus, hideTimeout])
+  }, [status, showStatus])
+
+  const getStatusConfig = useCallback(() => {
+    switch (status) {
+      case 'connecting':
+        return {
+          icon: <RefreshCw className="h-4 w-4 animate-spin" />,
+          text: 'Connecting...',
+          bgColor: 'bg-yellow-500',
+        }
+      case 'connected':
+        return {
+          icon: <Wifi className="h-4 w-4" />,
+          text: isAuthenticated ? 'Connected' : 'Connected (Not authenticated)',
+          bgColor: 'bg-green-500',
+        }
+      case 'disconnected':
+        return {
+          icon: <WifiOff className="h-4 w-4" />,
+          text: 'Disconnected',
+          bgColor: 'bg-gray-500',
+        }
+      case 'reconnecting':
+        return {
+          icon: <RefreshCw className="h-4 w-4 animate-spin" />,
+          text: `Reconnecting... (${reconnectAttempts})`,
+          bgColor: 'bg-orange-500',
+        }
+      case 'error':
+        return {
+          icon: <WifiOff className="h-4 w-4" />,
+          text: 'Connection error',
+          bgColor: 'bg-red-500',
+        }
+      default:
+        return {
+          icon: <WifiOff className="h-4 w-4" />,
+          text: 'Unknown',
+          bgColor: 'bg-gray-500',
+        }
+    }
+  }, [status, isAuthenticated, reconnectAttempts])
 
   // Only show if WebSocket is enabled
   if (!config.features.websocket) {
@@ -45,53 +96,6 @@ export function ConnectionStatus() {
 
   if (!showStatus) {
     return null
-  }
-
-  const getStatusConfig = () => {
-    switch (status) {
-      case 'connecting':
-        return {
-          icon: <RefreshCw className="h-4 w-4 animate-spin" />,
-          text: 'Connecting...',
-          bgColor: 'bg-yellow-500',
-          textColor: 'text-yellow-900',
-        }
-      case 'connected':
-        return {
-          icon: <Wifi className="h-4 w-4" />,
-          text: isAuthenticated ? 'Connected' : 'Connected (Not authenticated)',
-          bgColor: 'bg-green-500',
-          textColor: 'text-green-900',
-        }
-      case 'disconnected':
-        return {
-          icon: <WifiOff className="h-4 w-4" />,
-          text: 'Disconnected',
-          bgColor: 'bg-gray-500',
-          textColor: 'text-gray-900',
-        }
-      case 'reconnecting':
-        return {
-          icon: <RefreshCw className="h-4 w-4 animate-spin" />,
-          text: `Reconnecting... (${reconnectAttempts})`,
-          bgColor: 'bg-orange-500',
-          textColor: 'text-orange-900',
-        }
-      case 'error':
-        return {
-          icon: <WifiOff className="h-4 w-4" />,
-          text: 'Connection error',
-          bgColor: 'bg-red-500',
-          textColor: 'text-red-900',
-        }
-      default:
-        return {
-          icon: <WifiOff className="h-4 w-4" />,
-          text: 'Unknown',
-          bgColor: 'bg-gray-500',
-          textColor: 'text-gray-900',
-        }
-    }
   }
 
   const { icon, text, bgColor } = getStatusConfig()
@@ -117,7 +121,15 @@ export function ConnectionStatus() {
   )
 }
 
-// Mini connection indicator for header
+/**
+ * Mini connection indicator for header navigation.
+ * Only shows when WebSocket is disconnected or unauthenticated.
+ * Displays a colored dot with hover tooltip.
+ * 
+ * @component
+ * @example
+ * <ConnectionIndicator />
+ */
 export function ConnectionIndicator() {
   const { status, isAuthenticated } = useWebSocket()
 
