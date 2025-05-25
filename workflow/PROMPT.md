@@ -49,6 +49,7 @@ After completing each task:
    - Any documentation updates made
    - Any issues or considerations found
    - Summarize the CODEBASE_ANALYSIS
+   - If there is a change in the UI/UX, list how to navigate the browser to view the changes
 5. **Wait for approval** before proceeding to the next task
 
 ## Expected Response Format
