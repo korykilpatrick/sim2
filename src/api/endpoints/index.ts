@@ -2,6 +2,7 @@
  * Central export for all API endpoints
  */
 
+export * from './analytics'
 export * from './auth'
 export * from './vessels'
 export * from './areas'

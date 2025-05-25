@@ -13,6 +13,7 @@ import {
   HelpCircle,
   X,
   Search,
+  TrendingUp,
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -55,6 +56,11 @@ const navigation = [
     name: 'Credits',
     href: '/credits',
     icon: CreditCard,
+  },
+  {
+    name: 'Analytics',
+    href: '/analytics',
+    icon: TrendingUp,
   },
 ]
 

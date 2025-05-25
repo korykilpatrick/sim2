@@ -11,7 +11,9 @@ export const trackingApi = {
    * Get all active trackings for the current user
    */
   getActive: (params?: { page?: number; limit?: number }) =>
-    apiClient.get<PaginatedResponse<VesselTracking>>('/tracking/active', { params }),
+    apiClient.get<PaginatedResponse<VesselTracking>>('/tracking/active', {
+      params,
+    }),
 
   /**
    * Get tracking by ID
@@ -83,7 +85,9 @@ export const trackingApi = {
     limit?: number
     status?: 'active' | 'expired'
   }) =>
-    apiClient.get<PaginatedResponse<VesselTracking>>('/tracking/history', { params }),
+    apiClient.get<PaginatedResponse<VesselTracking>>('/tracking/history', {
+      params,
+    }),
 
   /**
    * Export tracking data

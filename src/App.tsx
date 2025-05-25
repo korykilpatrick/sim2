@@ -52,6 +52,11 @@ const InvestigationWizard = lazy(
 // Credits pages
 const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
 
+// Analytics pages
+const AnalyticsPage = lazy(
+  () => import('@features/analytics/pages/AnalyticsPage'),
+)
+
 // Account & Settings pages
 const ProfilePage = lazy(() => import('@pages/ProfilePage'))
 const SettingsPage = lazy(() => import('@pages/SettingsPage'))
@@ -128,6 +133,9 @@ function App() {
 
             {/* Credits */}
             <Route path="/credits" element={<CreditsPage />} />
+
+            {/* Analytics */}
+            <Route path="/analytics" element={<AnalyticsPage />} />
 
             {/* Account & Settings */}
             <Route path="/account" element={<ProfilePage />} />

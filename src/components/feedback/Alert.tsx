@@ -107,9 +107,7 @@ const Alert = ({
         )}
         <div className={cn('flex-1', icon && 'ml-3')}>
           {title && (
-            <h3 className={cn('text-sm font-medium', colors.text)}>
-              {title}
-            </h3>
+            <h3 className={cn('text-sm font-medium', colors.text)}>{title}</h3>
           )}
           <div className={cn('text-sm', colors.text, title && 'mt-2')}>
             {message}

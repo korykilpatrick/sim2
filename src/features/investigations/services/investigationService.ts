@@ -50,7 +50,11 @@ export const investigationService = {
     date: string,
     notes: string,
   ): Promise<Investigation> => {
-    const response = await investigationsApi.scheduleConsultation(investigationId, date, notes)
+    const response = await investigationsApi.scheduleConsultation(
+      investigationId,
+      date,
+      notes,
+    )
     return response.data.data
   },
 
@@ -63,7 +67,10 @@ export const investigationService = {
       formData.append('documents', file)
     })
 
-    const response = await investigationsApi.uploadDocuments(investigationId, formData)
+    const response = await investigationsApi.uploadDocuments(
+      investigationId,
+      formData,
+    )
     return response.data.data
   },
 

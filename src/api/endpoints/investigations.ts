@@ -11,7 +11,9 @@ import type {
 export const investigationsApi = {
   // Get list of investigations
   getInvestigations: (filters?: InvestigationFilters) =>
-    apiClient.get<PaginatedResponse<Investigation>>('/investigations', { params: filters }),
+    apiClient.get<PaginatedResponse<Investigation>>('/investigations', {
+      params: filters,
+    }),
 
   // Get single investigation
   getInvestigation: (id: string) =>
@@ -35,10 +37,13 @@ export const investigationsApi = {
 
   // Schedule consultation
   scheduleConsultation: (id: string, date: string, notes: string) =>
-    apiClient.post<ApiResponse<Investigation>>(`/investigations/${id}/consultation`, {
-      date,
-      notes,
-    }),
+    apiClient.post<ApiResponse<Investigation>>(
+      `/investigations/${id}/consultation`,
+      {
+        date,
+        notes,
+      },
+    ),
 
   // Upload documents
   uploadDocuments: (id: string, formData: FormData) =>
@@ -68,9 +73,11 @@ export const investigationsApi = {
 
   // Get cost estimate
   getEstimate: (data: InvestigationRequest) =>
-    apiClient.post<ApiResponse<{
-      minCredits: number
-      maxCredits: number
-      factors: Array<{ name: string; credits: number }>
-    }>>('/investigations/estimate', data),
+    apiClient.post<
+      ApiResponse<{
+        minCredits: number
+        maxCredits: number
+        factors: Array<{ name: string; credits: number }>
+      }>
+    >('/investigations/estimate', data),
 }

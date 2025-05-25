@@ -23,7 +23,10 @@ export const authApi = {
    * Refresh access token
    */
   refreshToken: (refreshToken: string) =>
-    apiClient.post<ApiResponse<{ accessToken: string; refreshToken: string }>>('/auth/refresh', { refreshToken }),
+    apiClient.post<ApiResponse<{ accessToken: string; refreshToken: string }>>(
+      '/auth/refresh',
+      { refreshToken },
+    ),
 
   /**
    * Get current user profile

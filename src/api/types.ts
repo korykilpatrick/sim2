@@ -3,7 +3,6 @@
  * These types are used across all API endpoints and responses.
  */
 
-
 /**
  * Standard API response wrapper for all endpoints.
  *
@@ -63,7 +62,6 @@ export interface ApiError {
   /** HTTP status code */
   status: number
 }
-
 
 /**
  * Search and filter parameters
