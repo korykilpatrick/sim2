@@ -213,9 +213,9 @@ export default function FleetDetailPage() {
                 { key: 'imo', header: 'IMO', accessor: (v) => v.imo },
                 { key: 'type', header: 'Type', accessor: (v) => v.type },
                 { key: 'flag', header: 'Flag', accessor: (v) => v.flag },
-                { 
-                  key: 'status', 
-                  header: 'Status', 
+                {
+                  key: 'status',
+                  header: 'Status',
                   accessor: (v) => (
                     <span
                       className={`px-2 py-1 text-xs font-medium rounded-full ${
@@ -226,11 +226,11 @@ export default function FleetDetailPage() {
                     >
                       {v.status}
                     </span>
-                  )
+                  ),
                 },
-                { 
-                  key: 'actions', 
-                  header: 'Actions', 
+                {
+                  key: 'actions',
+                  header: 'Actions',
                   accessor: (v) => (
                     <Button
                       variant="ghost"
@@ -239,7 +239,7 @@ export default function FleetDetailPage() {
                     >
                       Remove
                     </Button>
-                  )
+                  ),
                 },
               ]}
               data={fleetVessels}

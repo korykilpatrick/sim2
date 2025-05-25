@@ -21,8 +21,13 @@ export function setupWebSocket(io: Server) {
             lat: vessel.lastPosition.lat + (Math.random() - 0.5) * 0.01,
             lng: vessel.lastPosition.lng + (Math.random() - 0.5) * 0.01,
             timestamp: new Date().toISOString(),
-            speed: Math.max(0, vessel.lastPosition.speed + (Math.random() - 0.5) * 2),
-            course: (vessel.lastPosition.course + (Math.random() - 0.5) * 10 + 360) % 360,
+            speed: Math.max(
+              0,
+              vessel.lastPosition.speed + (Math.random() - 0.5) * 2,
+            ),
+            course:
+              (vessel.lastPosition.course + (Math.random() - 0.5) * 10 + 360) %
+              360,
           },
         }))
 

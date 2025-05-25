@@ -34,7 +34,16 @@ export const authApi = {
    * Update user profile
    */
   updateProfile: (data: Partial<User>) =>
-    apiClient.patch<ApiResponse<User>>('/auth/profile', data),
+    apiClient.put<ApiResponse<User>>('/auth/profile', data),
+
+  /**
+   * Change password
+   */
+  changePassword: (data: { currentPassword: string; newPassword: string }) =>
+    apiClient.post<ApiResponse<{ message: string }>>(
+      '/auth/change-password',
+      data,
+    ),
 
   /**
    * Logout user

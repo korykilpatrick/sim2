@@ -52,6 +52,10 @@ const InvestigationWizard = lazy(
 // Credits pages
 const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
 
+// Account & Settings pages
+const ProfilePage = lazy(() => import('@pages/ProfilePage'))
+const SettingsPage = lazy(() => import('@pages/SettingsPage'))
+
 // Cart pages
 const CartPage = lazy(() => import('@pages/CartPage'))
 
@@ -126,22 +130,8 @@ function App() {
             <Route path="/credits" element={<CreditsPage />} />
 
             {/* Account & Settings */}
-            <Route
-              path="/account"
-              element={
-                <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                  <p className="text-gray-500">Account settings coming soon</p>
-                </div>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                  <p className="text-gray-500">Settings coming soon</p>
-                </div>
-              }
-            />
+            <Route path="/account" element={<ProfilePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route
               path="/help"
               element={

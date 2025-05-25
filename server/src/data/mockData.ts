@@ -5,10 +5,32 @@ export const mockUsers = [
     password: 'demo123', // In real app, this would be hashed
     name: 'Demo User',
     company: 'SynMax Demo',
+    department: 'Operations',
+    phone: '+1-555-0123',
+    avatar: null,
     role: 'user' as const,
     credits: 1000,
-    createdAt: new Date().toISOString(),
+    preferences: {
+      theme: 'light' as const,
+      notifications: {
+        email: true,
+        sms: false,
+        push: true,
+      },
+      defaultView: 'dashboard' as const,
+    },
+    subscription: {
+      plan: 'professional' as const,
+      credits: 1000,
+      creditsUsed: 245,
+      renewalDate: new Date(
+        Date.now() + 30 * 24 * 60 * 60 * 1000,
+      ).toISOString(),
+    },
+    createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
     updatedAt: new Date().toISOString(),
+    lastLogin: new Date().toISOString(),
+    isActive: true,
   },
 ]
 

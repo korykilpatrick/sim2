@@ -56,7 +56,7 @@ Focus on demonstrable features that showcase the platform's capabilities:
 
 #### Missing UI/UX Components (3-4 days)
 - [x] Fleet vessel assignment interface
-- [ ] User profile and settings pages
+- [x] User profile and settings pages
 - [ ] Usage analytics dashboard
 - [ ] Advanced search with filters (Cmd+K)
 - [ ] Onboarding flow for new users

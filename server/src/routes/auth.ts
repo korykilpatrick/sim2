@@ -77,11 +77,33 @@ router.post('/register', async (req, res) => {
     email,
     password,
     name,
-    company,
+    company: company || '',
+    department: '',
+    phone: '',
+    avatar: null,
     role: 'user' as const,
     credits: 100, // Free credits on signup
+    preferences: {
+      theme: 'light' as const,
+      notifications: {
+        email: true,
+        sms: false,
+        push: true,
+      },
+      defaultView: 'dashboard' as const,
+    },
+    subscription: {
+      plan: 'free' as const,
+      credits: 100,
+      creditsUsed: 0,
+      renewalDate: new Date(
+        Date.now() + 30 * 24 * 60 * 60 * 1000,
+      ).toISOString(),
+    },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    lastLogin: new Date().toISOString(),
+    isActive: true,
   }
 
   mockUsers.push(newUser)
@@ -185,6 +207,112 @@ router.post('/logout', (_req, res) => {
     data: null,
     timestamp: new Date().toISOString(),
   })
+})
+
+// Update profile
+router.put('/profile', async (req, res) => {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      error: {
+        message: 'Authorization required',
+        code: 'AUTH_REQUIRED',
+      },
+    })
+  }
+
+  const token = authHeader.substring(7)
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    const userIndex = mockUsers.findIndex((u) => u.id === decoded.userId)
+
+    if (userIndex === -1) {
+      throw new Error('User not found')
+    }
+
+    // Update user data
+    mockUsers[userIndex] = {
+      ...mockUsers[userIndex],
+      ...req.body,
+      updatedAt: new Date().toISOString(),
+    }
+
+    const { password: pwd, ...userWithoutPassword } = mockUsers[userIndex]
+    void pwd // Intentionally unused
+
+    res.json({
+      success: true,
+      data: userWithoutPassword,
+      timestamp: new Date().toISOString(),
+    })
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      error: {
+        message: 'Invalid token',
+        code: 'INVALID_TOKEN',
+      },
+    })
+  }
+})
+
+// Change password
+router.post('/change-password', async (req, res) => {
+  const authHeader = req.headers.authorization
+  const { currentPassword, newPassword } = req.body
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      error: {
+        message: 'Authorization required',
+        code: 'AUTH_REQUIRED',
+      },
+    })
+  }
+
+  const token = authHeader.substring(7)
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    const userIndex = mockUsers.findIndex((u) => u.id === decoded.userId)
+
+    if (userIndex === -1) {
+      throw new Error('User not found')
+    }
+
+    // Verify current password
+    if (mockUsers[userIndex].password !== currentPassword) {
+      return res.status(400).json({
+        success: false,
+        error: {
+          message: 'Current password is incorrect',
+          code: 'INCORRECT_PASSWORD',
+        },
+      })
+    }
+
+    // Update password
+    mockUsers[userIndex].password = newPassword
+    mockUsers[userIndex].updatedAt = new Date().toISOString()
+
+    res.json({
+      success: true,
+      data: { message: 'Password changed successfully' },
+      timestamp: new Date().toISOString(),
+    })
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      error: {
+        message: 'Invalid token',
+        code: 'INVALID_TOKEN',
+      },
+    })
+  }
 })
 
 export default router

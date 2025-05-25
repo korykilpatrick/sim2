@@ -1,4 +1,37 @@
 /**
+ * User preferences for theme and notifications.
+ */
+export interface UserPreferences {
+  /** UI theme preference */
+  theme: 'light' | 'dark'
+  /** Notification settings */
+  notifications: {
+    /** Email notifications enabled */
+    email: boolean
+    /** SMS notifications enabled */
+    sms: boolean
+    /** Push notifications enabled */
+    push: boolean
+  }
+  /** Default dashboard view */
+  defaultView: 'dashboard' | 'vessels' | 'areas' | 'reports'
+}
+
+/**
+ * User subscription information.
+ */
+export interface UserSubscription {
+  /** Subscription plan type */
+  plan: 'free' | 'basic' | 'professional' | 'enterprise'
+  /** Total available credits */
+  credits: number
+  /** Credits used in current period */
+  creditsUsed: number
+  /** ISO date string for subscription renewal */
+  renewalDate: string
+}
+
+/**
  * Represents an authenticated user in the system.
  */
 export interface User {
@@ -10,14 +43,28 @@ export interface User {
   name: string
   /** Company/organization name */
   company?: string
+  /** Department within company */
+  department?: string
+  /** User's phone number */
+  phone?: string
+  /** Avatar URL */
+  avatar?: string
   /** User's role determining access permissions */
   role: 'user' | 'admin'
   /** Available credits for vessel tracking */
   credits: number
+  /** User preferences */
+  preferences?: UserPreferences
+  /** Subscription information */
+  subscription?: UserSubscription
   /** ISO timestamp of account creation */
   createdAt: string
   /** ISO timestamp of last profile update */
   updatedAt: string
+  /** ISO timestamp of last login */
+  lastLogin?: string
+  /** Whether the account is active */
+  isActive: boolean
 }
 
 /**
