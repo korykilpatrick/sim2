@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { fleetService } from '../services/fleetService'
 import type { CreateFleetInput, UpdateFleetInput } from '../types'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 import { fleetKeys } from './'
 
 export const useFleets = () => {
@@ -28,6 +28,7 @@ export const useFleetStats = () => {
 
 export const useCreateFleet = () => {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: async (data: CreateFleetInput) => {
@@ -38,10 +39,13 @@ export const useCreateFleet = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: fleetKeys.all })
       queryClient.invalidateQueries({ queryKey: fleetKeys.stats() })
-      toast.success('Fleet created successfully')
+      showToast({ type: 'success', message: 'Fleet created successfully' })
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Failed to create fleet')
+      showToast({
+        type: 'error',
+        message: error.message || 'Failed to create fleet',
+      })
     },
   })
 }

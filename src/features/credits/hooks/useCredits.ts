@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { creditService } from '../services/creditService'
 import { useAuthStore } from '@/features/auth/services/authStore'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 
 const creditKeys = {
   all: ['credits'] as const,
@@ -12,6 +12,7 @@ const creditKeys = {
 
 export function useCredits() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
   const updateUserCredits = useAuthStore((state) => state.updateCredits)
 
   // Get credit balance
@@ -37,12 +38,15 @@ export function useCredits() {
       // Invalidate queries
       queryClient.invalidateQueries({ queryKey: creditKeys.all })
 
-      toast.success(`Successfully purchased ${data.creditsAdded} credits!`)
+      showToast({
+        type: 'success',
+        message: `Successfully purchased ${data.creditsAdded} credits!`,
+      })
     },
     onError: (error) => {
       const message =
         error instanceof Error ? error.message : 'Failed to purchase credits'
-      toast.error(message)
+      showToast({ type: 'error', message })
     },
   })
 
@@ -59,7 +63,7 @@ export function useCredits() {
     onError: (error) => {
       const message =
         error instanceof Error ? error.message : 'Failed to deduct credits'
-      toast.error(message)
+      showToast({ type: 'error', message })
     },
   })
 

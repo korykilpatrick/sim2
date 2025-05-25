@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 import { authApi } from '../services/auth'
 import { useAuthStore, authSelectors } from '../services/authStore'
 import { LoginCredentials, RegisterData } from '../types/auth'
@@ -28,6 +28,7 @@ import { authKeys } from './'
 export function useAuth() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
   const user = useAuthStore(authSelectors.user)
   const isAuthenticated = useAuthStore(authSelectors.isAuthenticated)
   const token = useAuthStore(authSelectors.accessToken)
@@ -40,11 +41,14 @@ export function useAuth() {
       const { user, accessToken, refreshToken } = response
       setAuth(user, accessToken, refreshToken)
       queryClient.setQueryData(authKeys.user(), user)
-      toast.success('Successfully logged in!')
+      showToast({ type: 'success', message: 'Successfully logged in!' })
       navigate('/dashboard')
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(error.response?.data?.error?.message || 'Login failed')
+      showToast({
+        type: 'error',
+        message: error.response?.data?.error?.message || 'Login failed',
+      })
     },
   })
 
@@ -54,11 +58,14 @@ export function useAuth() {
       const { user, accessToken, refreshToken } = response
       setAuth(user, accessToken, refreshToken)
       queryClient.setQueryData(authKeys.user(), user)
-      toast.success('Account created successfully!')
+      showToast({ type: 'success', message: 'Account created successfully!' })
       navigate('/dashboard')
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(error.response?.data?.error?.message || 'Registration failed')
+      showToast({
+        type: 'error',
+        message: error.response?.data?.error?.message || 'Registration failed',
+      })
     },
   })
 
@@ -67,7 +74,7 @@ export function useAuth() {
     onSuccess: () => {
       logoutStore()
       queryClient.clear()
-      toast.success('Successfully logged out')
+      showToast({ type: 'success', message: 'Successfully logged out' })
       navigate('/login')
     },
     onError: () => {

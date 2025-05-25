@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 import { vesselsApi } from '../services/vessels'
 import { PageLayout } from '@/components/layouts'
 import {
@@ -15,6 +15,7 @@ import type { ApiResponse } from '@/api/types'
 
 export default function VesselTrackingPage() {
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const { deductCredits } = useCreditDeduction()
 
   // Create tracking mutation
@@ -46,24 +47,32 @@ export default function VesselTrackingPage() {
       })
     },
     onSuccess: () => {
-      toast.success('Vessel tracking created successfully!')
+      showToast({
+        type: 'success',
+        message: 'Vessel tracking created successfully!',
+      })
       navigate('/vessels')
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to create tracking',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to create tracking',
+      })
     },
   })
 
   const handleComplete = async (data: TrackingWizardData) => {
     if (!data.vessel) {
-      toast.error('Please select a vessel')
+      showToast({ type: 'error', message: 'Please select a vessel' })
       return
     }
 
     if (data.criteria.length === 0) {
-      toast.error('Please select at least one tracking criteria')
+      showToast({
+        type: 'error',
+        message: 'Please select at least one tracking criteria',
+      })
       return
     }
 
@@ -78,9 +87,10 @@ export default function VesselTrackingPage() {
     const hasSufficientCredits =
       await creditService.checkSufficientCredits(creditCost)
     if (!hasSufficientCredits) {
-      toast.error(
-        `Insufficient credits. This tracking requires ${creditCost} credits.`,
-      )
+      showToast({
+        type: 'error',
+        message: `Insufficient credits. This tracking requires ${creditCost} credits.`,
+      })
       return
     }
 

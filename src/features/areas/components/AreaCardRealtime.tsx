@@ -4,7 +4,7 @@ import Button from '@/components/common/Button'
 import { MapPin, AlertTriangle, Edit2, Trash2, Clock, Bell } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { useWebSocketEvent, useWebSocketRoom } from '@/hooks/useWebSocket'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 import type { Area } from '../types'
 import type { AreaAlert, AreaVesselEvent } from '@/types/websocket'
 
@@ -27,6 +27,7 @@ export function AreaCardRealtime({
   const [recentAlerts, setRecentAlerts] = useState<AreaAlert[]>([])
   const [isLive, setIsLive] = useState(false)
   const [lastAlert, setLastAlert] = useState<Date | null>(null)
+  const { showToast } = useToast()
 
   // Subscribe to area room for real-time updates
   useWebSocketRoom('area', area.id, area.isActive)
@@ -45,9 +46,10 @@ export function AreaCardRealtime({
 
       // Show toast for high severity alerts
       if (alert.severity === 'high' || alert.severity === 'critical') {
-        toast.error(
-          `${alert.severity.toUpperCase()} alert in ${area.name}: ${alert.message}`,
-        )
+        showToast({
+          type: 'error',
+          message: `${alert.severity.toUpperCase()} alert in ${area.name}: ${alert.message}`,
+        })
       }
     }
   })
@@ -55,8 +57,9 @@ export function AreaCardRealtime({
   // Handle vessel entry events
   useWebSocketEvent('area_vessel_entered', (event: AreaVesselEvent) => {
     if (event.areaId === area.id) {
-      toast(`Vessel ${event.vesselName} entered ${area.name}`, {
-        icon: '🚢',
+      showToast({
+        type: 'info',
+        message: `Vessel ${event.vesselName} entered ${area.name}`,
       })
     }
   })
@@ -64,8 +67,9 @@ export function AreaCardRealtime({
   // Handle vessel exit events
   useWebSocketEvent('area_vessel_exited', (event: AreaVesselEvent) => {
     if (event.areaId === area.id) {
-      toast(`Vessel ${event.vesselName} exited ${area.name}`, {
-        icon: '🚢',
+      showToast({
+        type: 'info',
+        message: `Vessel ${event.vesselName} exited ${area.name}`,
       })
     }
   })

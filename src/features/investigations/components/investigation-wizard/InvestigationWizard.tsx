@@ -7,12 +7,12 @@ import { SourceSelectionStep } from './SourceSelectionStep'
 import { ReviewSubmitStep } from './ReviewSubmitStep'
 import { InvestigationRequest } from '../../types'
 import { useCreateInvestigation } from '../../hooks/useInvestigations'
-import Toast from '@/components/feedback/Toast'
+import { useToast } from '@/hooks/useToast'
 
 export default function InvestigationWizard() {
   const navigate = useNavigate()
   const createInvestigation = useCreateInvestigation()
-  const [showSuccess, setShowSuccess] = useState(false)
+  const { showToast } = useToast()
   const [investigationData, setInvestigationData] = useState<
     Partial<InvestigationRequest>
   >({
@@ -45,7 +45,10 @@ export default function InvestigationWizard() {
       const result = await createInvestigation.mutateAsync(
         investigationData as InvestigationRequest,
       )
-      setShowSuccess(true)
+      showToast({
+        type: 'success',
+        message: 'Investigation request submitted successfully!',
+      })
       setTimeout(() => {
         navigate(`/investigations/${result.id}`)
       }, 2000)
@@ -98,15 +101,6 @@ export default function InvestigationWizard() {
         <SourceSelectionStep data={investigationData} onUpdate={updateData} />
         <ReviewSubmitStep data={investigationData} />
       </FormWizard>
-
-      {showSuccess && (
-        <Toast
-          id="investigation-success"
-          message="Investigation request submitted successfully!"
-          type="success"
-          onClose={() => setShowSuccess(false)}
-        />
-      )}
     </>
   )
 }

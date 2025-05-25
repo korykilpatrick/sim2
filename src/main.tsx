@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { Toaster } from 'react-hot-toast'
 import { WebSocketProvider } from './providers/WebSocketProvider'
+import { ToastProvider } from './providers/ToastProvider'
 import App from './App'
 import './index.css'
 
@@ -25,16 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <BrowserRouter>
         <WebSocketProvider>
           <App />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#1f2937',
-                color: '#f3f4f6',
-              },
-            }}
-          />
+          <ToastProvider />
         </WebSocketProvider>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />

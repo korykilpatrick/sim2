@@ -11,7 +11,7 @@ import {
 } from '@/components/common'
 import { Input, Select, Switch } from '@/components/forms'
 import { Alert } from '@/components/feedback'
-import { toast } from '@/components/feedback/Toast'
+import { useToast } from '@/hooks/useToast'
 import { useAuthStore, profileService } from '@/features/auth/services'
 import { validation } from '@/services/validation'
 import type { UserPreferences } from '@/features/auth/types'
@@ -26,6 +26,7 @@ import {
 
 export default function SettingsPage() {
   const { user, updateUser } = useAuthStore()
+  const { showToast } = useToast()
   const [activeTab, setActiveTab] = useState('notifications')
 
   // Form states
@@ -55,10 +56,13 @@ export default function SettingsPage() {
     mutationFn: profileService.updatePreferences,
     onSuccess: (data) => {
       updateUser(data)
-      toast.success('Preferences updated successfully')
+      showToast({
+        type: 'success',
+        message: 'Preferences updated successfully',
+      })
     },
     onError: () => {
-      toast.error('Failed to update preferences')
+      showToast({ type: 'error', message: 'Failed to update preferences' })
     },
   })
 
@@ -72,7 +76,7 @@ export default function SettingsPage() {
       newPassword: string
     }) => profileService.changePassword(currentPassword, newPassword),
     onSuccess: () => {
-      toast.success('Password changed successfully')
+      showToast({ type: 'success', message: 'Password changed successfully' })
       setPasswordForm({
         currentPassword: '',
         newPassword: '',
@@ -81,9 +85,11 @@ export default function SettingsPage() {
       setPasswordErrors({})
     },
     onError: () => {
-      toast.error(
-        'Failed to change password. Please check your current password.',
-      )
+      showToast({
+        type: 'error',
+        message:
+          'Failed to change password. Please check your current password.',
+      })
     },
   })
 

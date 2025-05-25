@@ -4,7 +4,7 @@ import type { AreaFilters, CreateAreaRequest } from '../types'
 import { useCreditDeduction } from '@/features/shared/hooks'
 import { creditService } from '@/features/shared/services'
 import { calculateAreaSize } from '../utils'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 import type { AxiosError } from 'axios'
 import type { ApiError } from '@/api/types'
 import { areaKeys } from './'
@@ -27,6 +27,7 @@ export function useArea(id: string) {
 
 export function useCreateArea() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
   const { deductCredits } = useCreditDeduction()
 
   return useMutation({
@@ -68,20 +69,23 @@ export function useCreateArea() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: areaKeys.all })
       queryClient.invalidateQueries({ queryKey: areaKeys.statistics() })
-      toast.success('Area created successfully')
+      showToast({ type: 'success', message: 'Area created successfully' })
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
-      toast.error(
-        error.response?.data?.error?.message ||
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message ||
           error.message ||
           'Failed to create area',
-      )
+      })
     },
   })
 }
 
 export function useUpdateArea(id: string) {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: (data: Partial<CreateAreaRequest>) =>
@@ -89,30 +93,35 @@ export function useUpdateArea(id: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: areaKeys.all })
       queryClient.invalidateQueries({ queryKey: areaKeys.detail(id) })
-      toast.success('Area updated successfully')
+      showToast({ type: 'success', message: 'Area updated successfully' })
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to update area',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to update area',
+      })
     },
   })
 }
 
 export function useDeleteArea() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: (id: string) => areaApi.deleteArea(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: areaKeys.all })
       queryClient.invalidateQueries({ queryKey: areaKeys.statistics() })
-      toast.success('Area deleted successfully')
+      showToast({ type: 'success', message: 'Area deleted successfully' })
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to delete area',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to delete area',
+      })
     },
   })
 }

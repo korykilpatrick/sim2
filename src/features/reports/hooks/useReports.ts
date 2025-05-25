@@ -3,7 +3,7 @@ import { reportApi } from '../services/reportService'
 import type { ReportFilters, ReportRequest, BulkReportRequest } from '../types'
 import { useCreditDeduction } from '@/features/shared/hooks'
 import { creditService } from '@/features/shared/services'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 import { useNavigate } from 'react-router-dom'
 import type { AxiosError } from 'axios'
 import type { ApiResponse } from '@/api/types'
@@ -36,6 +36,7 @@ export function useReportById(id: string) {
 export function useCreateReport() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+  const { showToast } = useToast()
   const { deductCredits } = useCreditDeduction()
 
   return useMutation({
@@ -79,21 +80,24 @@ export function useCreateReport() {
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: reportKeys.all })
       queryClient.invalidateQueries({ queryKey: reportKeys.statistics() })
-      toast.success('Report generation started')
+      showToast({ type: 'success', message: 'Report generation started' })
       navigate(`/reports/${response.reportId}`)
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message ||
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message ||
           error.message ||
           'Failed to create report',
-      )
+      })
     },
   })
 }
 
 export function useCreateBulkReports() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: (request: BulkReportRequest) =>
@@ -101,17 +105,22 @@ export function useCreateBulkReports() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: reportKeys.all })
       queryClient.invalidateQueries({ queryKey: reportKeys.statistics() })
-      toast.success('Bulk report generation started')
+      showToast({ type: 'success', message: 'Bulk report generation started' })
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to create bulk reports',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message ||
+          'Failed to create bulk reports',
+      })
     },
   })
 }
 
 export function useDownloadReport() {
+  const { showToast } = useToast()
+
   return useMutation({
     mutationFn: ({
       reportId,
@@ -133,12 +142,14 @@ export function useDownloadReport() {
       link.click()
       link.remove()
       window.URL.revokeObjectURL(url)
-      toast.success('Report downloaded successfully')
+      showToast({ type: 'success', message: 'Report downloaded successfully' })
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to download report',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to download report',
+      })
     },
   })
 }
@@ -178,6 +189,7 @@ export function useReportStatus(id: string) {
 
 export function useCancelReport() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: (id: string) => reportApi.cancelReport(id),
@@ -185,18 +197,21 @@ export function useCancelReport() {
       queryClient.invalidateQueries({ queryKey: reportKeys.all })
       queryClient.invalidateQueries({ queryKey: reportKeys.detail(id) })
       queryClient.invalidateQueries({ queryKey: reportKeys.status(id) })
-      toast.success('Report cancelled')
+      showToast({ type: 'success', message: 'Report cancelled' })
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to cancel report',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to cancel report',
+      })
     },
   })
 }
 
 export function useRetryReport() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: (id: string) => reportApi.retryReport(id),
@@ -204,12 +219,14 @@ export function useRetryReport() {
       queryClient.invalidateQueries({ queryKey: reportKeys.all })
       queryClient.invalidateQueries({ queryKey: reportKeys.detail(id) })
       queryClient.invalidateQueries({ queryKey: reportKeys.status(id) })
-      toast.success('Report retry started')
+      showToast({ type: 'success', message: 'Report retry started' })
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to retry report',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to retry report',
+      })
     },
   })
 }

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { areaApi } from '../services/areaService'
-import toast from 'react-hot-toast'
+import { useToast } from '@/hooks/useToast'
 import type { AxiosError } from 'axios'
 import type { ApiError } from '@/api/types'
 import { areaKeys } from './'
@@ -15,6 +15,7 @@ export function useAreaMonitoring(areaId: string) {
 
 export function useStartMonitoring(areaId: string) {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: (config: {
@@ -26,46 +27,54 @@ export function useStartMonitoring(areaId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: areaKeys.monitoring(areaId) })
       queryClient.invalidateQueries({ queryKey: areaKeys.detail(areaId) })
-      toast.success('Monitoring started successfully')
+      showToast({ type: 'success', message: 'Monitoring started successfully' })
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to start monitoring',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to start monitoring',
+      })
     },
   })
 }
 
 export function usePauseMonitoring(areaId: string) {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: () => areaApi.pauseMonitoring(areaId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: areaKeys.monitoring(areaId) })
-      toast.success('Monitoring paused')
+      showToast({ type: 'success', message: 'Monitoring paused' })
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to pause monitoring',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to pause monitoring',
+      })
     },
   })
 }
 
 export function useResumeMonitoring(areaId: string) {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   return useMutation({
     mutationFn: () => areaApi.resumeMonitoring(areaId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: areaKeys.monitoring(areaId) })
-      toast.success('Monitoring resumed')
+      showToast({ type: 'success', message: 'Monitoring resumed' })
     },
     onError: (error: AxiosError<{ error?: ApiError }>) => {
-      toast.error(
-        error.response?.data?.error?.message || 'Failed to resume monitoring',
-      )
+      showToast({
+        type: 'error',
+        message:
+          error.response?.data?.error?.message || 'Failed to resume monitoring',
+      })
     },
   })
 }

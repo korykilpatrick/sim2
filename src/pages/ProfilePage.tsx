@@ -12,7 +12,7 @@ import {
 } from '@/components/common'
 import { Input } from '@/components/forms'
 import { LoadingSpinner } from '@/components/feedback'
-import { toast } from '@/components/feedback/Toast'
+import { useToast } from '@/hooks/useToast'
 import { useAuthStore, profileService } from '@/features/auth/services'
 import { validation } from '@/services/validation'
 import type { User } from '@/features/auth/types'
@@ -20,6 +20,7 @@ import type { User } from '@/features/auth/types'
 export default function ProfilePage() {
   const queryClient = useQueryClient()
   const { user, updateUser } = useAuthStore()
+  const { showToast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState<Partial<User>>({})
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -43,11 +44,11 @@ export default function ProfilePage() {
       setIsEditing(false)
       setFormData({})
       setErrors({})
-      toast.success('Profile updated successfully')
+      showToast({ type: 'success', message: 'Profile updated successfully' })
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
     onError: () => {
-      toast.error('Failed to update profile')
+      showToast({ type: 'error', message: 'Failed to update profile' })
     },
   })
 
@@ -58,7 +59,7 @@ export default function ProfilePage() {
       await updateProfileMutation.mutateAsync({ avatar: data.avatarUrl })
     },
     onError: () => {
-      toast.error('Failed to upload avatar')
+      showToast({ type: 'error', message: 'Failed to upload avatar' })
     },
   })
 
