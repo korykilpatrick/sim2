@@ -7,7 +7,7 @@ import type { ApiResponse, PaginatedResponse } from '../types'
 import type { Fleet } from '@/features/fleet/types'
 import type { Vessel } from '@/features/vessels/types'
 
-export const fleetApi = {
+export const fleetsApi = {
   /**
    * Get all fleets for the current user
    */

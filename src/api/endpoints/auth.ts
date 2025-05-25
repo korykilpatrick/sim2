@@ -3,27 +3,27 @@
  */
 
 import { apiClient } from '../client'
-import type { LoginResponse, RefreshTokenResponse, ApiResponse } from '../types'
-import type { User } from '@/features/auth/types'
+import type { ApiResponse } from '../types'
+import type { User, AuthResponse } from '@/features/auth/types'
 
 export const authApi = {
   /**
    * Login with email and password
    */
   login: (credentials: { email: string; password: string }) =>
-    apiClient.post<LoginResponse>('/auth/login', credentials),
+    apiClient.post<ApiResponse<AuthResponse>>('/auth/login', credentials),
 
   /**
    * Register a new user
    */
   register: (data: { email: string; password: string; name: string }) =>
-    apiClient.post<LoginResponse>('/auth/register', data),
+    apiClient.post<ApiResponse<AuthResponse>>('/auth/register', data),
 
   /**
    * Refresh access token
    */
   refreshToken: (refreshToken: string) =>
-    apiClient.post<RefreshTokenResponse>('/auth/refresh', { refreshToken }),
+    apiClient.post<ApiResponse<{ accessToken: string; refreshToken: string }>>('/auth/refresh', { refreshToken }),
 
   /**
    * Get current user profile

@@ -1,4 +1,5 @@
 import { apiClient } from '../client'
+import type { ApiResponse, PaginatedResponse } from '../types'
 import type {
   Investigation,
   InvestigationRequest,
@@ -10,38 +11,38 @@ import type {
 export const investigationsApi = {
   // Get list of investigations
   getInvestigations: (filters?: InvestigationFilters) =>
-    apiClient.get<Investigation[]>('/investigations', { params: filters }),
+    apiClient.get<PaginatedResponse<Investigation>>('/investigations', { params: filters }),
 
   // Get single investigation
   getInvestigation: (id: string) =>
-    apiClient.get<Investigation>(`/investigations/${id}`),
+    apiClient.get<ApiResponse<Investigation>>(`/investigations/${id}`),
 
   // Create new investigation
   createInvestigation: (data: InvestigationRequest) =>
-    apiClient.post<Investigation>('/investigations', data),
+    apiClient.post<ApiResponse<Investigation>>('/investigations', data),
 
   // Update investigation
   updateInvestigation: (id: string, data: Partial<Investigation>) =>
-    apiClient.patch<Investigation>(`/investigations/${id}`, data),
+    apiClient.patch<ApiResponse<Investigation>>(`/investigations/${id}`, data),
 
   // Submit investigation for review
   submitInvestigation: (id: string) =>
-    apiClient.post<Investigation>(`/investigations/${id}/submit`),
+    apiClient.post<ApiResponse<Investigation>>(`/investigations/${id}/submit`),
 
   // Cancel investigation
   cancelInvestigation: (id: string) =>
-    apiClient.post<Investigation>(`/investigations/${id}/cancel`),
+    apiClient.post<ApiResponse<Investigation>>(`/investigations/${id}/cancel`),
 
   // Schedule consultation
   scheduleConsultation: (id: string, date: string, notes: string) =>
-    apiClient.post<Investigation>(`/investigations/${id}/consultation`, {
+    apiClient.post<ApiResponse<Investigation>>(`/investigations/${id}/consultation`, {
       date,
       notes,
     }),
 
   // Upload documents
   uploadDocuments: (id: string, formData: FormData) =>
-    apiClient.post<InvestigationDocument[]>(
+    apiClient.post<ApiResponse<InvestigationDocument[]>>(
       `/investigations/${id}/documents`,
       formData,
       {
@@ -63,13 +64,13 @@ export const investigationsApi = {
 
   // Get investigation stats
   getInvestigationStats: () =>
-    apiClient.get<InvestigationStats>('/investigations/stats'),
+    apiClient.get<ApiResponse<InvestigationStats>>('/investigations/stats'),
 
   // Get cost estimate
   getEstimate: (data: InvestigationRequest) =>
-    apiClient.post<{
+    apiClient.post<ApiResponse<{
       minCredits: number
       maxCredits: number
       factors: Array<{ name: string; credits: number }>
-    }>('/investigations/estimate', data),
+    }>>('/investigations/estimate', data),
 }

@@ -3,7 +3,6 @@
  * These types are used across all API endpoints and responses.
  */
 
-import type { User } from '@/features/auth/types'
 
 /**
  * Standard API response wrapper for all endpoints.
@@ -65,19 +64,6 @@ export interface ApiError {
   status: number
 }
 
-/**
- * Authentication responses
- */
-export interface LoginResponse {
-  user: User
-  accessToken: string
-  refreshToken: string
-}
-
-export interface RefreshTokenResponse {
-  accessToken: string
-  refreshToken: string
-}
 
 /**
  * Search and filter parameters

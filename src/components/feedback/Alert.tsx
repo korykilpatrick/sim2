@@ -1,18 +1,18 @@
 import { ReactNode } from 'react'
-import clsx from 'clsx'
+import { cn } from '@/utils/cn'
 import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-react'
 
 /**
- * Available alert types with distinct visual styles.
+ * Available UI alert variants with distinct visual styles.
  */
-export type AlertType = 'success' | 'error' | 'warning' | 'info'
+export type AlertVariant = 'success' | 'error' | 'warning' | 'info'
 
 /**
  * Props for the Alert component.
  */
 export interface AlertProps {
-  /** Alert severity type determining color scheme */
-  type?: AlertType
+  /** Alert visual variant determining color scheme */
+  variant?: AlertVariant
   /** Optional bold title text */
   title?: string
   /** Main alert message content */
@@ -34,7 +34,7 @@ export interface AlertProps {
  * @component
  * @example
  * <Alert
- *   type="success"
+ *   variant="success"
  *   title="Success!"
  *   message="Your changes have been saved."
  *   dismissible
@@ -42,10 +42,10 @@ export interface AlertProps {
  * />
  *
  * @example
- * <Alert type="error" message="Failed to connect to server" />
+ * <Alert variant="error" message="Failed to connect to server" />
  */
 const Alert = ({
-  type = 'info',
+  variant = 'info',
   title,
   message,
   dismissible = false,
@@ -87,11 +87,11 @@ const Alert = ({
     info: <Info className="h-5 w-5" />,
   }
 
-  const colors = colorMap[type]
+  const colors = colorMap[variant]
 
   return (
     <div
-      className={clsx(
+      className={cn(
         'rounded-lg border-l-4 p-4',
         colors.bg,
         colors.border,
@@ -101,17 +101,17 @@ const Alert = ({
     >
       <div className="flex">
         {icon && (
-          <div className={clsx('flex-shrink-0', colors.icon)}>
-            {iconMap[type]}
+          <div className={cn('flex-shrink-0', colors.icon)}>
+            {iconMap[variant]}
           </div>
         )}
-        <div className={clsx('flex-1', icon && 'ml-3')}>
+        <div className={cn('flex-1', icon && 'ml-3')}>
           {title && (
-            <h3 className={clsx('text-sm font-medium', colors.text)}>
+            <h3 className={cn('text-sm font-medium', colors.text)}>
               {title}
             </h3>
           )}
-          <div className={clsx('text-sm', colors.text, title && 'mt-2')}>
+          <div className={cn('text-sm', colors.text, title && 'mt-2')}>
             {message}
           </div>
         </div>
@@ -119,10 +119,10 @@ const Alert = ({
           <div className="ml-auto pl-3">
             <button
               onClick={onDismiss}
-              className={clsx(
+              className={cn(
                 'inline-flex rounded-md p-1.5 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2',
                 colors.text,
-                `focus:ring-${type === 'success' ? 'green' : type === 'error' ? 'red' : type === 'warning' ? 'yellow' : 'blue'}-600`,
+                `focus:ring-${variant === 'success' ? 'green' : variant === 'error' ? 'red' : variant === 'warning' ? 'yellow' : 'blue'}-600`,
               )}
               aria-label="Dismiss"
             >

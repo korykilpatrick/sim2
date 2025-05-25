@@ -1,5 +1,5 @@
 import { InputHTMLAttributes, forwardRef } from 'react'
-import clsx from 'clsx'
+import { cn } from '@/utils/cn'
 
 export interface DatePickerProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -28,7 +28,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
     const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
     return (
-      <div className={clsx('relative', fullWidth && 'w-full')}>
+      <div className={cn('relative', fullWidth && 'w-full')}>
         {label && (
           <label
             htmlFor={inputId}
@@ -44,7 +44,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
             type="date"
             min={minDate}
             max={maxDate}
-            className={clsx(
+            className={cn(
               'block rounded-md border px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
               error
                 ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'

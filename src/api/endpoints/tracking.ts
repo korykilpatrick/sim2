@@ -4,44 +4,32 @@
 
 import { apiClient } from '../client'
 import type { ApiResponse, PaginatedResponse } from '../types'
-
-export interface Tracking {
-  id: string
-  vesselId: string
-  vesselName: string
-  criteria: string[]
-  startDate: string
-  endDate: string
-  status: 'active' | 'paused' | 'expired'
-  cost: number
-  alertsEnabled: boolean
-  createdAt: string
-}
+import type { VesselTracking } from '@/features/vessels/types'
 
 export const trackingApi = {
   /**
    * Get all active trackings for the current user
    */
   getActive: (params?: { page?: number; limit?: number }) =>
-    apiClient.get<PaginatedResponse<Tracking>>('/tracking/active', { params }),
+    apiClient.get<PaginatedResponse<VesselTracking>>('/tracking/active', { params }),
 
   /**
    * Get tracking by ID
    */
   getById: (id: string) =>
-    apiClient.get<ApiResponse<Tracking>>(`/tracking/${id}`),
+    apiClient.get<ApiResponse<VesselTracking>>(`/tracking/${id}`),
 
   /**
    * Pause tracking
    */
   pause: (id: string) =>
-    apiClient.post<ApiResponse<Tracking>>(`/tracking/${id}/pause`),
+    apiClient.post<ApiResponse<VesselTracking>>(`/tracking/${id}/pause`),
 
   /**
    * Resume tracking
    */
   resume: (id: string) =>
-    apiClient.post<ApiResponse<Tracking>>(`/tracking/${id}/resume`),
+    apiClient.post<ApiResponse<VesselTracking>>(`/tracking/${id}/resume`),
 
   /**
    * Update tracking configuration
@@ -53,7 +41,7 @@ export const trackingApi = {
       alertsEnabled?: boolean
       endDate?: string
     },
-  ) => apiClient.patch<ApiResponse<Tracking>>(`/tracking/${id}`, config),
+  ) => apiClient.patch<ApiResponse<VesselTracking>>(`/tracking/${id}`, config),
 
   /**
    * Get tracking events
@@ -95,7 +83,7 @@ export const trackingApi = {
     limit?: number
     status?: 'active' | 'expired'
   }) =>
-    apiClient.get<PaginatedResponse<Tracking>>('/tracking/history', { params }),
+    apiClient.get<PaginatedResponse<VesselTracking>>('/tracking/history', { params }),
 
   /**
    * Export tracking data

@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import ErrorBoundary, { ErrorBoundaryProps } from './ErrorBoundary'
 
 /**
  * Hook for programmatically triggering error boundaries.
+ * Uses React's error boundary mechanism by re-throwing errors during render.
  *
- * @returns {Function} A function that throws the provided error when called
+ * @returns {Function} A function that captures errors to be thrown during render
  *
  * @example
  * ```tsx
@@ -22,9 +23,16 @@ import ErrorBoundary, { ErrorBoundaryProps } from './ErrorBoundary'
  * ```
  */
 export const useErrorHandler = () => {
-  return (error: Error) => {
+  const [error, setError] = useState<Error | null>(null)
+
+  // Re-throw the error during render to trigger error boundary
+  if (error) {
     throw error
   }
+
+  return useCallback((error: Error) => {
+    setError(error)
+  }, [])
 }
 
 /**

@@ -1,4 +1,4 @@
-import { apiClient } from '@/api/client'
+import { investigationsApi } from '@/api/endpoints/investigations'
 import {
   Investigation,
   InvestigationRequest,
@@ -11,38 +11,38 @@ export const investigationService = {
   getInvestigations: async (
     filters?: InvestigationFilters,
   ): Promise<Investigation[]> => {
-    const response = await apiClient.get('/investigations', { params: filters })
-    return response.data
+    const response = await investigationsApi.getInvestigations(filters)
+    return response.data.data
   },
 
   getInvestigation: async (id: string): Promise<Investigation> => {
-    const response = await apiClient.get(`/investigations/${id}`)
-    return response.data
+    const response = await investigationsApi.getInvestigation(id)
+    return response.data.data
   },
 
   createInvestigation: async (
     data: InvestigationRequest,
   ): Promise<Investigation> => {
-    const response = await apiClient.post('/investigations', data)
-    return response.data
+    const response = await investigationsApi.createInvestigation(data)
+    return response.data.data
   },
 
   updateInvestigation: async (
     id: string,
     data: Partial<Investigation>,
   ): Promise<Investigation> => {
-    const response = await apiClient.patch(`/investigations/${id}`, data)
-    return response.data
+    const response = await investigationsApi.updateInvestigation(id, data)
+    return response.data.data
   },
 
   submitInvestigation: async (id: string): Promise<Investigation> => {
-    const response = await apiClient.post(`/investigations/${id}/submit`)
-    return response.data
+    const response = await investigationsApi.submitInvestigation(id)
+    return response.data.data
   },
 
   cancelInvestigation: async (id: string): Promise<Investigation> => {
-    const response = await apiClient.post(`/investigations/${id}/cancel`)
-    return response.data
+    const response = await investigationsApi.cancelInvestigation(id)
+    return response.data.data
   },
 
   scheduleConsultation: async (
@@ -50,11 +50,8 @@ export const investigationService = {
     date: string,
     notes: string,
   ): Promise<Investigation> => {
-    const response = await apiClient.post(
-      `/investigations/${investigationId}/consultation`,
-      { date, notes },
-    )
-    return response.data
+    const response = await investigationsApi.scheduleConsultation(investigationId, date, notes)
+    return response.data.data
   },
 
   uploadDocuments: async (
@@ -66,40 +63,25 @@ export const investigationService = {
       formData.append('documents', file)
     })
 
-    const response = await apiClient.post(
-      `/investigations/${investigationId}/documents`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    )
-    return response.data
+    const response = await investigationsApi.uploadDocuments(investigationId, formData)
+    return response.data.data
   },
 
   deleteDocument: async (
     investigationId: string,
     documentId: string,
   ): Promise<void> => {
-    await apiClient.delete(
-      `/investigations/${investigationId}/documents/${documentId}`,
-    )
+    await investigationsApi.deleteDocument(investigationId, documentId)
   },
 
   downloadReport: async (reportId: string): Promise<Blob> => {
-    const response = await apiClient.get(
-      `/investigations/reports/${reportId}`,
-      {
-        responseType: 'blob',
-      },
-    )
+    const response = await investigationsApi.downloadReport(reportId)
     return response.data
   },
 
   getInvestigationStats: async (): Promise<InvestigationStats> => {
-    const response = await apiClient.get('/investigations/stats')
-    return response.data
+    const response = await investigationsApi.getInvestigationStats()
+    return response.data.data
   },
 
   getEstimatedCost: async (
@@ -109,7 +91,7 @@ export const investigationService = {
     maxCredits: number
     factors: Array<{ name: string; credits: number }>
   }> => {
-    const response = await apiClient.post('/investigations/estimate', data)
-    return response.data
+    const response = await investigationsApi.getEstimate(data)
+    return response.data.data
   },
 }

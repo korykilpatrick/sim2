@@ -41,7 +41,7 @@ export const authApi = {
    */
   logout: async () => {
     const response = await apiClient.post<ApiResponse>('/auth/logout')
-    return response.data
+    return response.data.data
   },
 
   /**
