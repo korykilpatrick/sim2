@@ -207,18 +207,59 @@ const ComplianceReports = lazy(() => import('./features/ComplianceReports'));
 - Dynamic imports for large libraries
 - Optimize images with next-gen formats
 
-## Testing Strategy
+## Testing Strategy (TOP PRIORITY)
+
+### Current State: CRITICAL
+- **0% test coverage** - This is the #1 blocker for production readiness
+- **357 untested files** - Massive technical debt and risk
+- **No safety net** - Cannot refactor or add features safely
+
+### Test-First Development Mandate
+This project follows **strict test-first development**:
+1. **Write failing test** before any new code
+2. **Implement minimum code** to pass test
+3. **Refactor** with confidence
+4. **80% minimum coverage** enforced by CI/CD
 
 ### Testing Layers
-1. **Unit Tests** - Components, hooks, utilities
-2. **Integration Tests** - Feature flows
-3. **E2E Tests** - Critical user paths
+1. **Unit Tests** (Priority 1)
+   - All utility functions
+   - Business logic services
+   - Custom hooks
+   - State management stores
+   
+2. **Integration Tests** (Priority 2)
+   - API interactions
+   - Authentication flows
+   - Credit system operations
+   - Multi-component workflows
+   
+3. **Component Tests** (Priority 3)
+   - UI behavior verification
+   - User interactions
+   - Loading/error states
+   - Accessibility
+   
+4. **E2E Tests** (Future)
+   - Critical user journeys
+   - Purchase flows
+   - Real-time features
 
 ### Testing Tools
-- **Vitest** - Unit testing
-- **React Testing Library** - Component testing
-- **MSW** - API mocking
-- **Playwright** - E2E testing
+- **Vitest** - Fast unit testing with great DX
+- **React Testing Library** - Component testing best practices
+- **MSW** - Mock Service Worker for API mocking
+- **Testing Library User Event** - Realistic user interactions
+- **Jest DOM** - Custom matchers for DOM assertions
+
+### Why Tests Are Critical Now
+In the age of AI-assisted development:
+- **Validation**: Tests verify AI-generated code correctness
+- **Documentation**: Tests serve as living specs
+- **Confidence**: Enable fearless refactoring
+- **Quality**: Prevent regressions and bugs
+
+See `/docs/standards/TESTING-STANDARDS.md` for comprehensive testing guide.
 
 ## Security Considerations
 
