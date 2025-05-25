@@ -27,6 +27,9 @@ const AreaMonitoringPage = lazy(
 
 // Fleet pages
 const FleetsPage = lazy(() => import('@features/fleet/pages/FleetsPage'))
+const FleetDetailPage = lazy(
+  () => import('@features/fleet/pages/FleetDetailPage'),
+)
 
 // Reports pages
 const ReportsPage = lazy(() => import('@features/reports/pages/ReportsPage'))
@@ -102,6 +105,7 @@ function App() {
 
             {/* Fleets */}
             <Route path="/fleets" element={<FleetsPage />} />
+            <Route path="/fleets/:fleetId" element={<FleetDetailPage />} />
 
             {/* Reports */}
             <Route path="/reports" element={<ReportsPage />} />

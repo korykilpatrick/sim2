@@ -1,22 +1,41 @@
 import { useState } from 'react'
-import { Card, CardContent } from '@/components/common/Card'
-import Button from '@/components/common/Button'
-import Input from '@/components/forms/Input'
-import { FleetStatsCard, FleetList } from '../components'
-import { useFleets, useFleetStats, useSearchFleets } from '../hooks'
-import type { Fleet, FleetTab } from '../types'
-import { cn } from '@/utils/cn'
+import { useNavigate } from 'react-router-dom'
+import { Card } from '@components/common/Card'
+import Button from '@components/common/Button'
+import Input from '@components/forms/Input'
+import {
+  FleetStats,
+  FleetList,
+  CreateFleetModal,
+  EditFleetModal,
+} from '../components'
+import { useFleets, useDeleteFleet } from '../hooks/useFleets'
+import { useToast } from '@/hooks'
+import type { Fleet } from '../types'
+import { cn } from '@utils/cn'
+
+type FleetTab = 'fleets' | 'vessels'
 
 export default function FleetsPage() {
+  const navigate = useNavigate()
+  const { showToast } = useToast()
+  const deleteFleet = useDeleteFleet()
+
   const [activeTab, setActiveTab] = useState<FleetTab>('fleets')
   const [searchQuery, setSearchQuery] = useState('')
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [selectedFleet, setSelectedFleet] = useState<Fleet | null>(null)
 
   // Fetch data
   const { data: fleets = [] } = useFleets()
-  const { data: stats, isLoading: statsLoading } = useFleetStats()
-  const { data: searchResults } = useSearchFleets(searchQuery)
-
-  const displayedFleets = searchQuery ? searchResults || [] : fleets
+  const filteredFleets = searchQuery
+    ? fleets.filter(
+        (fleet) =>
+          fleet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          fleet.description?.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : fleets
 
   return (
     <div className="space-y-8">
@@ -29,7 +48,7 @@ export default function FleetsPage() {
           </p>
         </div>
         <div className="mt-4 sm:mt-0">
-          <Button>
+          <Button onClick={() => setIsCreateModalOpen(true)}>
             <svg
               className="-ml-1 mr-2 h-5 w-5"
               fill="none"
@@ -49,7 +68,7 @@ export default function FleetsPage() {
       </div>
 
       {/* Stats */}
-      {stats && <FleetStatsCard stats={stats} loading={statsLoading} />}
+      <FleetStats />
 
       {/* Tabs */}
       <div className="border-b border-gray-200">
@@ -80,44 +99,85 @@ export default function FleetsPage() {
       </div>
 
       {/* Search */}
-      <Card>
-        <CardContent className="p-6">
-          <div className="max-w-md">
-            <Input
-              type="search"
-              placeholder={
-                activeTab === 'fleets'
-                  ? 'Search fleets...'
-                  : 'Search vessels in fleets...'
-              }
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </CardContent>
+      <Card className="p-6">
+        <div className="max-w-md">
+          <Input
+            type="search"
+            placeholder={
+              activeTab === 'fleets'
+                ? 'Search fleets...'
+                : 'Search vessels in fleets...'
+            }
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
       </Card>
 
       {/* Content */}
       {activeTab === 'fleets' ? (
         <FleetList
-          fleets={displayedFleets}
-          onSelectFleet={(_fleet: Fleet) => {
-            // TODO: Navigate to fleet detail page
+          fleets={filteredFleets}
+          onSelectFleet={(fleet: Fleet) => {
+            navigate(`/fleets/${fleet.id}`)
           }}
-          onEditFleet={(_fleet: Fleet) => {
-            // TODO: Open edit modal
+          onEditFleet={(fleet: Fleet) => {
+            setSelectedFleet(fleet)
+            setIsEditModalOpen(true)
           }}
-          onDeleteFleet={(_fleet: Fleet) => {
-            // TODO: Confirm and delete
+          onDeleteFleet={(fleet: Fleet) => {
+            if (
+              confirm(
+                `Are you sure you want to delete the fleet "${fleet.name}"? This action cannot be undone.`,
+              )
+            ) {
+              deleteFleet.mutate(fleet.id, {
+                onSuccess: () => {
+                  showToast({
+                    type: 'success',
+                    message: 'Fleet deleted successfully',
+                  })
+                },
+                onError: () => {
+                  showToast({
+                    type: 'error',
+                    message: 'Failed to delete fleet',
+                  })
+                },
+              })
+            }
           }}
         />
       ) : (
-        <Card>
-          <CardContent className="text-center py-12">
-            <p className="text-gray-500">No vessels in fleets</p>
-          </CardContent>
+        <Card className="text-center py-12">
+          <p className="text-gray-500">No vessels in fleets</p>
         </Card>
       )}
+
+      {/* Create Fleet Modal */}
+      <CreateFleetModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={() => {
+          setIsCreateModalOpen(false)
+          // Fleets will be refetched automatically via React Query
+        }}
+      />
+
+      {/* Edit Fleet Modal */}
+      <EditFleetModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false)
+          setSelectedFleet(null)
+        }}
+        fleet={selectedFleet}
+        onSuccess={() => {
+          setIsEditModalOpen(false)
+          setSelectedFleet(null)
+          // Fleets will be refetched automatically via React Query
+        }}
+      />
     </div>
   )
 }

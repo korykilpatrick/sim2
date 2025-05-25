@@ -193,3 +193,70 @@ export const mockCreditPackages = [
     savings: 20,
   },
 ]
+
+export const mockFleets = [
+  {
+    id: 'fleet1',
+    name: 'Pacific Trading Fleet',
+    description: 'Main cargo vessels operating in Pacific routes',
+    type: 'cargo',
+    vesselCount: 2,
+    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'fleet2',
+    name: 'High Risk Monitoring',
+    description: 'Vessels flagged for compliance monitoring',
+    type: 'monitoring',
+    vesselCount: 1,
+    createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 'fleet3',
+    name: 'Tanker Operations',
+    description: 'Oil and chemical tankers',
+    type: 'tanker',
+    vesselCount: 1,
+    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+]
+
+export const mockFleetVessels = [
+  {
+    fleetId: 'fleet1',
+    vesselImo: '9181786', // OCEAN TRADER
+    addedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+    addedBy: 'demo@synmax.com',
+  },
+  {
+    fleetId: 'fleet1',
+    vesselImo: '9587135', // SHADOW RUNNER
+    addedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+    addedBy: 'demo@synmax.com',
+  },
+  {
+    fleetId: 'fleet2',
+    vesselImo: '9587135', // SHADOW RUNNER (also in high risk monitoring)
+    addedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    addedBy: 'demo@synmax.com',
+  },
+  {
+    fleetId: 'fleet3',
+    vesselImo: '9434140', // BALTIC EXPLORER
+    addedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+    addedBy: 'demo@synmax.com',
+  },
+]
+
+// Combined export for routes that expect mockData object
+export const mockData = {
+  users: mockUsers,
+  vessels: mockVessels,
+  trackingCriteria: mockTrackingCriteria,
+  creditPackages: mockCreditPackages,
+  fleets: mockFleets,
+  fleetVessels: mockFleetVessels,
+}

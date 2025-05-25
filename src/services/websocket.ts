@@ -310,7 +310,7 @@ export class WebSocketService {
     if (handlers) {
       handlers.forEach((handler) => {
         try {
-          (handler as any)(...args)
+          ;(handler as any)(...args)
         } catch (error) {
           console.error(`[WebSocket] Error in ${event} handler:`, error)
         }

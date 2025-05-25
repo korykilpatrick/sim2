@@ -13,6 +13,7 @@ import areasRoutes from './routes/areas'
 import reportsRoutes from './routes/reports'
 import investigationsRoutes from './routes/investigations'
 import creditsRoutes from './routes/credits'
+import fleetsRoutes from './routes/fleets'
 
 // Import WebSocket setup
 import { setupWebSocket } from './websocket'
@@ -51,6 +52,7 @@ app.use('/api/v1/areas', areasRoutes)
 app.use('/api/v1/reports', reportsRoutes)
 app.use('/api/v1/investigations', investigationsRoutes)
 app.use('/api/v1/credits', creditsRoutes)
+app.use('/api/v1/fleets', fleetsRoutes)
 
 // Setup WebSocket handlers
 setupWebSocket(io)

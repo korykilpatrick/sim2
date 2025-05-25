@@ -11,18 +11,18 @@ const MAX_NOTIFICATIONS = 100
  * Manages application notifications with WebSocket integration and localStorage persistence.
  * Automatically listens for WebSocket events and converts them to notifications.
  * Persists notifications across page reloads and browser sessions.
- * 
+ *
  * @returns Notification state and management functions
- * 
+ *
  * @example
  * ```tsx
- * const { 
- *   notifications, 
- *   unreadCount, 
- *   markAsRead, 
- *   addNotification 
+ * const {
+ *   notifications,
+ *   unreadCount,
+ *   markAsRead,
+ *   addNotification
  * } = useNotifications()
- * 
+ *
  * // Manually add a notification
  * addNotification({
  *   type: 'system',
@@ -31,7 +31,7 @@ const MAX_NOTIFICATIONS = 100
  *   severity: 'info'
  * })
  * ```
- * 
+ *
  * @remarks
  * - Automatically subscribes to WebSocket events: alert_created, area_alert, credit_balance_updated, etc.
  * - Limits stored notifications to MAX_NOTIFICATIONS (100) to prevent excessive storage
@@ -40,7 +40,7 @@ const MAX_NOTIFICATIONS = 100
 export function useNotifications() {
   const [notifications, setNotifications] = useLocalStorage<Notification[]>(
     STORAGE_KEY,
-    []
+    [],
   )
   const [unreadCount, setUnreadCount] = useState(0)
 
@@ -136,11 +136,14 @@ export function useNotifications() {
   })
 
   // Mark as read
-  const markAsRead = useCallback((notificationId: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
-    )
-  }, [setNotifications])
+  const markAsRead = useCallback(
+    (notificationId: string) => {
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notificationId ? { ...n, read: true } : n)),
+      )
+    },
+    [setNotifications],
+  )
 
   // Mark all as read
   const markAllAsRead = useCallback(() => {
@@ -148,9 +151,12 @@ export function useNotifications() {
   }, [setNotifications])
 
   // Delete notification
-  const deleteNotification = useCallback((notificationId: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== notificationId))
-  }, [setNotifications])
+  const deleteNotification = useCallback(
+    (notificationId: string) => {
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId))
+    },
+    [setNotifications],
+  )
 
   // Clear all notifications
   const clearAll = useCallback(() => {

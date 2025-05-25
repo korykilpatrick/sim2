@@ -22,16 +22,12 @@ export interface Fleet {
   updatedAt: string
 }
 
+import type { Vessel } from '@features/vessels/types/vessel'
+
 /**
  * Association between a fleet and a vessel.
  */
-export interface FleetVessel {
-  /** Unique association identifier */
-  id: string
-  /** ID of the fleet */
-  fleetId: string
-  /** ID of the vessel */
-  vesselId: string
+export interface FleetVessel extends Vessel {
   /** ISO timestamp when vessel was added to fleet */
   addedAt: string
   /** ID of user who added the vessel */

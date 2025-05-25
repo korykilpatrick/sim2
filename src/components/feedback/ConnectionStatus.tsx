@@ -8,7 +8,7 @@ import { config } from '@/config'
  * Displays connection status for WebSocket with auto-hide functionality.
  * Shows status briefly after connection changes, then automatically hides.
  * Only renders when WebSocket feature is enabled.
- * 
+ *
  * @component
  * @example
  * <ConnectionStatus />
@@ -125,7 +125,7 @@ export function ConnectionStatus() {
  * Mini connection indicator for header navigation.
  * Only shows when WebSocket is disconnected or unauthenticated.
  * Displays a colored dot with hover tooltip.
- * 
+ *
  * @component
  * @example
  * <ConnectionIndicator />

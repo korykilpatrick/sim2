@@ -11,7 +11,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
  *
  * @example
  * const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light')
- * 
+ *
  * @remarks
  * - Automatically syncs changes across multiple tabs/windows
  * - Handles JSON serialization/deserialization
@@ -24,12 +24,12 @@ export function useLocalStorage<T>(
 ): [T, (value: T | ((val: T) => T)) => void] {
   // Store initial value in ref to avoid stale closures
   const initialValueRef = useRef(initialValue)
-  
+
   // Update ref when initialValue changes
   useEffect(() => {
     initialValueRef.current = initialValue
   }, [initialValue])
-  
+
   // Get from local storage then parse stored json or return initialValue
   const readValue = useCallback((): T => {
     // Prevent build error "window is undefined" but keeps working
@@ -67,14 +67,15 @@ export function useLocalStorage<T>(
       try {
         // Handle both value and function forms
         setStoredValue((currentValue) => {
-          const newValue = value instanceof Function ? value(currentValue) : value
-          
+          const newValue =
+            value instanceof Function ? value(currentValue) : value
+
           // Save to local storage
           window.localStorage.setItem(key, JSON.stringify(newValue))
-          
+
           // Dispatch event to notify other hooks
           window.dispatchEvent(new Event('local-storage'))
-          
+
           return newValue
         })
       } catch (error) {
