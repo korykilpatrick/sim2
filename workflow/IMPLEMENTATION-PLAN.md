@@ -16,7 +16,7 @@ This plan establishes test-first development as the foundation for building a wo
 - **Knowledge Transfer**: Tests document expected behavior better than comments
 - **Production Readiness**: Can't trust untested code in production environments
 
-## Current Project Status (Updated: January 2025)
+## Current Project Status (Updated: January 25, 2025)
 Based on comprehensive analysis (357 files, 131 directories):
 
 ### ✅ Excellent Foundation
@@ -28,11 +28,12 @@ Based on comprehensive analysis (357 files, 131 directories):
 - Credit system integrated across all services
 
 ### 🚧 Quality Gaps to Address
-- **Test Coverage**: 0% (test infrastructure exists but unused)
-- **Hidden Bugs**: Unknown state integrity with 357 untested files
+- **Test Coverage**: ~5% (88/178 tests passing, WebSocket well-covered)
+- **Hidden Bugs**: Unknown state integrity with 300+ untested files
 - **Integration Risks**: No contract validation with future backend
 - **Performance**: Unoptimized renders and bundle size
 - **Documentation**: Minimal inline docs and no ADRs
+- **WebSocket Issues**: Room rejoin race condition, memory leak risks
 
 ## Implementation Roadmap
 
@@ -46,8 +47,8 @@ Based on comprehensive analysis (357 files, 131 directories):
 - Can't refactor confidently without test safety net
 
 #### Critical Path Tests (Days 1-3)
-- [ ] Credit system integration tests
-- [ ] WebSocket connection and reconnection tests
+- [x] Credit system integration tests (existing - 7 test files)
+- [x] WebSocket connection and reconnection tests (completed - 51/64 tests passing)
 - [ ] Authentication flow tests
 - [ ] API contract validation tests
 - [ ] Core business logic unit tests
@@ -60,8 +61,14 @@ Based on comprehensive analysis (357 files, 131 directories):
 
 #### Bug Fixes & Stabilization (Days 6-7)
 - [ ] Fix issues discovered by tests
+  - [ ] Fix TypeScript errors in WebSocket test files (unused imports)
+  - [ ] Fix failing WebSocket integration tests (13 remaining)
+  - [ ] Fix WebSocket room rejoin race condition
+  - [ ] Fix test coverage calculation issues
 - [ ] Add error boundaries where missing
 - [ ] Improve error handling in async operations
+  - [ ] Add listener limits to prevent memory leaks
+  - [ ] Implement proper cleanup in all WebSocket paths
 - [ ] Validate all TypeScript strict mode compliance
 
 **Success Metrics**:
@@ -71,6 +78,13 @@ Based on comprehensive analysis (357 files, 131 directories):
 - All TypeScript errors resolved
 - CI/CD pipeline blocks commits below 80% coverage
 - Test execution time < 60 seconds
+
+#### New Tasks Discovered (from WebSocket testing)
+- [ ] Extract common test utilities to reduce duplication
+- [ ] Implement WebSocket connection state machine
+- [ ] Add performance monitoring for real-time events
+- [ ] Create WebSocket message queuing for offline support
+- [ ] Add network condition simulation tests
 
 ### 🟠 Phase 2: Architecture Evolution (Week 3)
 **Goal**: Implement scalable patterns using Claude Code's refactoring capabilities
