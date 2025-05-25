@@ -30,7 +30,7 @@ If documentation is lacking:
 
 ## 4. Post-Implementation Process (Go through this checklist AFTER you finish completing the next task from the Implementation Plan)
 After completing each task:
-1. **Cross-reference documentation** to verify consistency
+1. **Cross-reference documentation** to verify consistency and adherence
 2. **Run quality checks**:
    - `npm run lint`
    - `npm run typecheck`
