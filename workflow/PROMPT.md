@@ -153,6 +153,12 @@ Your response should follow this structure:
 [Recommendations based on analysis]
 ```
 
+### Implementation-Plan changes
+[Natural language summary of how you updated IMPLEMENTATION-PLAN.md to include the Next Steps you listed above]
+- If we have a fully complete implementation with all checks passing then we can move on to the next implementation step
+- If not, we need to add steps to our implementation plan that will get us there
+- The first unchecked box on the implementation plan should always been the next thing that we focus our attention on
+
 ## Critical Reminders
 - **NEVER implement code without tests first**
 - **ALWAYS verify tests fail before implementing**
