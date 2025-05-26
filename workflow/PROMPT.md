@@ -168,5 +168,7 @@ Your response should follow this structure:
 - **ALWAYS complete the full Post-Implementation Process**
 - **REMEMBER that we do not need to be backwards compatible**
 - **ALWAYS make the choice that leads to the highest quality codebase from first-principles**
+- **ALWAYS ensure our work aligns with the PRD in `docs/prd.md`**
+- **ALWAYS ensure our work aligns with our documentation**
 
 Please begin by checking the current status and identifying the next priority task.
