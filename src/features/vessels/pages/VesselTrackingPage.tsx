@@ -27,17 +27,7 @@ export default function VesselTrackingPage() {
       creditCost: number
     }) => {
       // First deduct credits
-      await deductCredits({
-        amount: data.creditCost,
-        description: `Vessel tracking for ${data.criteria.length} criteria`,
-        serviceId: `tracking_${data.vesselId}_${Date.now()}`,
-        serviceType: 'vessel_tracking',
-        metadata: {
-          vesselId: data.vesselId,
-          criteria: data.criteria,
-          endDate: data.endDate,
-        },
-      })
+      await deductCredits(data.creditCost, `Vessel tracking for ${data.criteria.length} criteria`)
 
       // Then create the tracking
       return vesselsApi.createTracking({

@@ -66,12 +66,12 @@ export function ExpertConsultation({
         <div className="p-4 space-y-4">
           {investigation.consultation?.scheduled ? (
             <Alert
-              type="success"
+              variant="success"
               message={`Consultation Scheduled - Date: ${investigation.consultation.date}${investigation.consultation.notes ? ` - Notes: ${investigation.consultation.notes}` : ''}`}
             />
           ) : (
             <Alert
-              type="info"
+              variant="info"
               message="Schedule a consultation with your assigned analyst to discuss your investigation in detail. This is included in your investigation package."
             />
           )}

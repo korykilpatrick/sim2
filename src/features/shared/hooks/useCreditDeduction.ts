@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
 import { useAuthStore } from '@/features/auth/services/authStore'
 import { creditService } from '@/features/shared/services/creditService'
+import type { ServiceType } from '@/features/shared/types'
 
 interface CreditReservation {
   reservationId: string
@@ -51,7 +51,7 @@ export function useCreditDeduction() {
         amount,
         description,
         serviceId: `service-${Date.now()}`,
-        serviceType: 'vessel_tracking' as any, // Generic service type for now
+        serviceType: 'vessel_tracking' as ServiceType, // Generic service type for now
       })
 
       // Update local auth store with new balance
@@ -73,7 +73,7 @@ export function useCreditDeduction() {
     }
   }
 
-  const reserveCredits = async (amount: number, service: string): Promise<CreditReservation> => {
+  const reserveCredits = async (amount: number, _service: string): Promise<CreditReservation> => {
     const reservationId = `res-${Date.now()}`
     const reservation: CreditReservation = {
       reservationId,

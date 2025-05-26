@@ -366,7 +366,7 @@ export function InvestigationRequestForm({
       </Card>
 
       <Alert
-        type="info"
+        variant="info"
         message="Once submitted, a SynMax analyst will review your request and contact you to refine the scope and objectives. You'll receive a cost estimate before the investigation begins."
       />
 

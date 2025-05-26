@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, act, waitFor } from '@testing-library/react';
 import { io } from 'socket.io-client';
 import { useWebSocket } from '@/hooks/useWebSocket';
-import { useAuthStore } from '@/features/auth/services/authStore';
 import { renderWithProviders, clearAuth, setupAuthenticatedUser } from '../utils/test-utils';
 import React, { useEffect, useState } from 'react';
 
@@ -27,7 +26,7 @@ const WebSocketTestComponent = () => {
     isAuthenticated,
     rooms,
     on, 
-    emit, 
+ 
     joinVesselRoom, 
     leaveVesselRoom,
     joinAreaRoom,
@@ -93,7 +92,7 @@ const WebSocketTestComponent = () => {
 
 describe('WebSocket Integration', () => {
   let mockSocket: any;
-  let socketEventHandlers: Map<string, Function[]>;
+  let socketEventHandlers: Map<string, ((...args: any[]) => void)[]>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -107,7 +106,7 @@ describe('WebSocket Integration', () => {
       connected: false,
       auth: {},
       io: { opts: {} },
-      on: vi.fn((event: string, handler: Function) => {
+      on: vi.fn((event: string, handler: (...args: any[]) => void) => {
         if (!socketEventHandlers.has(event)) {
           socketEventHandlers.set(event, []);
         }

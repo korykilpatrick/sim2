@@ -175,7 +175,7 @@ export function ReviewSubmitStep({ data }: ReviewSubmitStepProps) {
       </Card>
 
       <Alert
-        type="info"
+        variant="info"
         message={
           <div className="space-y-2">
             <p className="font-semibold">What happens next?</p>

@@ -14,7 +14,7 @@ export class WebSocketService {
   private reconnectAttempts = 0
   private maxReconnectAttempts = 5
   private reconnectDelay = 1000
-  private listeners: Map<keyof WebSocketEvents, Set<Function>> = new Map()
+  private listeners: Map<keyof WebSocketEvents, Set<(...args: any[]) => void>> = new Map()
   private rooms: Map<string, RoomSubscription> = new Map()
   private authToken: string | null = null
 
@@ -310,7 +310,7 @@ export class WebSocketService {
     if (handlers) {
       handlers.forEach((handler) => {
         try {
-          ;(handler as any)(...args)
+          handler(...args)
         } catch (error) {
           console.error(`[WebSocket] Error in ${event} handler:`, error)
         }

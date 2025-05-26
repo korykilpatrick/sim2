@@ -2,7 +2,7 @@ import Input from '@/components/forms/Input'
 import Select from '@/components/forms/Select'
 import TrackingCostSummary from '../TrackingCostSummary'
 import { DURATION_OPTIONS, addDuration, formatInputDate } from '@/utils/date'
-import { useVesselTrackingCost } from '@/features/shared/hooks'
+import { useCostCalculation } from '@/features/shared/hooks'
 import type { Vessel } from '../../types'
 
 interface DurationConfigStepProps {
@@ -22,10 +22,20 @@ export function DurationConfigStep({
   onDaysChange,
   onEndDateChange,
 }: DurationConfigStepProps) {
-  const { totalCost, creditsPerDay } = useVesselTrackingCost({
+  const { calculateCost, getCostBreakdown } = useCostCalculation()
+  
+  const costResult = calculateCost('vessel-tracking', {
     criteriaCount: selectedCriteria.length,
     durationDays: trackingDays,
   })
+  
+  const breakdown = getCostBreakdown('vessel-tracking', {
+    criteriaCount: selectedCriteria.length,
+    durationDays: trackingDays,
+  })
+  
+  const totalCost = costResult.cost
+  const creditsPerDay = breakdown?.dailyCost || 0
 
   const handleDurationPresetChange = (value: string) => {
     const days = parseInt(value, 10)

@@ -111,7 +111,7 @@ export function DocumentUpload({
       <div className="p-4 space-y-4">
         {error && (
           <Alert
-            type="error"
+            variant="error"
             message={error}
             dismissible
             onDismiss={() => setError(null)}
@@ -200,7 +200,7 @@ export function DocumentUpload({
 
         {/* Security Notice */}
         <Alert
-          type="info"
+          variant="info"
           message="Security Notice: All documents are encrypted and stored securely. Only authorized SynMax analysts assigned to your investigation will have access to these files."
         />
 

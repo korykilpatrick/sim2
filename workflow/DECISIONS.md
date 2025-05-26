@@ -1,5 +1,107 @@
 # Architectural Decisions Log
 
+## 2025-01-25: Code Quality Fixes Strategy
+
+### Decision: Fix Before Refactor
+
+**Context**:
+The codebase had accumulated 26 ESLint errors, ~50 TypeScript errors, and numerous console statements that were blocking further development. Code quality issues were preventing successful builds and making it difficult to add new features.
+
+**Decision**:
+Fix all critical code quality issues before proceeding with any new features or refactoring. This includes:
+1. ESLint errors (not warnings)
+2. TypeScript compilation errors
+3. Console statements in production code
+4. Unused imports and variables
+
+**Rationale**:
+- Can't build reliable features on a broken foundation
+- Quality issues compound over time if not addressed
+- Clean code is easier to test and refactor
+- Team productivity improves with consistent code quality
+
+**Trade-offs**:
+- Time spent on fixes instead of features
+- Some fixes are mechanical rather than architectural
+- Warnings remain (126) but aren't blocking
+
+### Decision: Alert Component API Standardization
+
+**Context**:
+The Alert component used 'variant' prop but was being called with 'type' prop in ~15 places throughout the codebase, causing TypeScript errors.
+
+**Decision**:
+Standardize on 'variant' prop name and update all call sites rather than supporting both props.
+
+**Rationale**:
+- Single API is clearer and more maintainable
+- 'variant' is more descriptive than 'type'
+- Consistency with other UI libraries (MUI, Chakra)
+- TypeScript enforces correct usage
+
+**Alternative Considered**:
+Support both 'type' and 'variant' props for backward compatibility. Rejected because it adds unnecessary complexity.
+
+### Decision: Console Statement Handling
+
+**Context**:
+Server-side WebSocket code had numerous console.log statements for debugging that were triggering ESLint errors.
+
+**Decision**:
+Comment out console statements with TODO comments rather than removing them entirely.
+
+**Rationale**:
+- Preserves debugging context for future developers
+- Easy to re-enable during development
+- Clear indication that proper logging is needed
+- No console output in production
+
+**Implementation**:
+```typescript
+// TODO: Replace with proper logging
+// console.log('WebSocket connected:', socket.id)
+```
+
+### Decision: Function Type Replacement
+
+**Context**:
+Multiple files used the generic 'Function' type which ESLint flags as too permissive and type-unsafe.
+
+**Decision**:
+Replace all 'Function' types with specific function signatures, using `(...args: any[]) => void` as a fallback when the exact signature is unknown.
+
+**Rationale**:
+- Provides better type safety
+- Prevents runtime errors from incorrect function calls
+- Makes code intent clearer
+- Satisfies ESLint ban-types rule
+
+**Examples**:
+```typescript
+// Before
+private listeners: Map<string, Set<Function>> = new Map()
+
+// After  
+private listeners: Map<string, Set<(...args: any[]) => void>> = new Map()
+```
+
+### Decision: Deferred Warning Resolution
+
+**Context**:
+After fixing all errors, 126 ESLint warnings remain, mostly related to 'any' types and React Refresh.
+
+**Decision**:
+Defer warning fixes to a later phase and focus on critical errors only.
+
+**Rationale**:
+- Warnings don't block builds or tests
+- Many warnings require deeper refactoring
+- Better to have working code with warnings than broken code
+- Can address warnings incrementally
+
+**Future Action**:
+Create a separate task in Phase 2 to reduce warnings by introducing proper types and fixing React Refresh issues.
+
 ## 2025-01-25: Core Hooks Testing Strategy
 
 ### Decision: Comprehensive Hook Testing with TDD

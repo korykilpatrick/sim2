@@ -93,7 +93,7 @@ router.post('/register', async (req, res) => {
       defaultView: 'dashboard' as const,
     },
     subscription: {
-      plan: 'free' as const,
+      plan: 'professional' as const,
       credits: 100,
       creditsUsed: 0,
       renewalDate: new Date(

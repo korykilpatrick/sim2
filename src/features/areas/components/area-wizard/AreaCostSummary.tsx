@@ -15,25 +15,32 @@ export function AreaCostSummary({
   updateFrequency,
   durationMonths,
 }: AreaCostSummaryProps) {
-  const { calculateAreaMonitoring } = useCostCalculation()
+  const { calculateCost, getCostBreakdown } = useCostCalculation()
 
-  const costDetailsResult = calculateAreaMonitoring({
-    areaSize,
-    criteriaCount,
-    updateFrequency,
-    durationMonths,
+  const costResult = calculateCost('area-monitoring', {
+    areaSizeKm2: areaSize,
+    durationDays: durationMonths * 30, // Convert months to days
+  })
+  
+  const costBreakdown = getCostBreakdown('area-monitoring', {
+    areaSizeKm2: areaSize,
+    durationDays: durationMonths * 30,
   })
 
-  // Check if we got the detailed result or just a number
-  const costDetails =
-    typeof costDetailsResult === 'number'
-      ? {
-          baseCredits: 0,
-          criteriaCredits: 0,
-          creditsPerDay: 0,
-          totalCredits: costDetailsResult,
-        }
-      : costDetailsResult
+  // Create cost details from breakdown
+  const costDetails = costBreakdown
+    ? {
+        baseCredits: costBreakdown.baseRate * durationMonths * 30,
+        criteriaCredits: (costBreakdown.dailyCost - costBreakdown.baseRate) * durationMonths * 30,
+        creditsPerDay: costBreakdown.dailyCost,
+        totalCredits: costResult.cost,
+      }
+    : {
+        baseCredits: 0,
+        criteriaCredits: 0,
+        creditsPerDay: 0,
+        totalCredits: costResult.cost,
+      }
 
   return (
     <Card className="bg-gray-50 border-gray-200">

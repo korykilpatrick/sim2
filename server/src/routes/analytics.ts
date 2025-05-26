@@ -169,7 +169,7 @@ router.get('/activity', authenticateToken, (req: Request, res: Response) => {
 router.get(
   '/revenue/breakdown',
   authenticateToken,
-  (req: Request, res: Response) => {
+  (_req: Request, res: Response) => {
     const totalRevenue = productStats.reduce(
       (sum, product) => sum + product.revenue,
       0,

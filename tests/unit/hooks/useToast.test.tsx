@@ -1,4 +1,4 @@
-import { renderHook, act, waitFor } from '@testing-library/react'
+import { renderHook, act } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { useToast, useToasts, useToastStore } from '@/hooks/useToast'
 
@@ -268,7 +268,6 @@ describe('useToast', () => {
   })
 
   it('should clean up timeouts when removing toast manually', () => {
-    const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
     const { result: toastResult } = renderHook(() => useToast())
     const { result: toastsResult } = renderHook(() => useToasts())
 

@@ -24,26 +24,24 @@ export async function generatePDF({
   data,
   watermark = true,
 }: GeneratePDFOptions): Promise<Blob> {
-  let document
+  let documentElement: React.ReactElement | null = null
 
   switch (reportType) {
     case 'compliance':
-      // @ts-expect-error - Document component returns the right type
-      document = ComplianceReportTemplate({ data, watermark })
+      documentElement = ComplianceReportTemplate({ data, watermark }) as React.ReactElement
       break
     case 'chronology':
-      // @ts-expect-error - Document component returns the right type
-      document = ChronologyReportTemplate({ data, watermark })
+      documentElement = ChronologyReportTemplate({ data, watermark }) as React.ReactElement
       break
     default:
       throw new Error(`Unsupported report type: ${reportType}`)
   }
 
-  if (!document) {
+  if (!documentElement) {
     throw new Error('Failed to generate document')
   }
 
-  const blob = await pdf(document).toBlob()
+  const blob = await pdf(documentElement).toBlob()
 
   return blob
 }

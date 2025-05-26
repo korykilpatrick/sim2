@@ -44,7 +44,8 @@ export function setupWebSocket(io: Server) {
   })
 
   io.on('connection', (socket: AuthenticatedSocket) => {
-    console.log(`[WebSocket] Client connected: ${socket.id}`)
+    // TODO: Replace with proper logging
+    // console.log(`[WebSocket] Client connected: ${socket.id}`)
 
     // Handle authentication
     socket.on('authenticate', (token: string) => {
@@ -53,9 +54,10 @@ export function setupWebSocket(io: Server) {
         socket.userId = decoded.id
         socket.authenticated = true
         socket.emit('authenticated', { userId: decoded.id, success: true })
-        console.log(
-          `[WebSocket] Client authenticated: ${socket.id}, userId: ${decoded.id}`,
-        )
+        // TODO: Replace with proper logging
+        // console.log(
+        //   `[WebSocket] Client authenticated: ${socket.id}, userId: ${decoded.id}`,
+        // )
       } catch (err) {
         socket.emit('unauthorized', { message: 'Invalid token' })
       }
@@ -77,9 +79,10 @@ export function setupWebSocket(io: Server) {
       }
       activeTrackings.get(vesselId)!.add(socket.id)
 
-      console.log(
-        `[WebSocket] Socket ${socket.id} joined vessel room: ${vesselId}`,
-      )
+      // TODO: Replace with proper logging
+      // console.log(
+      //   `[WebSocket] Socket ${socket.id} joined vessel room: ${vesselId}`,
+      // )
 
       // Send current position if available
       if (vesselPositions.has(vesselId)) {
@@ -104,9 +107,10 @@ export function setupWebSocket(io: Server) {
         }
       }
 
-      console.log(
-        `[WebSocket] Socket ${socket.id} left vessel room: ${vesselId}`,
-      )
+      // TODO: Replace with proper logging
+      // console.log(
+      //   `[WebSocket] Socket ${socket.id} left vessel room: ${vesselId}`,
+      // )
     })
 
     // Area monitoring room management
@@ -125,7 +129,8 @@ export function setupWebSocket(io: Server) {
       }
       activeMonitorings.get(areaId)!.add(socket.id)
 
-      console.log(`[WebSocket] Socket ${socket.id} joined area room: ${areaId}`)
+      // TODO: Replace with proper logging
+      // console.log(`[WebSocket] Socket ${socket.id} joined area room: ${areaId}`)
 
       // Send recent alerts if available
       if (areaAlerts.has(areaId)) {
@@ -153,19 +158,21 @@ export function setupWebSocket(io: Server) {
         }
       }
 
-      console.log(`[WebSocket] Socket ${socket.id} left area room: ${areaId}`)
+      // TODO: Replace with proper logging
+      // console.log(`[WebSocket] Socket ${socket.id} left area room: ${areaId}`)
     })
 
     // Alert management
-    socket.on('mark_alert_read', (alertId: string) => {
+    socket.on('mark_alert_read', (_alertId: string) => {
       if (!socket.authenticated) {
         socket.emit('unauthorized', { message: 'Authentication required' })
         return
       }
 
-      console.log(
-        `[WebSocket] Alert marked as read: ${alertId} by user ${socket.userId}`,
-      )
+      // TODO: Replace with proper logging
+      // console.log(
+      //   `[WebSocket] Alert marked as read: ${alertId} by user ${socket.userId}`,
+      // )
       // In production, update database
     })
 
@@ -175,16 +182,18 @@ export function setupWebSocket(io: Server) {
         return
       }
 
-      console.log(
-        `[WebSocket] Alert dismissed: ${alertId} by user ${socket.userId}`,
-      )
+      // TODO: Replace with proper logging
+      // console.log(
+      //   `[WebSocket] Alert dismissed: ${alertId} by user ${socket.userId}`,
+      // )
       socket.emit('alert_dismissed', { alertId })
       // In production, update database
     })
 
     // Handle disconnection
     socket.on('disconnect', () => {
-      console.log(`[WebSocket] Client disconnected: ${socket.id}`)
+      // TODO: Replace with proper logging
+      // console.log(`[WebSocket] Client disconnected: ${socket.id}`)
 
       // Clean up vessel trackings
       activeTrackings.forEach((trackers, vesselId) => {
@@ -219,7 +228,8 @@ function startVesselSimulation(io: Server, vesselId: string) {
   // Don't start multiple simulations for the same vessel
   if (vesselSimulations.has(vesselId)) return
 
-  console.log(`[WebSocket] Starting vessel simulation for: ${vesselId}`)
+  // TODO: Replace with proper logging
+  // console.log(`[WebSocket] Starting vessel simulation for: ${vesselId}`)
 
   // Initial position
   let lat = 30 + Math.random() * 20 - 10
@@ -267,7 +277,8 @@ function stopVesselSimulation(vesselId: string) {
   if (interval) {
     clearInterval(interval)
     vesselSimulations.delete(vesselId)
-    console.log(`[WebSocket] Stopped vessel simulation for: ${vesselId}`)
+    // TODO: Replace with proper logging
+    // console.log(`[WebSocket] Stopped vessel simulation for: ${vesselId}`)
   }
 }
 
@@ -275,7 +286,8 @@ function startAreaSimulation(io: Server, areaId: string) {
   // Don't start multiple simulations for the same area
   if (areaSimulations.has(areaId)) return
 
-  console.log(`[WebSocket] Starting area simulation for: ${areaId}`)
+  // TODO: Replace with proper logging
+  // console.log(`[WebSocket] Starting area simulation for: ${areaId}`)
 
   const interval = setInterval(() => {
     // Random chance of generating an alert
@@ -360,14 +372,15 @@ function stopAreaSimulation(areaId: string) {
   if (interval) {
     clearInterval(interval)
     areaSimulations.delete(areaId)
-    console.log(`[WebSocket] Stopped area simulation for: ${areaId}`)
+    // TODO: Replace with proper logging
+    // console.log(`[WebSocket] Stopped area simulation for: ${areaId}`)
   }
 }
 
 // Utility function to broadcast credit updates
 export function broadcastCreditUpdate(
   io: Server,
-  userId: string,
+  _userId: string,
   balance: number,
   change: number,
 ) {

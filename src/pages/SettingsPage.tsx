@@ -472,7 +472,7 @@ export default function SettingsPage() {
         <TabPanel isActive={activeTab === 'billing'}>
           <CardContent className="space-y-6">
             <Alert
-              type="info"
+              variant="info"
               message="Manage your subscription and payment methods"
             />
 
@@ -529,7 +529,7 @@ export default function SettingsPage() {
         <TabPanel isActive={activeTab === 'api'}>
           <CardContent className="space-y-6">
             <Alert
-              type="warning"
+              variant="warning"
               message="API keys provide full access to your account. Keep them secure and never share them publicly."
             />
 
@@ -587,7 +587,7 @@ export default function SettingsPage() {
                 Delete Account
               </h3>
               <Alert
-                type="error"
+                variant="error"
                 message="Deleting your account is permanent and cannot be undone. All your data will be permanently removed."
               />
               <Button variant="danger" className="mt-4">

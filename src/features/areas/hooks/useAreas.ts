@@ -50,18 +50,7 @@ export function useCreateArea() {
       }
 
       // First deduct credits
-      await deductCredits({
-        amount: creditCost,
-        description: `Area monitoring for "${data.name}"`,
-        serviceId: `area_${Date.now()}`,
-        serviceType: 'area_monitoring',
-        metadata: {
-          areaName: data.name,
-          geometry: data.geometry,
-          duration: data.duration,
-          criteria: data.criteria,
-        },
-      })
+      await deductCredits(creditCost, `Area monitoring for "${data.name}"`)
 
       // Then create the area
       return areaApi.createArea(data)

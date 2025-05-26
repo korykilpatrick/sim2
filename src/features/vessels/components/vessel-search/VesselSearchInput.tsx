@@ -49,7 +49,7 @@ export function VesselSearchInput({
         />
       </div>
 
-      {error && <Alert type="error" message={error} />}
+      {error && <Alert variant="error" message={error} />}
 
       {isSearching && (
         <div className="flex justify-center py-4">

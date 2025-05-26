@@ -40,7 +40,7 @@ export default function VesselTrackingCardRealtime({
             lat: data.position.lat,
             lng: data.position.lng,
             timestamp: data.timestamp,
-            heading: data.heading,
+            course: data.heading, // Map heading to course
             speed: data.speed,
           },
           status: data.status as typeof prev.vessel.status,

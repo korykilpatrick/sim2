@@ -41,7 +41,7 @@ export function CriteriaSelectionStep({
   if (error) {
     return (
       <Alert
-        type="error"
+        variant="error"
         message="Failed to load tracking criteria. Please try again."
       />
     )
@@ -68,7 +68,7 @@ export function CriteriaSelectionStep({
 
       {selectedCriteria.length === 0 && (
         <Alert
-          type="warning"
+          variant="warning"
           message="Please select at least one tracking criteria"
         />
       )}

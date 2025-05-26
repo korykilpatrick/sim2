@@ -4,7 +4,7 @@ import { mockData } from '../data/mockData'
 const router = Router()
 
 // Get all fleets
-router.get('/', (req, res) => {
+router.get('/', (_req, res) => {
   res.json(mockData.fleets)
 })
 

@@ -1,9 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
-import { WebSocketProvider } from '../WebSocketProvider';
 import { websocketService } from '@/services/websocket';
 import { renderWithProviders, clearAuth, setupAuthenticatedUser } from '../../tests/utils/test-utils';
-import React from 'react';
 
 // Mock dependencies
 vi.mock('@/services/websocket', () => ({
@@ -131,10 +129,10 @@ describe('WebSocketProvider', () => {
     });
 
     it('should handle connection events', async () => {
-      let connectHandler: Function;
-      let disconnectHandler: Function;
+      let connectHandler: (...args: any[]) => void;
+      let disconnectHandler: (...args: any[]) => void;
       
-      (websocketService.on as any).mockImplementation((event: string, handler: Function) => {
+      (websocketService.on as any).mockImplementation((event: string, handler: (...args: any[]) => void) => {
         if (event === 'connect') connectHandler = handler;
         if (event === 'disconnect') disconnectHandler = handler;
         return vi.fn();
@@ -163,9 +161,9 @@ describe('WebSocketProvider', () => {
     });
 
     it('should handle authenticated event', async () => {
-      let authenticatedHandler: Function;
+      let authenticatedHandler: (...args: any[]) => void;
       
-      (websocketService.on as any).mockImplementation((event: string, handler: Function) => {
+      (websocketService.on as any).mockImplementation((event: string, handler: (...args: any[]) => void) => {
         if (event === 'authenticated') authenticatedHandler = handler;
         return vi.fn();
       });
@@ -191,9 +189,9 @@ describe('WebSocketProvider', () => {
     });
 
     it('should handle unauthorized event', async () => {
-      let unauthorizedHandler: Function;
+      let unauthorizedHandler: (...args: any[]) => void;
       
-      (websocketService.on as any).mockImplementation((event: string, handler: Function) => {
+      (websocketService.on as any).mockImplementation((event: string, handler: (...args: any[]) => void) => {
         if (event === 'unauthorized') unauthorizedHandler = handler;
         return vi.fn();
       });

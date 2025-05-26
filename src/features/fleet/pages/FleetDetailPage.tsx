@@ -44,7 +44,7 @@ export default function FleetDetailPage() {
   // Use the search hook
   useEffect(() => {
     vesselSearch.setSearchTerm(searchQuery)
-  }, [searchQuery])
+  }, [searchQuery, vesselSearch])
 
   const handleAddVessels = async () => {
     if (selectedVessels.length === 0) return
@@ -107,7 +107,7 @@ export default function FleetDetailPage() {
   if (!fleet) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Alert type="error" message="Fleet not found" />
+        <Alert variant="error" message="Fleet not found" />
       </div>
     )
   }

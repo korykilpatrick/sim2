@@ -173,7 +173,7 @@ export function InvestigationReport({
 
           {/* Security Notice */}
           <Alert
-            type="info"
+            variant="info"
             message="This report contains confidential intelligence. Please handle according to your organization's security protocols. Report access expires 90 days after generation."
           />
         </div>

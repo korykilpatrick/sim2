@@ -100,7 +100,7 @@ describe('useMediaQuery', () => {
   })
 
   it('should update when query prop changes', () => {
-    const { result, rerender } = renderHook(
+    const { rerender } = renderHook(
       ({ query }) => useMediaQuery(query),
       {
         initialProps: { query: '(min-width: 768px)' },

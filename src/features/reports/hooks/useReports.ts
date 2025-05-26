@@ -59,20 +59,10 @@ export function useCreateReport() {
       }
 
       // First deduct credits
-      await deductCredits({
-        amount: creditCost,
-        description: `${request.reportType === 'compliance' ? 'Compliance' : 'Chronology'} report`,
-        serviceId: `report_${request.vesselId}_${Date.now()}`,
-        serviceType:
-          request.reportType === 'compliance'
-            ? 'compliance_report'
-            : 'chronology_report',
-        metadata: {
-          vesselId: request.vesselId,
-          reportType: request.reportType,
-          options: request.options,
-        },
-      })
+      await deductCredits(
+        creditCost,
+        `${request.reportType === 'compliance' ? 'Compliance' : 'Chronology'} report`
+      )
 
       // Then create the report
       return reportApi.createReport(request)

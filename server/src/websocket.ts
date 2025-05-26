@@ -3,7 +3,8 @@ import { mockVessels } from './data/mockData'
 
 export function setupWebSocket(io: Server) {
   io.on('connection', (socket: Socket) => {
-    console.log('Client connected:', socket.id)
+    // TODO: Replace with proper logging
+    // console.log('Client connected:', socket.id)
 
     // Send initial vessel positions
     socket.emit('vessels:initial', mockVessels)
@@ -37,18 +38,21 @@ export function setupWebSocket(io: Server) {
     }, 5000)
 
     // Handle client requests
-    socket.on('vessels:subscribe', (vesselIds: string[]) => {
-      console.log('Client subscribed to vessels:', vesselIds)
+    socket.on('vessels:subscribe', (_vesselIds: string[]) => {
+      // TODO: Replace with proper logging
+      // console.log('Client subscribed to vessels:', vesselIds)
       // In a real app, we'd track subscriptions and only send relevant updates
     })
 
-    socket.on('vessels:unsubscribe', (vesselIds: string[]) => {
-      console.log('Client unsubscribed from vessels:', vesselIds)
+    socket.on('vessels:unsubscribe', (_vesselIds: string[]) => {
+      // TODO: Replace with proper logging
+      // console.log('Client unsubscribed from vessels:', vesselIds)
     })
 
     // Clean up on disconnect
     socket.on('disconnect', () => {
-      console.log('Client disconnected:', socket.id)
+      // TODO: Replace with proper logging
+      // console.log('Client disconnected:', socket.id)
       clearInterval(updateInterval)
     })
   })

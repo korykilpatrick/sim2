@@ -55,7 +55,7 @@ export const featuresCreditHandlers = [
 
   // Purchase credits
   http.post(`${API_BASE_URL}/credits/purchase`, async ({ request }) => {
-    const body = await request.json() as { packageId: string }
+    await request.json() as { packageId: string }
     
     // Mock successful purchase
     const creditsAdded = 500

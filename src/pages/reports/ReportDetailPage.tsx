@@ -34,7 +34,7 @@ export default function ReportDetailPage() {
     return (
       <PageLayout title="Report Not Found">
         <Alert
-          type="error"
+          variant="error"
           message="The requested report could not be found."
         />
         <div className="mt-4">
@@ -51,7 +51,7 @@ export default function ReportDetailPage() {
     return (
       <PageLayout title="Report Processing">
         <Alert
-          type="info"
+          variant="info"
           message="This report is currently being processed. Please check back later."
         />
         <div className="mt-4">

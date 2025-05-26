@@ -39,6 +39,8 @@ describe('useAuth Hook', () => {
     name: 'Test User',
     company: 'Test Company',
     role: 'user',
+    credits: 1000,
+    isActive: true,
     preferences: {
       theme: 'light',
       notifications: {

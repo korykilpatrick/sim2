@@ -113,7 +113,7 @@ describe('useClickOutside', () => {
   it('should not call handler when ref is null', () => {
     const handler = vi.fn()
     
-    const { result } = renderHook(() => useClickOutside(handler))
+    renderHook(() => useClickOutside(handler))
     
     // Don't attach ref (leave it null)
 

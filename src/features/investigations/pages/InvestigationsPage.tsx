@@ -45,7 +45,7 @@ export default function InvestigationsPage() {
         subtitle="Request expert analysis and intelligence"
       >
         <Alert
-          type="error"
+          variant="error"
           message="Failed to load investigations. Please try again later."
         />
       </PageLayout>

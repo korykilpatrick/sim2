@@ -4,12 +4,12 @@ import { Card } from '@components/common/Card'
 import Button from '@components/common/Button'
 import Input from '@components/forms/Input'
 import {
-  FleetStats,
+  FleetStatsCard,
   FleetList,
   CreateFleetModal,
   EditFleetModal,
 } from '../components'
-import { useFleets, useDeleteFleet } from '../hooks/useFleets'
+import { useFleets, useDeleteFleet, useFleetStats } from '../hooks/useFleets'
 import { useToast } from '@/hooks'
 import type { Fleet } from '../types'
 import { cn } from '@utils/cn'
@@ -29,6 +29,7 @@ export default function FleetsPage() {
 
   // Fetch data
   const { data: fleets = [] } = useFleets()
+  const { data: stats, isLoading: statsLoading } = useFleetStats()
   const filteredFleets = searchQuery
     ? fleets.filter(
         (fleet) =>
@@ -68,7 +69,7 @@ export default function FleetsPage() {
       </div>
 
       {/* Stats */}
-      <FleetStats />
+      {stats && <FleetStatsCard stats={stats} loading={statsLoading} />}
 
       {/* Tabs */}
       <div className="border-b border-gray-200">
