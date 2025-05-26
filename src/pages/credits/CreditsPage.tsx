@@ -8,7 +8,7 @@ import {
 } from '@/components/common/Card'
 import Button from '@/components/common/Button'
 import { cn } from '@/utils/cn'
-import CreditPurchaseModal from '@/features/credits/components/CreditPurchaseModal'
+import { CreditPurchaseModal } from '@/features/credits/components/CreditPurchaseModal'
 import CreditTransactionHistory from '@/features/credits/components/CreditTransactionHistory'
 import LowBalanceWarning from '@/features/credits/components/LowBalanceWarning'
 import { useCredits } from '@/features/credits/hooks/useCredits'
@@ -95,9 +95,11 @@ export function CreditsPage() {
   }, [user, mockTransactions.length])
 
   const handlePurchaseClick = () => {
-    if (selectedPackage) {
-      setIsPurchaseModalOpen(true)
+    // If no package selected, select the first one
+    if (!selectedPackage && availablePackages.length > 0) {
+      setSelectedPackage(availablePackages[0].id)
     }
+    setIsPurchaseModalOpen(true)
   }
 
   const handlePurchaseComplete = (creditsAdded: number) => {
@@ -240,6 +242,7 @@ export function CreditsPage() {
           {availablePackages.slice(0, 4).map((pkg) => (
             <div
               key={pkg.id}
+              data-testid={`package-${pkg.credits}`}
               className={cn(
                 'relative cursor-pointer transition-all',
                 selectedPackage === pkg.id
@@ -284,7 +287,6 @@ export function CreditsPage() {
           <Button
             variant="primary"
             size="lg"
-            disabled={!selectedPackage}
             onClick={handlePurchaseClick}
           >
             Purchase Credits

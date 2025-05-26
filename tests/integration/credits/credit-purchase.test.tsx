@@ -23,7 +23,7 @@ describe('Credit Purchase Integration Tests', () => {
       renderWithProviders(<CreditsPage />)
       
       // Open purchase modal
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       // Check all packages are displayed
@@ -49,7 +49,7 @@ describe('Credit Purchase Integration Tests', () => {
       const user = userEvent.setup()
       renderWithProviders(<CreditsPage />)
       
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       // 1000 credit package should be marked as best value
@@ -64,7 +64,7 @@ describe('Credit Purchase Integration Tests', () => {
       const user = userEvent.setup()
       renderWithProviders(<CreditsPage />)
       
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       // Check price per credit display
@@ -86,7 +86,7 @@ describe('Credit Purchase Integration Tests', () => {
       })
       
       // Open purchase modal
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       // Select 500 credit package
@@ -123,7 +123,7 @@ describe('Credit Purchase Integration Tests', () => {
       renderWithProviders(<CreditsPage />)
       
       // Make a purchase
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       const package100 = screen.getByTestId('package-100')
@@ -190,7 +190,7 @@ describe('Credit Purchase Integration Tests', () => {
       renderWithProviders(<CreditsPage />)
       
       // Attempt purchase
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       const package100 = screen.getByTestId('package-100')
@@ -234,7 +234,7 @@ describe('Credit Purchase Integration Tests', () => {
       renderWithProviders(<CreditsPage />)
       
       // Make purchase
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       const package1000 = screen.getByTestId('package-1000')
@@ -259,7 +259,7 @@ describe('Credit Purchase Integration Tests', () => {
       renderWithProviders(<CreditsPage />)
       
       // Complete a purchase
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       const package500 = screen.getByTestId('package-500')
@@ -296,7 +296,7 @@ describe('Credit Purchase Integration Tests', () => {
       const user = userEvent.setup()
       renderWithProviders(<CreditsPage />)
       
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       const package100 = screen.getByTestId('package-100')
@@ -329,7 +329,7 @@ describe('Credit Purchase Integration Tests', () => {
       
       renderWithProviders(<CreditsPage />)
       
-      const purchaseBtn = await screen.findByText(/Purchase Credits/i)
+      const purchaseBtn = await screen.findByRole('button', { name: /Purchase Credits/i })
       await user.click(purchaseBtn)
       
       const package100 = screen.getByTestId('package-100')

@@ -4,12 +4,13 @@ import Button from '@/components/common/Button'
 import { CreditCard, Check } from 'lucide-react'
 import { formatPrice } from '@/utils/formatPrice'
 
-interface CreditPackage {
+export interface CreditPackage {
   id: string
   name: string
   credits: number
   price: number
   savings: number
+  popular?: boolean
 }
 
 interface CreditPurchaseModalProps {
@@ -19,7 +20,7 @@ interface CreditPurchaseModalProps {
   onPurchaseComplete: (credits: number) => void
 }
 
-export default function CreditPurchaseModal({
+export function CreditPurchaseModal({
   isOpen,
   onClose,
   selectedPackage,
