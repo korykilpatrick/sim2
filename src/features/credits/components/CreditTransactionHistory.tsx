@@ -5,7 +5,7 @@ import { cn } from '@/utils/cn'
 
 export interface CreditTransaction {
   id: string
-  type: 'purchase' | 'usage' | 'refund'
+  type: 'purchase' | 'deduction' | 'refund' | 'bonus'
   description: string
   amount: number
   balance: number
@@ -25,10 +25,12 @@ export default function CreditTransactionHistory({
     switch (type) {
       case 'purchase':
         return <ArrowDownRight className="h-5 w-5 text-green-600" />
-      case 'usage':
+      case 'deduction':
         return <ArrowUpRight className="h-5 w-5 text-red-600" />
       case 'refund':
         return <Package className="h-5 w-5 text-blue-600" />
+      case 'bonus':
+        return <ArrowDownRight className="h-5 w-5 text-purple-600" />
     }
   }
 
@@ -36,10 +38,12 @@ export default function CreditTransactionHistory({
     switch (type) {
       case 'purchase':
         return 'text-green-600'
-      case 'usage':
+      case 'deduction':
         return 'text-red-600'
       case 'refund':
         return 'text-blue-600'
+      case 'bonus':
+        return 'text-purple-600'
     }
   }
 
@@ -88,7 +92,7 @@ export default function CreditTransactionHistory({
                 getTransactionColor(transaction.type),
               )}
             >
-              {transaction.type === 'usage' ? '-' : '+'}
+              {transaction.type === 'deduction' ? '-' : '+'}
               {formatPrice(Math.abs(transaction.amount))}
             </p>
             <p className="text-sm text-gray-600 mt-0.5">

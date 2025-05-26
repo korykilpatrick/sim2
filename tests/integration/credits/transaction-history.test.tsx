@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import { renderWithProviders, setupAuthenticatedUser, clearAuth, userEvent } from '../../utils/test-utils'
 import { server, resetMockData, mockTransactions } from '../../utils/api-mocks'
 import { http, HttpResponse } from 'msw'
-import { CreditTransactionHistory } from '@/features/credits/components/CreditTransactionHistory'
+import CreditTransactionHistory from '@/features/credits/components/CreditTransactionHistory'
 
 beforeEach(() => {
   setupAuthenticatedUser()
@@ -18,16 +18,16 @@ afterEach(() => {
 describe('Credit Transaction History', () => {
   describe('Transaction Display', () => {
     it('should display transaction history', async () => {
-      renderWithProviders(<CreditTransactionHistory />)
+      renderWithProviders(<CreditTransactionHistory transactions={mockTransactions} />)
       
       await waitFor(() => {
         // Check first transaction (purchase)
         expect(screen.getByText(/Credit package purchase/i)).toBeInTheDocument()
-        expect(screen.getByText(/\+500/)).toBeInTheDocument()
+        expect(screen.getByText(/\+\$500/)).toBeInTheDocument()
         
         // Check second transaction (deduction)
         expect(screen.getByText(/Vessel tracking - 10 days/i)).toBeInTheDocument()
-        expect(screen.getByText(/-50/)).toBeInTheDocument()
+        expect(screen.getByText(/-\$50/)).toBeInTheDocument()
       })
     })
 

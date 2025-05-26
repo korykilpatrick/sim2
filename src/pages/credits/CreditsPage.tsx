@@ -11,19 +11,25 @@ import { cn } from '@/utils/cn'
 import { CreditPurchaseModal } from '@/features/credits/components/CreditPurchaseModal'
 import CreditTransactionHistory from '@/features/credits/components/CreditTransactionHistory'
 import LowBalanceWarning from '@/features/credits/components/LowBalanceWarning'
-import { useCredits } from '@/features/credits/hooks/useCredits'
+import { useCredits } from '@/features/credits'
 import { useWebSocket } from '@/hooks/useWebSocket'
 import type { CreditTransaction } from '@/features/credits/components/CreditTransactionHistory'
 
 export function CreditsPage() {
   const { user, isAuthenticated } = useAuth()
-  const { balance, lifetimeCredits, expiringCredits, isLoading, error, availablePackages, refetch } = useCredits()
+  const { balance, lifetimeCredits, expiringCredits, isLoading, error, availablePackages, refetch, calculatePackageSavings } = useCredits()
   const { on, off } = useWebSocket()
   const [selectedPackage, setSelectedPackage] = useState<string>('')
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false)
   const [mockTransactions, setMockTransactions] = useState<CreditTransaction[]>(
     [],
   )
+  
+  // Map packages to include savings
+  const packagesWithSavings = availablePackages.map(pkg => ({
+    ...pkg,
+    savings: calculatePackageSavings(pkg.id)
+  }))
 
   // Subscribe to WebSocket credit updates
   useEffect(() => {
@@ -69,7 +75,7 @@ export function CreditsPage() {
         },
         {
           id: '2',
-          type: 'usage',
+          type: 'deduction',
           description: 'Vessel Tracking - IMO 9876543',
           amount: 150,
           balance: 950,
@@ -80,7 +86,7 @@ export function CreditsPage() {
         },
         {
           id: '3',
-          type: 'usage',
+          type: 'deduction',
           description: 'Compliance Report - MV Ocean Star',
           amount: 50,
           balance: 900,
@@ -96,8 +102,8 @@ export function CreditsPage() {
 
   const handlePurchaseClick = () => {
     // If no package selected, select the first one
-    if (!selectedPackage && availablePackages.length > 0) {
-      setSelectedPackage(availablePackages[0].id)
+    if (!selectedPackage && packagesWithSavings.length > 0) {
+      setSelectedPackage(packagesWithSavings[0].id)
     }
     setIsPurchaseModalOpen(true)
   }
@@ -115,7 +121,7 @@ export function CreditsPage() {
     setMockTransactions([newTransaction, ...mockTransactions])
   }
 
-  const selectedPackageData = availablePackages.find(
+  const selectedPackageData = packagesWithSavings.find(
     (pkg) => pkg.id === selectedPackage,
   )
 
@@ -213,21 +219,17 @@ export function CreditsPage() {
       </Card>
 
       {/* Expiring Credits */}
-      {expiringCredits && expiringCredits.length > 0 && (
+      {expiringCredits && (
         <Card>
           <CardHeader>
             <CardTitle>Expiring Credits</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              {expiringCredits.map((expiring, index) => (
-                <div key={index} className="flex justify-between items-center py-2 border-b last:border-0">
-                  <span>{expiring.amount} credits expiring</span>
-                  <span className="text-sm text-gray-500">
-                    {new Date(expiring.expiresAt).toLocaleDateString()}
-                  </span>
-                </div>
-              ))}
+            <div className="flex justify-between items-center py-2">
+              <span>{expiringCredits.amount} credits expiring</span>
+              <span className="text-sm text-gray-500">
+                {new Date(expiringCredits.date).toLocaleDateString()}
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -239,7 +241,7 @@ export function CreditsPage() {
           Purchase Credits
         </h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {availablePackages.slice(0, 4).map((pkg) => (
+          {packagesWithSavings.slice(0, 4).map((pkg) => (
             <div
               key={pkg.id}
               data-testid={`package-${pkg.credits}`}

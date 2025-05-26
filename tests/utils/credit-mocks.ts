@@ -3,14 +3,14 @@ import { http, HttpResponse } from 'msw'
 // Use wildcard pattern to match any origin
 const API_BASE_URL = '*/api/v1'
 
-// Mock data for features/credits (different from shared/credits)
+// Mock data for unified credit system
 export const mockCreditBalanceFeatures = {
-  current: 1000,
+  available: 1000,
   lifetime: 5000,
-  expiringCredits: [
-    { amount: 100, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() },
-    { amount: 50, expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString() }
-  ]
+  expiring: {
+    amount: 100,
+    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  }
 }
 
 export const mockCreditTransactions = [
@@ -60,8 +60,8 @@ export const featuresCreditHandlers = [
     
     // Mock successful purchase
     const creditsAdded = 500
-    const newBalance = mockCreditBalanceFeatures.current + creditsAdded
-    mockCreditBalanceFeatures.current = newBalance
+    const newBalance = mockCreditBalanceFeatures.available + creditsAdded
+    mockCreditBalanceFeatures.available = newBalance
     
     return HttpResponse.json({
       success: true,
@@ -82,7 +82,7 @@ export const featuresCreditHandlers = [
   http.post(`${API_BASE_URL}/credits/deduct`, async ({ request }) => {
     const body = await request.json() as any
     
-    if (body.amount > mockCreditBalanceFeatures.current) {
+    if (body.amount > mockCreditBalanceFeatures.available) {
       return HttpResponse.json(
         { 
           success: false,
@@ -95,8 +95,8 @@ export const featuresCreditHandlers = [
       )
     }
     
-    const newBalance = mockCreditBalanceFeatures.current - body.amount
-    mockCreditBalanceFeatures.current = newBalance
+    const newBalance = mockCreditBalanceFeatures.available - body.amount
+    mockCreditBalanceFeatures.available = newBalance
     
     return HttpResponse.json({
       success: true,
@@ -112,10 +112,10 @@ export const featuresCreditHandlers = [
 
 // Reset helper
 export const resetFeaturesCreditData = () => {
-  mockCreditBalanceFeatures.current = 1000
+  mockCreditBalanceFeatures.available = 1000
   mockCreditBalanceFeatures.lifetime = 5000
-  mockCreditBalanceFeatures.expiringCredits = [
-    { amount: 100, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() },
-    { amount: 50, expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString() }
-  ]
+  mockCreditBalanceFeatures.expiring = {
+    amount: 100,
+    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  }
 }

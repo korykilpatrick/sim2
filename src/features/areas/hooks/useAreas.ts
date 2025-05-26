@@ -35,7 +35,8 @@ export function useCreateArea() {
       // Calculate credit cost
       const days = data.duration
       const areaSize = calculateAreaSize(data.geometry)
-      const creditCost = creditService.calculateServiceCost('area_monitoring', {
+      const creditCost = creditService.calculateServiceCost({
+        service: 'area_monitoring',
         areaSize,
         days,
       })
@@ -50,7 +51,10 @@ export function useCreateArea() {
       }
 
       // First deduct credits
-      await deductCredits(creditCost, `Area monitoring for "${data.name}"`)
+      const deductionResult = await deductCredits(creditCost, `Area monitoring for "${data.name}"`)
+      if (!deductionResult.success) {
+        throw new Error('Failed to deduct credits')
+      }
 
       // Then create the area
       return areaApi.createArea(data)

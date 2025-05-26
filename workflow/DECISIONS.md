@@ -1,5 +1,94 @@
 # Architectural Decisions Log
 
+## 2025-01-26: Credit System Unification Complete
+
+### Decision: Remove Adapter Pattern and Unify on Shared Implementation
+
+**Context**:
+After implementing the adapter pattern in Phase 1, we determined it was adding unnecessary complexity. With zero users, we can make breaking changes to achieve the ideal architecture.
+
+**Decision**:
+Remove the adapter pattern entirely and create a single unified credit implementation based on the shared service architecture.
+
+**Rationale**:
+- No backwards compatibility needed (zero users)
+- Shared service has better architecture and more features
+- Single implementation is easier to maintain
+- Reduces complexity and potential for bugs
+- Better performance without adapter overhead
+
+**Implementation**:
+1. Created unified types in `/src/features/credits/types/index.ts`
+2. Created unified service combining best of both implementations
+3. Created unified hook with all features from both hooks
+4. Updated all components to use new imports and field names
+
+**Trade-offs**:
+- Breaking changes to API (acceptable with zero users)
+- Need to update all tests and mocks
+- But: Much cleaner architecture moving forward
+
+### Decision: Standardize on 'available' Field Name
+
+**Context**:
+Two implementations used different field names for credit balance ('current' vs 'available').
+
+**Decision**:
+Use 'available' as the standard field name throughout the application.
+
+**Rationale**:
+- More descriptive of what the field represents
+- Already used by the shared implementation
+- Consistent with other systems (available balance)
+- Clear distinction from lifetime credits
+
+**Impact**:
+- All components updated to use 'available'
+- Tests updated to match
+- API contracts updated
+
+### Decision: Single Expiring Credits Object
+
+**Context**:
+Features implementation used an array of expiring credit batches, shared used a single object.
+
+**Decision**:
+Use single expiring credits object format.
+
+**Rationale**:
+- Simpler data structure
+- Most use cases only need nearest expiring batch
+- Easier to display in UI
+- Reduces complexity in components
+
+**Format**:
+```typescript
+expiring: {
+  amount: number;
+  date: string;
+} | null
+```
+
+### Decision: Transaction Type 'deduction' not 'usage'
+
+**Context**:
+Different transaction type naming between implementations.
+
+**Decision**:
+Standardize on 'deduction' instead of 'usage' for credit consumption.
+
+**Rationale**:
+- More precise terminology
+- Consistent with financial systems
+- Already used in shared implementation
+- Clearer in transaction history
+
+**Transaction Types**:
+- purchase
+- deduction (not usage)
+- refund
+- bonus
+
 ## 2025-01-26: Credit System Consolidation Strategy
 
 ### Decision: Adapter Pattern for Backwards Compatibility

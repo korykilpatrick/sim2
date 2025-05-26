@@ -345,4 +345,6 @@ export class WebSocketService {
   }
 }
 
-export const websocketService = WebSocketService.getInstance()
+// Export the enhanced service as the default
+import { enhancedWebSocketService } from './websocket-enhanced'
+export const websocketService = enhancedWebSocketService as unknown as WebSocketService

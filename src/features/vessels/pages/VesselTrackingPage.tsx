@@ -27,10 +27,13 @@ export default function VesselTrackingPage() {
       creditCost: number
     }) => {
       // First deduct credits
-      await deductCredits(
+      const deductionResult = await deductCredits(
         data.creditCost,
         `Vessel tracking for ${data.criteria.length} criteria`,
       )
+      if (!deductionResult.success) {
+        throw new Error('Failed to deduct credits')
+      }
 
       // Then create the tracking
       return vesselsApi.createTracking({
@@ -71,7 +74,8 @@ export default function VesselTrackingPage() {
 
     // Calculate credit cost
     const days = differenceInDays(new Date(data.endDate), new Date()) + 1
-    const creditCost = creditService.calculateServiceCost('vessel_tracking', {
+    const creditCost = creditService.calculateServiceCost({
+      service: 'vessel_tracking',
       criteria: data.criteria,
       days,
     })

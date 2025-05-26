@@ -1,4 +1,4 @@
-import { useCredits } from '@/features/credits/hooks/useCredits'
+import { useCredits } from '@/features/credits'
 
 interface CostCalculation {
   cost: number

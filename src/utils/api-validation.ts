@@ -152,14 +152,12 @@ export const AreaSchema = z.object({
 
 // Credit schemas
 export const CreditBalanceSchema = z.object({
-  current: z.number().min(0),
+  available: z.number().min(0),
   lifetime: z.number().min(0),
-  expiringCredits: z.array(
-    z.object({
-      amount: z.number(),
-      expiresAt: z.string().datetime(),
-    }),
-  ),
+  expiring: z.object({
+    amount: z.number(),
+    date: z.string().datetime(),
+  }).nullable(),
 })
 
 export const CreditTransactionSchema = z.object({

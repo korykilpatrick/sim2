@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { productApi } from '@/features/products/services'
 import { productKeys } from '@/features/products/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
-import { LowBalanceWarning } from '@/features/credits'
+import { LowBalanceWarning } from '@/features/credits/components'
 
 export default function DashboardPage() {
   const { user } = useAuth()

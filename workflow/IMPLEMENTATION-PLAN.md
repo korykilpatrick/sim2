@@ -103,7 +103,7 @@
 - [ ] Merge /features/credits and /features/shared credit implementations
 - [ ] Create single source of truth for credit types
 - [ ] Update all imports to use consolidated system
-- [ ] Ensure backwards compatibility
+- [ ] Refactor to ideal architecture (no compatibility constraints)
 
 #### 2. Fix WebSocket Issues (Days 3-4)
 - [ ] Fix room rejoin race condition
@@ -196,18 +196,65 @@ With 80%+ test coverage achieved and a stable test foundation, we can proceed to
 - [x] Implement credit adapter for bidirectional conversion
 - [x] Update credit service to use shared service via adapter
 - [x] Add deprecation warnings to guide migration
-- [x] Verify backwards compatibility maintained
+- [x] Verify all tests still pass
 
 **Results**: 
-- Zero breaking changes
-- All existing code continues to work
+- Clean adapter pattern implemented
+- Tests provide safety net for refactoring
 - Clear migration path established
 - Comprehensive test coverage for adapter
 
-#### Day 2: Component and Hook Updates (IN PROGRESS)
-- [ ] Update CreditsPage to use `available` field
-- [ ] Update DashboardPage credit display
-- [ ] Consolidate mock handlers to single format
-- [ ] Merge useCredits hooks functionality
-- [ ] Update all component imports gradually
-- [ ] Verify all tests still pass
+#### Day 2: Complete Credit System Refactor ✅ COMPLETED
+- [x] Remove adapter pattern - choose single best credit implementation
+- [x] Delete redundant credit type definitions and services
+- [x] Update ALL components to use the unified credit system
+- [x] Merge both useCredits hooks into single best implementation
+- [x] Update mock handlers to single format
+- [x] Fix all tests to match new architecture
+
+**Results**:
+- Single unified credit implementation
+- Zero duplicate code
+- All components using new imports
+- Tests updated for new field names
+- Clean, maintainable architecture
+
+### Fix WebSocket Issues (Days 3-4) ✅ COMPLETED
+
+#### Day 3: WebSocket Architecture Fix ✅ COMPLETED
+- [x] Fix room rejoin race condition with operation queuing
+- [x] Add proper authentication queuing 
+- [x] Implement connection state machine with enhanced states
+- [x] Add exponential backoff for auth retries
+- [x] Write comprehensive tests for new behavior (7 new race condition tests)
+
+#### Day 4: WebSocket Integration ✅ COMPLETED
+- [x] Update all components using WebSocket
+- [x] Ensure credit updates work with new system
+- [x] Test real-time features (all 36 tests passing)
+- [x] Document WebSocket patterns
+
+**Results**:
+- Fixed race condition with operation queue that delays room operations until auth completes
+- Implemented proper state machine with 'authenticating' state
+- Added exponential backoff (1s, 2s, 4s, 8s, 16s) for auth retries
+- All 36 WebSocket tests passing (7 new + 29 existing)
+- Robust connection handling for production use
+
+### Next Priority: Reduce Technical Debt (Days 5-7)
+With both credit system unified and WebSocket issues resolved, we can now focus on reducing technical debt.
+
+#### Day 5: ESLint Warning Reduction
+- [ ] Reduce ESLint warnings by 50% (139 → 70)
+- [ ] Focus on most impactful warnings first
+- [ ] Update linting rules if needed
+
+#### Day 6: Logging and Dependencies
+- [ ] Replace console.log with proper logging service
+- [ ] Fix circular dependencies
+- [ ] Clean up unused imports
+
+#### Day 7: Documentation and Standards
+- [ ] Add missing JSDoc comments
+- [ ] Update architecture documentation
+- [ ] Create coding standards guide

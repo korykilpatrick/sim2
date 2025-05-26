@@ -5,7 +5,7 @@ import { server, resetMockData } from '../../utils/api-mocks'
 import { http, HttpResponse } from 'msw'
 import { VesselTrackingPage } from '@/features/vessels/pages/VesselTrackingPage'
 import { AreaMonitoringPage } from '@/features/areas/pages/AreaMonitoringPage'
-import { useCredits } from '@/features/credits/hooks/useCredits'
+import { useCredits } from '@/features/credits'
 import { useCreditDeduction } from '@/features/shared/hooks/useCreditDeduction'
 
 beforeEach(() => {

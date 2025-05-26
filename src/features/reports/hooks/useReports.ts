@@ -42,12 +42,11 @@ export function useCreateReport() {
   return useMutation({
     mutationFn: async (request: ReportRequest) => {
       // Calculate credit cost based on report type
-      const creditCost = creditService.calculateServiceCost(
-        request.reportType === 'compliance'
+      const creditCost = creditService.calculateServiceCost({
+        service: request.reportType === 'compliance'
           ? 'compliance_report'
           : 'chronology_report',
-        {},
-      )
+      })
 
       // Check if user has sufficient credits
       const hasSufficientCredits =
@@ -59,10 +58,13 @@ export function useCreateReport() {
       }
 
       // First deduct credits
-      await deductCredits(
+      const deductionResult = await deductCredits(
         creditCost,
         `${request.reportType === 'compliance' ? 'Compliance' : 'Chronology'} report`,
       )
+      if (!deductionResult.success) {
+        throw new Error('Failed to deduct credits')
+      }
 
       // Then create the report
       return reportApi.createReport(request)

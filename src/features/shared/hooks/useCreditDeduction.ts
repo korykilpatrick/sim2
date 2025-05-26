@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAuthStore } from '@/features/auth/services/authStore'
-import { creditService } from '@/features/shared/services/creditService'
+import { creditService } from '@/features/credits'
 import type { ServiceType } from '@/features/shared/types'
 
 interface CreditReservation {
