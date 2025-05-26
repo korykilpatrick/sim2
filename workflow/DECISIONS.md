@@ -1,5 +1,88 @@
 # Architectural Decisions Log
 
+## 2025-05-26: JSDoc Documentation Standards
+
+### Decision: Comprehensive JSDoc for All Public APIs
+
+**Context**:
+The implementation plan called for increasing JSDoc coverage from ~60% to 100% for all exported functions and types. Initial analysis revealed that actual coverage was lower than estimated, with many critical services and hooks lacking documentation.
+
+**Decision**:
+Implement comprehensive JSDoc documentation following these standards:
+1. All exported functions must have JSDoc
+2. All exported types/interfaces must have JSDoc
+3. Include parameter descriptions with types
+4. Include return value descriptions
+5. Add @throws for error cases
+6. Provide practical code examples
+7. Use @template for generic types
+
+**Rationale**:
+- Better IDE support with IntelliSense tooltips
+- Self-documenting code reduces onboarding time
+- Examples serve as inline documentation
+- Type information helps catch errors early
+- Consistent format improves maintainability
+
+**Implementation Standards**:
+```typescript
+/**
+ * Brief description of what the function does
+ * @param {Type} paramName - Description of parameter
+ * @returns {ReturnType} Description of return value
+ * @throws {ErrorType} When this error occurs
+ * @example
+ * ```typescript
+ * const result = functionName(param)
+ * console.log(result)
+ * ```
+ */
+```
+
+### Decision: Prioritize Service Layer Documentation
+
+**Context**:
+With limited time and 80+ files needing documentation, we needed to prioritize which files to document first.
+
+**Decision**:
+Document in this priority order:
+1. Service layer (API calls)
+2. Custom hooks
+3. Utility functions
+4. Type definitions
+5. Component props
+
+**Rationale**:
+- Services are the most reused code
+- Hooks are complex and benefit from examples
+- Utils are used across features
+- Types already have TypeScript info
+- Components have PropTypes/TypeScript
+
+**Impact**:
+- 12 major service/hook files fully documented
+- ~30% total coverage achieved
+- Most critical APIs now documented
+
+### Decision: Include Practical Examples
+
+**Context**:
+JSDoc can include example code, but it's optional. We needed to decide whether to invest time in examples.
+
+**Decision**:
+Include practical, runnable examples for all hooks and complex functions.
+
+**Rationale**:
+- Examples are worth 1000 words of description
+- Developers copy-paste examples to get started
+- Examples serve as inline tests
+- Reduces support questions
+
+**Trade-offs**:
+- Takes more time to write
+- Examples can become outdated
+- Increases file size slightly
+
 ## 2025-05-26: Zero ESLint Warnings Achievement
 
 ### Decision: Eliminate ALL ESLint Warnings

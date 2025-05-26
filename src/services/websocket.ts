@@ -10,6 +10,27 @@ import type {
 
 const logger = createLogger('WebSocket')
 
+/**
+ * Singleton service for managing WebSocket connections
+ * Handles authentication, room subscriptions, and real-time event handling
+ * 
+ * @class WebSocketService
+ * @example
+ * ```typescript
+ * const ws = WebSocketService.getInstance()
+ * 
+ * // Connect with authentication
+ * ws.connect(authToken)
+ * 
+ * // Subscribe to events
+ * ws.on('credit_balance_updated', (data) => {
+ *   console.log('New balance:', data.balance)
+ * })
+ * 
+ * // Join a room for real-time updates
+ * ws.joinRoom('vessel_123_tracking')
+ * ```
+ */
 export class WebSocketService {
   private socket: Socket<WebSocketEvents, WebSocketEmitEvents> | null = null
   private status: WebSocketStatus = 'disconnected'
@@ -26,6 +47,10 @@ export class WebSocketService {
 
   private constructor() {}
 
+  /**
+   * Gets the singleton instance of WebSocketService
+   * @returns {WebSocketService} The WebSocket service instance
+   */
   static getInstance(): WebSocketService {
     if (!WebSocketService.instance) {
       WebSocketService.instance = new WebSocketService()
@@ -33,6 +58,19 @@ export class WebSocketService {
     return WebSocketService.instance
   }
 
+  /**
+   * Establishes a WebSocket connection
+   * @param {string} [token] - Optional authentication token
+   * @returns {void}
+   * @example
+   * ```typescript
+   * // Connect without authentication
+   * ws.connect()
+   * 
+   * // Connect with authentication
+   * ws.connect(userAuthToken)
+   * ```
+   */
   connect(token?: string): void {
     if (this.socket?.connected) {
       logger.debug('Already connected')
@@ -61,6 +99,16 @@ export class WebSocketService {
     this.setupEventHandlers()
   }
 
+  /**
+   * Disconnects from the WebSocket server
+   * Clears all room subscriptions and event listeners
+   * @returns {void}
+   * @example
+   * ```typescript
+   * // Disconnect when user logs out
+   * ws.disconnect()
+   * ```
+   */
   disconnect(): void {
     if (!this.socket) return
 
@@ -177,6 +225,18 @@ export class WebSocketService {
     })
   }
 
+  /**
+   * Authenticates the WebSocket connection with a token
+   * @param {string} token - Authentication token
+   * @returns {void}
+   * @example
+   * ```typescript
+   * // Authenticate after connection
+   * ws.on('connect', () => {
+   *   ws.authenticate(authToken)
+   * })
+   * ```
+   */
   authenticate(token: string): void {
     if (!this.socket?.connected) {
       logger.error('Cannot authenticate: not connected')
@@ -187,6 +247,21 @@ export class WebSocketService {
     this.socket.emit('authenticate', token)
   }
 
+  /**
+   * Joins a vessel-specific room for real-time updates
+   * @param {string} vesselId - The vessel ID to track
+   * @returns {void}
+   * @example
+   * ```typescript
+   * // Track a specific vessel
+   * ws.joinVesselRoom('vessel-123')
+   * 
+   * // Listen for position updates
+   * ws.on('vessel_position_update', (data) => {
+   *   console.log('New position:', data.position)
+   * })
+   * ```
+   */
   joinVesselRoom(vesselId: string): void {
     if (!this.socket?.connected || !this.isAuthenticated) {
       logger.error('Cannot join room: not connected or not authenticated')
@@ -208,6 +283,16 @@ export class WebSocketService {
     logger.debug('Joined vessel room:', vesselId)
   }
 
+  /**
+   * Leaves a vessel-specific room
+   * @param {string} vesselId - The vessel ID to stop tracking
+   * @returns {void}
+   * @example
+   * ```typescript
+   * // Stop tracking a vessel
+   * ws.leaveVesselRoom('vessel-123')
+   * ```
+   */
   leaveVesselRoom(vesselId: string): void {
     if (!this.socket?.connected) return
 
@@ -267,6 +352,23 @@ export class WebSocketService {
     this.socket.emit('dismiss_alert', alertId)
   }
 
+  /**
+   * Subscribes to a WebSocket event
+   * @template K - The event type
+   * @param {K} event - Event name to subscribe to
+   * @param {WebSocketEvents[K]} handler - Event handler function
+   * @returns {Function} Unsubscribe function
+   * @example
+   * ```typescript
+   * // Subscribe to credit balance updates
+   * const unsubscribe = ws.on('credit_balance_updated', (data) => {
+   *   console.log('New balance:', data.balance.available)
+   * })
+   * 
+   * // Later, unsubscribe
+   * unsubscribe()
+   * ```
+   */
   on<K extends keyof WebSocketEvents>(
     event: K,
     handler: WebSocketEvents[K],
@@ -286,6 +388,21 @@ export class WebSocketService {
     }
   }
 
+  /**
+   * Unsubscribes from a WebSocket event
+   * @template K - The event type
+   * @param {K} event - Event name to unsubscribe from
+   * @param {WebSocketEvents[K]} [handler] - Specific handler to remove (removes all if not provided)
+   * @returns {void}
+   * @example
+   * ```typescript
+   * // Remove specific handler
+   * ws.off('vessel_position_update', myHandler)
+   * 
+   * // Remove all handlers for an event
+   * ws.off('vessel_position_update')
+   * ```
+   */
   off<K extends keyof WebSocketEvents>(
     event: K,
     handler?: WebSocketEvents[K],
@@ -318,22 +435,42 @@ export class WebSocketService {
     }
   }
 
+  /**
+   * Gets the current connection status
+   * @returns {WebSocketStatus} Connection status ('disconnected' | 'connecting' | 'connected')
+   */
   getStatus(): WebSocketStatus {
     return this.status
   }
 
+  /**
+   * Checks if the WebSocket is connected
+   * @returns {boolean} True if connected
+   */
   isConnected(): boolean {
     return this.socket?.connected || false
   }
 
+  /**
+   * Checks if the connection is authenticated
+   * @returns {boolean} True if authenticated
+   */
   getIsAuthenticated(): boolean {
     return this.isAuthenticated
   }
 
+  /**
+   * Gets all active room subscriptions
+   * @returns {RoomSubscription[]} Array of room subscriptions
+   */
   getRooms(): RoomSubscription[] {
     return Array.from(this.rooms.values())
   }
 
+  /**
+   * Gets the complete WebSocket state
+   * @returns {Object} Current state including status, authentication, and rooms
+   */
   getState() {
     return {
       status: this.status,
