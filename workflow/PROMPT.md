@@ -166,5 +166,7 @@ Your response should follow this structure:
 - **ALWAYS update CHANGES.md and DECISIONS.md**
 - **ALWAYS run full test suite before marking complete**
 - **ALWAYS complete the full Post-Implementation Process**
+- **REMEMBER that we do not need to be backwards compatible**
+- **ALWAYS make the choice that leads to the highest quality codebase from first-principles**
 
 Please begin by checking the current status and identifying the next priority task.
