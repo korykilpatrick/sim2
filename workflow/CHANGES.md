@@ -1,5 +1,67 @@
 # Changes Log
 
+## 2025-05-26: API Endpoints JSDoc Documentation - Week 3, Day 1 (Continued)
+
+### Task Completed
+Document all API endpoints with comprehensive JSDoc and examples
+
+### Key Changes
+
+#### Files with JSDoc Added (9 API endpoint files)
+- `/src/api/endpoints/auth.ts` - Complete JSDoc for all 9 authentication endpoints
+- `/src/api/endpoints/vessels.ts` - Complete JSDoc for all 8 vessel management endpoints
+- `/src/api/endpoints/areas.ts` - Complete JSDoc for all 8 area monitoring endpoints
+- `/src/api/endpoints/fleet.ts` - Complete JSDoc for all 11 fleet management endpoints
+- `/src/api/endpoints/investigations.ts` - Complete JSDoc for all 12 investigation endpoints
+- `/src/api/endpoints/reports.ts` - Complete JSDoc for all 9 report generation endpoints
+- `/src/api/endpoints/tracking.ts` - Complete JSDoc for all 9 tracking management endpoints
+- `/src/api/endpoints/products.ts` - Complete JSDoc for all 6 product/credit endpoints
+- `/src/api/endpoints/analytics.ts` - Complete JSDoc for all 4 analytics endpoints
+
+### Implementation Details
+
+1. **API Endpoint Documentation**:
+   - Added module-level documentation describing endpoint purpose
+   - Documented all parameters with types and constraints
+   - Added @returns with Promise types and response structures
+   - Added @throws for all possible error scenarios with HTTP codes
+   - Provided practical code examples for each endpoint
+
+2. **Example Quality**:
+   - Real-world usage examples for each endpoint
+   - Error handling examples where appropriate
+   - Response data processing examples
+   - File download examples for blob responses
+
+3. **Consistency Standards**:
+   - Consistent format across all API endpoints
+   - Clear parameter descriptions with validation rules
+   - HTTP status codes documented for errors
+   - Response data structures clearly defined
+
+### Technical Achievements
+- Zero ESLint errors/warnings maintained
+- All examples are syntactically correct and practical
+- Rich IntelliSense support for API calls
+- Clear API documentation for developers
+
+### Coverage Progress
+- **Before**: ~30% JSDoc coverage (26 files documented)
+- **After**: ~40% JSDoc coverage (35 files documented)
+- **Completed**: All API endpoint files now have comprehensive JSDoc
+- **Remaining**: ~45 files (services, hooks, utils, components)
+
+### Next Steps
+1. Continue with remaining service files (~10-15 files)
+2. Document remaining hooks (~15-20 files)
+3. Add JSDoc to utility functions (~10-15 files)
+4. Document component props for key components
+
+### Rollback Command
+```bash
+git checkout main -- src/api/endpoints/auth.ts src/api/endpoints/vessels.ts src/api/endpoints/areas.ts src/api/endpoints/fleet.ts src/api/endpoints/investigations.ts src/api/endpoints/reports.ts src/api/endpoints/tracking.ts src/api/endpoints/products.ts src/api/endpoints/analytics.ts
+```
+
 ## 2025-05-26: JSDoc Documentation Enhancement - Week 3, Day 1
 
 ### Task Completed
