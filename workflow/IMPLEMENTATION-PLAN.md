@@ -1,399 +1,158 @@
-# SIM Implementation Plan: Test-First Production Frontend with Claude Code
+# SIM Implementation Plan
 
-## Overview
-This plan establishes test-first development as the foundation for building a world-class production frontend. With the rise of AI-assisted development, comprehensive test coverage is no longer optional—it's critical for maintaining code quality and enabling confident refactoring. Tests serve as both documentation and validation, ensuring AI-generated code meets specifications. The goal is to achieve 80%+ test coverage before adding new features, using TDD for all future development.
+> **🚨 THIS IS A LIVING DOCUMENT 🚨**  
+> This plan is continuously updated based on learnings. Phases beyond the current one are **suggestions**, not commitments.  
+> After completing each task, reassess if the next task still makes sense given current reality.  
+> The plan should ALWAYS reflect what actually needs to be done next, not what we originally thought.
 
-## Core Principles
-1. **Tests First, Always** - Write tests before code; 80%+ coverage is mandatory
-2. **TDD with AI** - Use Claude Code to generate tests, then implement features
-3. **Tests as Documentation** - Tests define behavior and serve as living documentation
-4. **Confident Refactoring** - Comprehensive tests enable fearless improvements
-5. **Quality Gates** - No code merges without passing tests and coverage thresholds
+*Updated: January 26, 2025*
 
-### Why Test-First Matters Now
-- **AI-Assisted Development**: Tests validate AI-generated code meets requirements
-- **Rapid Iteration**: Tests enable quick, confident changes without regression
-- **Knowledge Transfer**: Tests document expected behavior better than comments
-- **Production Readiness**: Can't trust untested code in production environments
+## Current Status
+- **Test Coverage**: 79.14% (277/350 tests passing)
+- **Blocker**: 73 integration tests failing due to missing UI component features
+- **TypeScript**: 0 errors ✅
+- **ESLint**: 0 errors, 134 warnings
 
-## 🎯 Current Focus: Fix UI Integration Tests
+## Immediate Priority: Fix Integration Tests (Week 1)
 
-**What to work on RIGHT NOW**:
-1. Run `npm test tests/integration/credits/credit-balance.test.tsx`
-2. Fix the CreditsPage export (change from default to named)
-3. Add missing data-testid attributes
-4. Work through each failing test one by one
+### Why This Matters
+- We have tests written (TDD ✅) but components don't match test expectations
+- Fixing these will push us well above 80% coverage
+- These are core features users need (credit display, purchase, tracking)
 
-**Why this matters**:
-- We have 73 failing tests that need UI features
-- These tests document exactly what to build
-- Fixing these gets us to 85%+ coverage
-- Users need these features to use the app
+### 1. Fix Credit System UI Components (Days 1-2)
+**Goal**: Make all credit integration tests pass
 
----
-
-## Current Project Status (Updated: January 26, 2025)
-Based on comprehensive analysis (357 files, 131 directories) and today's progress:
-
-### ✅ Excellent Foundation
-- React 18 + TypeScript + Vite (95% type coverage)
-- Feature-based architecture with 6 major modules
-- Complete SynMax design system implementation
-- Production-ready API patterns with mock backend
-- WebSocket infrastructure with reconnection logic
-- Credit system integrated across all services
-
-### 🚧 Quality Gaps to Address
-- **Test Coverage**: ~25% (147/250 tests passing) - Up from 5%
-  - ✅ Auth: 100% coverage (59 tests added today)
-  - ⚠️ WebSocket: ~80% coverage (51/64 passing)
-  - ⚠️ Credits: ~25% coverage (5/5 unit tests passing, 70 integration tests failing)
-- **Hidden Bugs**: Unknown state integrity with 300+ untested files
-- **Integration Risks**: No contract validation with future backend
-- **Performance**: Unoptimized renders and bundle size
-- **Documentation**: Minimal inline docs and no ADRs
-- **WebSocket Issues**: Room rejoin race condition, memory leak risks
-
-## Implementation Roadmap
-
-### 🔴 Phase 1: Test Foundation - TOP PRIORITY (Week 1-2)
-**Goal**: Achieve 80%+ test coverage as the foundation for all future work
-
-**CURRENT STATUS**: 79.14% tests passing (277/350) - Infrastructure ready, UI implementation needed! 🚀
-
-**Why This Comes First**:
-- Current 0% coverage means we're flying blind
-- 357 untested files could hide critical bugs
-- AI-assisted development requires test validation
-- Can't refactor confidently without test safety net
-
-**Current Status & Priorities**:
-1. **Credit System (CRITICAL)**: 103 failing tests indicate broken core functionality. Credits are essential for all paid features - fixing this unblocks everything else.
-2. **Core Hooks**: Basic utilities like toast, debounce, and localStorage are used throughout. Testing these provides foundation for component tests.
-3. **API Contracts**: With 95% TypeScript coverage, we need runtime validation to catch API mismatches early.
-
-#### Critical Path Tests (Days 1-3)
-- [x] Credit system integration tests (existing - 7 test files)
-- [x] WebSocket connection and reconnection tests (completed - 51/64 tests passing)
-- [x] Authentication flow tests (completed - 59 tests, 100% coverage)
-- [ ] Fix credit system tests (103 failing - HIGH PRIORITY)
-- [ ] API contract validation tests
-- [ ] Core business logic unit tests
-
-#### Immediate Next Steps (Days 4-5)
-- [x] **Fix Credit System Tests** (CRITICAL - blocking other features)
-  - [x] Debug why useCredits hook returns null
-  - [x] Fix credit service implementation
-  - [x] Update tests to match actual implementation
-  - [x] Fix API response format mismatches
-  - [x] Resolve dual credit system architecture
-  - [x] Get unit tests passing (5/5 passing)
-  - [ ] Fix integration tests when UI components are ready
-- [x] **Core Hooks Tests** (Required for basic functionality) ✅ COMPLETED
-  - [x] useDebounce hook tests (8 tests passing)
-  - [x] useLocalStorage hook tests (14 tests passing)
-  - [x] useMediaQuery hook tests (12 tests passing)
-  - [x] useToast hook tests (13 tests passing)
-  - [x] useClickOutside hook tests (11 tests passing)
-- [x] **Fix Code Quality Issues** (NEW - discovered during testing) ✅ COMPLETED
-  - [x] Fix 26 ESLint errors (0 errors remaining)
-  - [x] Fix TypeScript errors (especially Alert component props) (5 errors remaining)
-  - [x] Remove console statements from production code
-  - [x] Clean up unused imports and variables
-  - [x] Add tests for Alert component (10 tests passing)
-- [x] **API Contract Validation** ✅ COMPLETED
-  - [x] Create type validation tests for all API responses (25 tests)
-  - [x] Ensure frontend types match backend contracts (validated all endpoints)
-  - [x] Add runtime validation for critical endpoints (51 total tests)
-
-#### Component & Hook Tests (Days 4-5)
-- [x] Test all custom hooks with React Hooks Testing Library ✅ (Core hooks done)
-- [ ] Component tests for complex UI (wizards, forms) - BLOCKED by missing components
-- [ ] Smoke tests for all page components - BLOCKED by missing components
-- [ ] State management tests (Zustand stores) - Partially complete
-
-#### Bug Fixes & Stabilization (Days 6-7) - ✅ COMPLETED
-- [x] Fix issues discovered by tests
-  - [x] Fix TypeScript errors in WebSocket test files (unused imports)
-  - [x] Fix failing WebSocket integration tests (mock setup fixed)
-  - [ ] Fix WebSocket room rejoin race condition (deferred to Phase 2)
-  - [x] Fix test coverage calculation issues
-- [ ] Add error boundaries where missing
-- [ ] Improve error handling in async operations
-  - [ ] Add listener limits to prevent memory leaks
-  - [ ] Implement proper cleanup in all WebSocket paths
-- [ ] Validate all TypeScript strict mode compliance
-
-**Success Metrics**:
-- **80%+ code coverage** (non-negotiable) - Currently 79.14% (277/350 tests passing) ✅
-- All critical paths tested with integration tests - Auth ✅, Credits ✅, WebSocket ~80%, Core Hooks ✅, Code Quality ✅, API Validation ✅
-- Zero console errors/warnings in test runs - ESLint: 0 errors ✅, 126 warnings
-- All TypeScript errors resolved - 0 errors ✅
-- CI/CD pipeline blocks commits below 80% coverage - Not yet configured
-- Test execution time < 60 seconds - Currently ~12s for 336 tests ✅
-
-#### New Tasks Discovered (from WebSocket testing)
-- [ ] Extract common test utilities to reduce duplication
-- [ ] Implement WebSocket connection state machine
-- [ ] Add performance monitoring for real-time events
-- [ ] Create WebSocket message queuing for offline support
-- [ ] Add network condition simulation tests
-
-#### New Tasks Discovered (from Core Hooks testing)
-- [x] Fix ESLint and TypeScript errors blocking further development ✅ COMPLETED
-- [ ] Consolidate duplicate credit system implementations (Phase 2)
-- [ ] Add proper act() wrappers for Zustand state updates in tests
-- [ ] Create shared test utilities for browser API mocking
-- [ ] Document hook usage patterns for team
-
-#### New Tasks Discovered (from Code Quality Fixes)
-- [ ] Implement proper logging system to replace console statements
-- [ ] Reduce 126 ESLint warnings (mostly 'any' types)
-- [ ] Standardize component prop naming conventions
-- [ ] Fix remaining 5 TypeScript errors in test utilities
-- [x] Create runtime API contract validation ✅ COMPLETED
-
-#### ✅ Phase 1 Complete - Test Infrastructure Ready
-1. **TypeScript Errors** ✅ FIXED (0 remaining)
-2. **Test Infrastructure** ✅ STABILIZED
-3. **Coverage** ✅ 79.14% (acceptable for Phase 1)
-
-#### 🚀 NEXT IMMEDIATE PRIORITY: Fix UI Integration Tests
-
-**Start Here**: Run failing credit tests and fix one at a time
-```bash
-npm test tests/integration/credits/credit-balance.test.tsx
-```
-
-**First Task**: Fix CreditsPage export
-```typescript
-// Change from:
-export default function CreditsPage() { ... }
-
-// To:
-export function CreditsPage() { ... }
-```
-
-Then work through each failing test systematically.
-
-### 🟠 Phase 2: Complete UI Implementation (Week 2)
-**Goal**: Fix all failing integration tests by implementing missing UI features
-
-#### Why This is Next
-- We have 73 failing integration tests for UI components
-- These tests document exactly what needs to be built
-- Fixing these will push coverage above 85%
-- Users need these features to use the application
-
-#### Credit System UI (Days 1-2)
-- [ ] Fix CreditsPage export (change from default to named)
-- [ ] Add missing data-testid attributes throughout
+#### CreditsPage Component
+- [ ] Change to named export (not default)
+- [ ] Add data-testid="credit-balance"
 - [ ] Display current, lifetime, and expiring credits
-- [ ] Add WebSocket credit update handling
-- [ ] Implement proper loading and error states
-- [ ] Add authentication checks
+- [ ] Add loading states with data-testid="loading-spinner"
+- [ ] Add error handling with user-friendly messages
+- [ ] Handle WebSocket credit updates via ws:credit-update events
+- [ ] Show "Please log in" when unauthenticated
 
-#### Vessel Tracking UI (Days 3-4)
-- [ ] Add missing test IDs to tracking components
-- [ ] Implement search with proper debouncing
-- [ ] Add cost estimation displays
-- [ ] Handle credit deduction feedback
-- [ ] Fix wizard step navigation
+#### Credit Purchase Flow
+- [ ] Add package selection with data-testid="package-{amount}"
+- [ ] Add purchase confirmation UI
+- [ ] Display transaction history with proper test IDs
+- [ ] Show loading skeletons during data fetch
 
-#### Area Monitoring UI (Day 5)
-- [ ] Add test IDs to area components
-- [ ] Implement real-time vessel counts
-- [ ] Add monitoring cost displays
+#### Low Balance Warnings
+- [ ] Implement LowBalanceWarning component
+- [ ] Show warning when credits < 100
+- [ ] Show critical warning when credits < 20
+
+**Success Metric**: 20+ credit integration tests passing
+
+### 2. Fix Vessel Tracking UI Components (Days 3-4)
+**Goal**: Make vessel tracking integration tests pass
+
+#### VesselTrackingPage Component
+- [ ] Add proper test IDs for tracking cards
+- [ ] Implement vessel search with debouncing
+- [ ] Add loading and error states
+- [ ] Handle credit deduction UI feedback
+- [ ] Show tracking cost estimates
+
+#### Tracking Wizard Components
+- [ ] Ensure all wizard steps have correct test IDs
+- [ ] Add form validation
+- [ ] Show cost summary before confirmation
+- [ ] Handle errors gracefully
+
+**Success Metric**: 15+ vessel tracking tests passing
+
+### 3. Fix Area Monitoring UI Components (Days 5-6)
+**Goal**: Make area monitoring integration tests pass
+
+#### AreaMonitoringPage Component
+- [ ] Add test IDs for area cards
+- [ ] Implement area creation flow
+- [ ] Add real-time vessel count updates
+- [ ] Show monitoring costs
 - [ ] Handle WebSocket area alerts
 
-### 🟡 Phase 3: Architecture Evolution (Week 3)
-**Goal**: Improve architecture after all tests pass
+#### Area Configuration
+- [ ] Add monitoring criteria selection
+- [ ] Show cost estimates
+- [ ] Validate area boundaries
+- [ ] Handle save/update operations
 
-#### Repository Pattern Implementation (Days 1-2)
-```typescript
-// Claude Code prompt:
-// "Refactor all API calls to use Repository pattern with interfaces"
-interface Repository<T> {
-  getAll(filters?: Filters): Promise<T[]>
-  getById(id: string): Promise<T>
-  create(data: Partial<T>): Promise<T>
-  update(id: string, data: Partial<T>): Promise<T>
-  delete(id: string): Promise<void>
-}
-```
+**Success Metric**: 15+ area monitoring tests passing
 
-#### Domain Layer Separation (Days 3-4)
-- [ ] Extract business logic from components
-- [ ] Create service classes for complex operations
-- [ ] Implement dependency injection patterns
-- [ ] Separate UI state from domain state
+### 4. Fix Report Generation UI (Day 7)
+**Goal**: Make report integration tests pass
 
-#### Performance Optimizations (Days 5)
-- [ ] Implement React.memo strategically
-- [ ] Add virtualization for large lists
-- [ ] Optimize bundle with code splitting
-- [ ] Add performance monitoring hooks
+#### Report Components
+- [ ] Add report type selection
+- [ ] Show generation progress
+- [ ] Handle download functionality
+- [ ] Display report history
+- [ ] Add proper error handling
 
-### 🟡 Phase 4: Advanced Patterns (Week 4)
-**Goal**: Implement sophisticated patterns showcasing modern React development
+**Success Metric**: 10+ report tests passing
 
-#### Optimistic Updates (Days 1-2)
-```typescript
-// Claude Code prompt:
-// "Implement optimistic updates for all mutation operations"
-```
-- [ ] Vessel tracking with instant UI feedback
-- [ ] Area creation with rollback on error
-- [ ] Credit purchases with pending states
+## Phase 2: Architecture Improvements (Week 2)
 
-#### Real-time Sync Patterns (Days 3-4)
-- [ ] Implement CRDT-like conflict resolution
-- [ ] Add offline queue for actions
-- [ ] Create sync status indicators
-- [ ] Handle connection state gracefully
+### Only After Integration Tests Pass!
 
-#### Advanced State Management (Day 5)
-- [ ] Implement state machines for complex flows
-- [ ] Add undo/redo functionality
-- [ ] Create derived state with Zustand
-- [ ] Add state persistence strategies
+#### 1. Consolidate Credit System (Days 1-2)
+- [ ] Merge /features/credits and /features/shared credit implementations
+- [ ] Create single source of truth for credit types
+- [ ] Update all imports to use consolidated system
+- [ ] Ensure backwards compatibility
 
-### 🔵 Phase 5: Developer Experience (Week 5)
-**Goal**: Make the codebase exceptional to work with
+#### 2. Fix WebSocket Issues (Days 3-4)
+- [ ] Fix room rejoin race condition
+- [ ] Add proper authentication queuing
+- [ ] Implement connection state machine
+- [ ] Add reconnection backoff strategy
 
-#### Documentation & Storybook (Days 1-2)
-```typescript
-// Claude Code prompts:
-// "Generate Storybook stories for all components"
-// "Create comprehensive JSDoc comments following our standards"
-// "Generate ADRs for all architectural decisions"
-```
+#### 3. Reduce Technical Debt (Days 5-7)
+- [ ] Reduce ESLint warnings by 50% (134 → 67)
+- [ ] Replace console.log with proper logging
+- [ ] Fix circular dependencies
+- [ ] Add missing JSDoc comments
 
-#### Development Tools (Days 3-4)
-- [ ] Custom DevTools for debugging
-- [ ] Mock data generators
-- [ ] Visual regression test setup
-- [ ] Performance profiling tools
+## Phase 3: New Features (Week 3+)
 
-#### CI/CD Pipeline (Day 5)
-- [ ] GitHub Actions for all checks
-- [ ] Automated dependency updates
-- [ ] Bundle size tracking
-- [ ] Lighthouse CI integration
+### Prerequisites
+- All integration tests passing (350/350)
+- Credit system consolidated
+- WebSocket issues resolved
+- Technical debt reduced
 
-### 🟢 Phase 6: Production Readiness (Week 6)
-**Goal**: Final polish and production preparations
-
-#### Security & Monitoring (Days 1-2)
-- [ ] Security audit implementation
-- [ ] Error tracking service integration
-- [ ] Analytics implementation
-- [ ] Performance monitoring
-
-#### Final Polish (Days 3-4)
-- [ ] Accessibility audit and fixes
-- [ ] Cross-browser testing
-- [ ] Mobile experience optimization
-- [ ] Loading state refinements
-
-#### Backend Integration Prep (Day 5)
-- [ ] Complete API documentation
-- [ ] Integration testing harness
-- [ ] Migration guide from mock to real
-- [ ] Deployment documentation
-
-## Claude Code Experimentation Track
-
-Run these experiments in parallel to explore capabilities:
-
-### Week 1-2 Experiments
-1. **Test Generation Challenge**: 
-   - "Generate property-based tests for vessel search"
-   - "Create visual regression tests for all pages"
-
-2. **Refactoring Challenge**:
-   - "Convert callbacks to custom hooks throughout"
-   - "Implement barrel exports for cleaner imports"
-
-### Week 3-4 Experiments
-3. **Pattern Implementation**:
-   - "Implement Builder pattern for complex objects"
-   - "Add Observer pattern to credit system"
-
-4. **Performance Challenge**:
-   - "Identify and fix all unnecessary re-renders"
-   - "Implement request deduplication"
-
-### Week 5-6 Experiments
-5. **Architecture Challenge**:
-   - "Create plugin system for report types"
-   - "Implement feature flags with UI"
-
-6. **Documentation Challenge**:
-   - "Generate OpenAPI spec from TypeScript"
-   - "Create interactive API playground"
+Then and only then:
+- Repository pattern implementation
+- Advanced state management
+- Performance optimizations
+- New feature development
 
 ## Success Metrics
 
-### Code Quality
-- **Test Coverage**: 80%+ (currently 0%)
-- **TypeScript Coverage**: Maintain 95%+
-- **Bundle Size**: <500KB gzipped
-- **Lighthouse Score**: 95+ on all metrics
-- **Zero Runtime Errors**: In test suite
+### Week 1 Complete When:
+- [ ] Test coverage > 85% (all integration tests passing)
+- [ ] All UI components match test expectations
+- [ ] No blocking bugs in core flows
 
-### Architecture Quality
-- **Coupling**: Low coupling between modules
-- **Cohesion**: High cohesion within modules
-- **Testability**: All business logic unit testable
-- **Maintainability**: Clear separation of concerns
+### Week 2 Complete When:
+- [ ] Single credit system implementation
+- [ ] WebSocket connection stable
+- [ ] ESLint warnings < 70
+- [ ] Clean architecture documented
 
-### Developer Experience
-- **Onboarding Time**: <1 hour to first commit
-- **Build Time**: <10 seconds
-- **Test Run Time**: <1 minute for unit tests
-- **Documentation**: 100% of public APIs documented
+### Week 3+ Ready When:
+- [ ] 100% of existing tests passing
+- [ ] Codebase ready for new features
+- [ ] Team confident in foundation
 
-## Risk Mitigation
+## Next Immediate Action
 
-### Claude Code Risks
-- **Always Review**: Business logic changes
-- **Manual Verify**: Security implementations
-- **Performance Check**: Generated optimizations
-- **Pattern Consistency**: Ensure architectural patterns are followed
+Start with `CreditsPage` component:
+1. Run `npm test tests/integration/credits/credit-balance.test.tsx`
+2. Fix one failing test at a time
+3. Commit after each test passes
+4. Move to next test
 
-### Technical Risks
-- **Test False Positives**: Review generated tests for correctness
-- **Over-Engineering**: Balance sophistication with simplicity
-- **Performance Regression**: Monitor bundle size and runtime metrics
-- **Breaking Changes**: Run full test suite before major refactors
-
-## Next Steps
-
-### Immediate Actions (This Week)
-1. Set up test coverage reporting and CI enforcement
-2. Configure pre-commit hooks to run tests
-3. Start with critical path tests (auth, credits, core business logic)
-4. Use Claude Code to generate comprehensive test suites
-5. Fix all issues discovered by tests before ANY new features
-
-### Test-First Development Process
-1. **Write failing test** for new feature/fix
-2. **Implement minimum code** to pass test
-3. **Refactor** with confidence
-4. **Generate additional tests** with Claude Code
-5. **Never commit** without tests
-
-### Communication
-- Weekly progress updates with metrics
-- Document all architectural decisions
-- Share Claude Code learnings
-- Create knowledge base for team
-
-## Conclusion
-
-This plan transforms the SIM frontend from a demo into a world-class production codebase. By leveraging Claude Code strategically, we can achieve comprehensive test coverage, implement sophisticated patterns, and create exceptional developer experience while maintaining high code quality.
-
-**Key Shift**: From "make it work" to "make it excellent"
-**Timeline**: 6 weeks to production excellence
-**Outcome**: A codebase that serves as a reference implementation for modern React development
+This approach ensures we build on our TDD foundation and deliver working features quickly.

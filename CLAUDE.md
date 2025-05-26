@@ -1,8 +1,16 @@
 # Claude Code Instructions for SIM Project
 
+## 📖 START HERE: Read the Development Workflow
+**CRITICAL**: Before making ANY changes, read:
+1. `/workflow/PROMPT.md` - The complete development workflow
+2. `/workflow/PROCESS-PHILOSOPHY.md` - WHY we follow this process  
+3. `/workflow/IMPLEMENTATION-PLAN.md` - Current priorities
+
+The workflow ensures we maintain world-class code quality. Follow it EXACTLY.
+
 ## CRITICAL: Test-First Development
 This project follows test-first development practices. **No code should be committed without tests.**
-- Current coverage: 0% (CRITICAL - must reach 80%+)
+- Current coverage: 79.14% (next goal: 85%+ by fixing UI tests)
 - All new features must be developed using TDD
 - Tests serve as documentation and validation for AI-generated code
 
@@ -48,12 +56,14 @@ The project follows the architecture defined in `docs/architecture/FRONTEND-ARCH
 - Strict TypeScript mode is enabled
 - See `/docs/standards/TESTING-STANDARDS.md` for comprehensive testing guide
 
-## Development Workflow
-1. **Write Test First**: Create failing test for new functionality
-2. **Implement Code**: Write minimal code to pass the test
-3. **Refactor**: Improve code while keeping tests green
-4. **Run Full Suite**: `npm test` before committing
-5. **Check Coverage**: Ensure 80%+ coverage maintained
+## Development Workflow Summary
+1. **Check Current State**: Read implementation plan, ensure next task makes sense
+2. **Write Test First**: Create failing test for new functionality
+3. **Implement Code**: Write minimal code to pass the test
+4. **Exhaustive Analysis**: Use "infinite compute" to verify quality
+5. **Update Documentation**: Keep plan and docs in sync with reality
+
+**👉 Full workflow with ALL steps in `/workflow/PROMPT.md`**
 
 ## Data Architecture Guidelines
 - **NEVER duplicate data definitions** - Always use a single source of truth
