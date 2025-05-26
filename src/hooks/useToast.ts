@@ -15,7 +15,7 @@ interface ToastStore {
   removeToast: (id: string) => void
 }
 
-const useToastStore = create<ToastStore>((set) => ({
+export const useToastStore = create<ToastStore>((set) => ({
   toasts: [],
   addToast: (toast) => {
     const id = `toast-${Date.now()}`

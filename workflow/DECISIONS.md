@@ -1,5 +1,85 @@
 # Architectural Decisions Log
 
+## 2025-01-25: Core Hooks Testing Strategy
+
+### Decision: Comprehensive Hook Testing with TDD
+
+**Context**:
+Core hooks (useDebounce, useLocalStorage, useMediaQuery, useToast, useClickOutside) are fundamental utilities used throughout the application. They need thorough testing to ensure reliability.
+
+**Decision**:
+- Write comprehensive test suites for each hook following TDD principles
+- Test all edge cases, error conditions, and browser APIs
+- Mock browser APIs appropriately for consistent test behavior
+- Handle SSR scenarios without requiring DOM environment
+
+**Rationale**:
+- Hooks are reused extensively - bugs would have wide impact
+- Browser API mocking ensures tests run consistently
+- TDD ensures we understand expected behavior before implementation
+- Comprehensive tests enable confident refactoring
+
+**Trade-offs**:
+- More test code to maintain (58 new tests)
+- Some complexity in mocking browser APIs
+- SSR tests can't use renderHook directly
+
+### Decision: Export Zustand Stores for Testability
+
+**Context**:
+The useToast hook uses a Zustand store internally, but tests need to reset state between runs to ensure isolation.
+
+**Decision**:
+Export the useToastStore from the module to allow tests to directly reset state.
+
+**Rationale**:
+- Enables proper test isolation
+- Avoids state leakage between tests
+- Simpler than mocking Zustand entirely
+- Follows Zustand's recommended testing patterns
+
+**Alternative Considered**:
+Using vi.resetModules() between tests. Rejected because it's slower and can cause issues with other imports.
+
+### Decision: Mock-First Approach for Browser APIs
+
+**Context**:
+Hooks use various browser APIs (localStorage, matchMedia, window events) that need consistent behavior in tests.
+
+**Decision**:
+Create comprehensive mocks for all browser APIs rather than using real implementations.
+
+**Rationale**:
+- Consistent test behavior across environments
+- Can simulate edge cases (quota errors, missing APIs)
+- Faster test execution
+- No side effects between tests
+
+**Implementation Details**:
+- localStorage: Mock with in-memory implementation
+- matchMedia: Return configurable mock objects
+- Date.now: Mock for consistent timestamps in tests
+- window.addEventListener: Track all listeners for cleanup verification
+
+### Decision: Separate Test Files by Hook
+
+**Context**:
+Could have created a single test file for all hooks or separate files for each.
+
+**Decision**:
+Create separate test files for each hook (5 test files total).
+
+**Rationale**:
+- Better organization and discoverability
+- Can run individual hook tests during development
+- Clearer test boundaries
+- Easier to maintain as hooks evolve
+
+**Impact**:
+- 5 test files with focused test suites
+- Some duplication of test setup code
+- Clear mapping between implementation and tests
+
 ## 2025-01-25: Credit System Architecture Resolution
 
 ### Decision: Maintain Dual Credit System Implementation
