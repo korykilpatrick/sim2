@@ -52,7 +52,10 @@ class CreditService {
    * Get user's current credit balance
    */
   async getBalance(): Promise<CreditBalance> {
-    const response = await apiClient.get<{ success: boolean; data: CreditBalance }>('/credits/balance')
+    const response = await apiClient.get<{
+      success: boolean
+      data: CreditBalance
+    }>('/credits/balance')
     return response.data.data
   }
 
@@ -64,10 +67,10 @@ class CreditService {
     offset?: number
     type?: 'purchase' | 'usage' | 'refund'
   }): Promise<CreditTransaction[]> {
-    const response = await apiClient.get<{ success: boolean; data: CreditTransaction[] }>(
-      '/credits/transactions',
-      { params },
-    )
+    const response = await apiClient.get<{
+      success: boolean
+      data: CreditTransaction[]
+    }>('/credits/transactions', { params })
     return response.data.data
   }
 
@@ -77,10 +80,10 @@ class CreditService {
   async purchaseCredits(
     request: PurchaseCreditRequest,
   ): Promise<PurchaseCreditResponse> {
-    const response = await apiClient.post<{ success: boolean; data: PurchaseCreditResponse }>(
-      '/credits/purchase',
-      request,
-    )
+    const response = await apiClient.post<{
+      success: boolean
+      data: PurchaseCreditResponse
+    }>('/credits/purchase', request)
     return response.data.data
   }
 
@@ -90,10 +93,10 @@ class CreditService {
   async deductCredits(
     request: DeductCreditsRequest,
   ): Promise<DeductCreditsResponse> {
-    const response = await apiClient.post<{ success: boolean; data: DeductCreditsResponse }>(
-      '/credits/deduct',
-      request,
-    )
+    const response = await apiClient.post<{
+      success: boolean
+      data: DeductCreditsResponse
+    }>('/credits/deduct', request)
     return response.data.data
   }
 

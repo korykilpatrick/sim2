@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, renderHook } from '@testing-library/react'
 import { renderWithProviders, setupAuthenticatedUser, clearAuth, userEvent } from '../../utils/test-utils'
 import { server, resetMockData } from '../../utils/api-mocks'
 import { http, HttpResponse } from 'msw'

@@ -8,7 +8,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { z } from 'zod'
-import type { ApiResponse, PaginatedResponse } from '@/api/types'
+// API types are validated through Zod schemas below
 
 // Define Zod schemas for runtime validation of API contracts
 const ApiResponseSchema = <T extends z.ZodType>(dataSchema: T) => z.object({

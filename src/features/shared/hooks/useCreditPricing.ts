@@ -39,21 +39,30 @@ export function useCreditPricing() {
     return Math.ceil(credits * bestPackage.pricePerCredit)
   }
 
-  const calculateVesselTrackingCost = (criteriaCount: number, durationDays: number) => {
+  const calculateVesselTrackingCost = (
+    criteriaCount: number,
+    durationDays: number,
+  ) => {
     // 5 credits per criteria per day
     return criteriaCount * 5 * durationDays
   }
 
-  const calculateAreaMonitoringCost = (areaSizeKm2: number, durationDays: number) => {
+  const calculateAreaMonitoringCost = (
+    areaSizeKm2: number,
+    durationDays: number,
+  ) => {
     // Base cost: 10 credits + 0.1 credits per km²
     const dailyCost = 10 + areaSizeKm2 * 0.1
     return Math.round(dailyCost * durationDays)
   }
 
-  const calculateFleetTrackingCost = (vesselCount: number, durationDays: number) => {
+  const calculateFleetTrackingCost = (
+    vesselCount: number,
+    durationDays: number,
+  ) => {
     // 100 credits per vessel per day
     const baseCost = vesselCount * 100 * durationDays
-    
+
     // Apply discounts based on fleet size
     let discount = 0
     if (vesselCount >= 50) {
@@ -61,7 +70,7 @@ export function useCreditPricing() {
     } else if (vesselCount >= 20) {
       discount = 0.1 // 10% discount
     }
-    
+
     return Math.round(baseCost * (1 - discount))
   }
 

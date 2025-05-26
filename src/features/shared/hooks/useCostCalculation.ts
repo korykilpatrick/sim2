@@ -17,7 +17,10 @@ interface CostBreakdown {
 export function useCostCalculation() {
   const { balance } = useCredits()
 
-  const calculateCost = (service: string, params: Record<string, any>): CostCalculation => {
+  const calculateCost = (
+    service: string,
+    params: Record<string, any>,
+  ): CostCalculation => {
     let cost = 0
 
     switch (service) {
@@ -66,7 +69,10 @@ export function useCostCalculation() {
     return balance >= amount
   }
 
-  const getCostBreakdown = (service: string, params: Record<string, any>): CostBreakdown | null => {
+  const getCostBreakdown = (
+    service: string,
+    params: Record<string, any>,
+  ): CostBreakdown | null => {
     switch (service) {
       case 'vessel-tracking': {
         const { criteriaCount = 1, durationDays = 1 } = params

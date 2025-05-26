@@ -28,10 +28,16 @@ export async function generatePDF({
 
   switch (reportType) {
     case 'compliance':
-      documentElement = ComplianceReportTemplate({ data, watermark }) as React.ReactElement
+      documentElement = ComplianceReportTemplate({
+        data,
+        watermark,
+      }) as React.ReactElement
       break
     case 'chronology':
-      documentElement = ChronologyReportTemplate({ data, watermark }) as React.ReactElement
+      documentElement = ChronologyReportTemplate({
+        data,
+        watermark,
+      }) as React.ReactElement
       break
     default:
       throw new Error(`Unsupported report type: ${reportType}`)

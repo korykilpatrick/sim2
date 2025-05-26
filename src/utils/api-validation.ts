@@ -1,41 +1,46 @@
 /**
  * Runtime API validation utilities
- * 
+ *
  * These utilities provide runtime validation for API responses to catch
  * contract mismatches and provide better error messages.
  */
 
 import { z } from 'zod'
-import type { ApiResponse, PaginatedResponse } from '@/api/types'
 
 // Base response schemas
-export const ApiResponseSchema = <T extends z.ZodType>(dataSchema: T) => z.object({
-  success: z.boolean(),
-  data: dataSchema,
-  timestamp: z.string().datetime(),
-  error: z.optional(z.object({
-    message: z.string(),
-    code: z.string(),
-    details: z.unknown().optional()
-  }))
-})
+export const ApiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
+  z.object({
+    success: z.boolean(),
+    data: dataSchema,
+    timestamp: z.string().datetime(),
+    error: z.optional(
+      z.object({
+        message: z.string(),
+        code: z.string(),
+        details: z.unknown().optional(),
+      }),
+    ),
+  })
 
-export const PaginatedResponseSchema = <T extends z.ZodType>(itemSchema: T) => z.object({
-  success: z.boolean(),
-  data: z.array(itemSchema),
-  timestamp: z.string().datetime(),
-  meta: z.object({
-    page: z.number().min(1),
-    limit: z.number().min(1),
-    total: z.number().min(0),
-    totalPages: z.number().min(0)
-  }),
-  error: z.optional(z.object({
-    message: z.string(),
-    code: z.string(),
-    details: z.unknown().optional()
-  }))
-})
+export const PaginatedResponseSchema = <T extends z.ZodType>(itemSchema: T) =>
+  z.object({
+    success: z.boolean(),
+    data: z.array(itemSchema),
+    timestamp: z.string().datetime(),
+    meta: z.object({
+      page: z.number().min(1),
+      limit: z.number().min(1),
+      total: z.number().min(0),
+      totalPages: z.number().min(0),
+    }),
+    error: z.optional(
+      z.object({
+        message: z.string(),
+        code: z.string(),
+        details: z.unknown().optional(),
+      }),
+    ),
+  })
 
 // Auth schemas
 export const UserSchema = z.object({
@@ -53,26 +58,33 @@ export const UserSchema = z.object({
     notifications: z.object({
       email: z.boolean(),
       sms: z.boolean(),
-      push: z.boolean()
+      push: z.boolean(),
     }),
-    defaultView: z.enum(['dashboard', 'vessels', 'areas', 'reports', 'fleet', 'investigations'])
+    defaultView: z.enum([
+      'dashboard',
+      'vessels',
+      'areas',
+      'reports',
+      'fleet',
+      'investigations',
+    ]),
   }),
   subscription: z.object({
     plan: z.enum(['basic', 'professional', 'enterprise']),
     credits: z.number(),
     creditsUsed: z.number(),
-    renewalDate: z.string().datetime()
+    renewalDate: z.string().datetime(),
   }),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   lastLogin: z.string().datetime().nullable(),
-  isActive: z.boolean()
+  isActive: z.boolean(),
 })
 
 export const AuthResponseSchema = z.object({
   user: UserSchema,
   accessToken: z.string(),
-  refreshToken: z.string()
+  refreshToken: z.string(),
 })
 
 // Vessel schemas
@@ -81,7 +93,7 @@ export const PositionSchema = z.object({
   lng: z.number().min(-180).max(180),
   timestamp: z.string().datetime(),
   speed: z.number().min(0).nullable(),
-  course: z.number().min(0).max(360).nullable()
+  course: z.number().min(0).max(360).nullable(),
 })
 
 export const VesselSchema = z.object({
@@ -93,17 +105,19 @@ export const VesselSchema = z.object({
   type: z.string(),
   status: z.enum(['active', 'inactive', 'unknown']),
   lastPosition: PositionSchema.nullable(),
-  dimensions: z.object({
-    length: z.number().optional(),
-    width: z.number().optional(),
-    draft: z.number().optional()
-  }).optional()
+  dimensions: z
+    .object({
+      length: z.number().optional(),
+      width: z.number().optional(),
+      draft: z.number().optional(),
+    })
+    .optional(),
 })
 
 // Area schemas
 export const CoordinateSchema = z.object({
   lat: z.number(),
-  lng: z.number()
+  lng: z.number(),
 })
 
 export const AreaSchema = z.object({
@@ -112,34 +126,40 @@ export const AreaSchema = z.object({
   type: z.enum(['custom', 'port', 'anchorage', 'terminal']),
   coordinates: z.array(CoordinateSchema),
   monitoringConfig: z.object({
-    vesselCriteria: z.array(z.object({
-      type: z.string(),
-      value: z.union([z.string(), z.array(z.string())])
-    })),
+    vesselCriteria: z.array(
+      z.object({
+        type: z.string(),
+        value: z.union([z.string(), z.array(z.string())]),
+      }),
+    ),
     alertTypes: z.array(z.string()),
-    schedule: z.object({
-      enabled: z.boolean(),
-      startTime: z.string().optional(),
-      endTime: z.string().optional(),
-      timezone: z.string().optional()
-    }).optional()
+    schedule: z
+      .object({
+        enabled: z.boolean(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+        timezone: z.string().optional(),
+      })
+      .optional(),
   }),
   status: z.enum(['active', 'inactive']),
   creditsPerDay: z.number(),
   vesselsInArea: z.number(),
   alerts: z.number(),
   createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime()
+  updatedAt: z.string().datetime(),
 })
 
 // Credit schemas
 export const CreditBalanceSchema = z.object({
   current: z.number().min(0),
   lifetime: z.number().min(0),
-  expiringCredits: z.array(z.object({
-    amount: z.number(),
-    expiresAt: z.string().datetime()
-  }))
+  expiringCredits: z.array(
+    z.object({
+      amount: z.number(),
+      expiresAt: z.string().datetime(),
+    }),
+  ),
 })
 
 export const CreditTransactionSchema = z.object({
@@ -149,7 +169,7 @@ export const CreditTransactionSchema = z.object({
   balance: z.number(),
   description: z.string(),
   service: z.string().optional(),
-  timestamp: z.string().datetime()
+  timestamp: z.string().datetime(),
 })
 
 // Report schemas
@@ -162,13 +182,13 @@ export const ReportSchema = z.object({
   vesselName: z.string(),
   dateRange: z.object({
     start: z.string().datetime(),
-    end: z.string().datetime()
+    end: z.string().datetime(),
   }),
   creditsCost: z.number(),
   downloadUrl: z.string().nullable(),
   error: z.string().nullable(),
   createdAt: z.string().datetime(),
-  completedAt: z.string().datetime().nullable()
+  completedAt: z.string().datetime().nullable(),
 })
 
 // Fleet schemas
@@ -180,7 +200,7 @@ export const FleetSchema = z.object({
   vessels: z.array(z.string()),
   tags: z.array(z.string()).optional(),
   createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime()
+  updatedAt: z.string().datetime(),
 })
 
 // Investigation schemas
@@ -195,21 +215,25 @@ export const InvestigationSchema = z.object({
   areaIds: z.array(z.string()).optional(),
   dateRange: z.object({
     start: z.string().datetime(),
-    end: z.string().datetime()
+    end: z.string().datetime(),
   }),
   creditsCost: z.number(),
   findings: z.string().nullable(),
   recommendations: z.string().nullable(),
-  attachments: z.array(z.object({
-    id: z.string(),
-    name: z.string(),
-    url: z.string(),
-    type: z.string(),
-    size: z.number()
-  })).optional(),
+  attachments: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        url: z.string(),
+        type: z.string(),
+        size: z.number(),
+      }),
+    )
+    .optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
-  completedAt: z.string().datetime().nullable()
+  completedAt: z.string().datetime().nullable(),
 })
 
 // Validation error class
@@ -217,7 +241,7 @@ export class ApiValidationError extends Error {
   constructor(
     message: string,
     public endpoint: string,
-    public validationErrors: z.ZodIssue[]
+    public validationErrors: z.ZodIssue[],
   ) {
     super(message)
     this.name = 'ApiValidationError'
@@ -235,26 +259,26 @@ export class ApiValidationError extends Error {
 export function validateApiResponse<T>(
   response: unknown,
   schema: z.ZodType<T>,
-  endpoint: string
+  endpoint: string,
 ): T {
   const result = schema.safeParse(response)
-  
+
   if (!result.success) {
     // Log validation errors in development
     if (import.meta.env.DEV) {
       console.error(`API validation failed for ${endpoint}:`, {
         response,
-        errors: result.error.issues
+        errors: result.error.issues,
       })
     }
-    
+
     throw new ApiValidationError(
       `Invalid API response from ${endpoint}`,
       endpoint,
-      result.error.issues
+      result.error.issues,
     )
   }
-  
+
   return result.data
 }
 
@@ -266,7 +290,7 @@ export function validateApiResponse<T>(
  */
 export function createValidatedHandler<T>(
   schema: z.ZodType<T>,
-  endpoint: string
+  endpoint: string,
 ) {
   return (response: unknown): T => {
     return validateApiResponse(response, schema, endpoint)
@@ -278,91 +302,91 @@ export const validators = {
   auth: {
     login: createValidatedHandler(
       ApiResponseSchema(AuthResponseSchema),
-      'auth/login'
+      'auth/login',
     ),
     register: createValidatedHandler(
       ApiResponseSchema(AuthResponseSchema),
-      'auth/register'
+      'auth/register',
     ),
     profile: createValidatedHandler(
       ApiResponseSchema(UserSchema),
-      'auth/profile'
+      'auth/profile',
     ),
   },
   vessels: {
     search: createValidatedHandler(
       PaginatedResponseSchema(VesselSchema),
-      'vessels/search'
+      'vessels/search',
     ),
     getById: createValidatedHandler(
       ApiResponseSchema(VesselSchema),
-      'vessels/getById'
+      'vessels/getById',
     ),
   },
   areas: {
     list: createValidatedHandler(
       PaginatedResponseSchema(AreaSchema),
-      'areas/list'
+      'areas/list',
     ),
     create: createValidatedHandler(
       ApiResponseSchema(AreaSchema),
-      'areas/create'
+      'areas/create',
     ),
     getById: createValidatedHandler(
       ApiResponseSchema(AreaSchema),
-      'areas/getById'
+      'areas/getById',
     ),
   },
   credits: {
     balance: createValidatedHandler(
       ApiResponseSchema(CreditBalanceSchema),
-      'credits/balance'
+      'credits/balance',
     ),
     transactions: createValidatedHandler(
       PaginatedResponseSchema(CreditTransactionSchema),
-      'credits/transactions'
+      'credits/transactions',
     ),
   },
   reports: {
     create: createValidatedHandler(
       ApiResponseSchema(ReportSchema),
-      'reports/create'
+      'reports/create',
     ),
     list: createValidatedHandler(
       PaginatedResponseSchema(ReportSchema),
-      'reports/list'
+      'reports/list',
     ),
     getById: createValidatedHandler(
       ApiResponseSchema(ReportSchema),
-      'reports/getById'
+      'reports/getById',
     ),
   },
   fleet: {
     list: createValidatedHandler(
       PaginatedResponseSchema(FleetSchema),
-      'fleet/list'
+      'fleet/list',
     ),
     create: createValidatedHandler(
       ApiResponseSchema(FleetSchema),
-      'fleet/create'
+      'fleet/create',
     ),
     getById: createValidatedHandler(
       ApiResponseSchema(FleetSchema),
-      'fleet/getById'
+      'fleet/getById',
     ),
   },
   investigations: {
     create: createValidatedHandler(
       ApiResponseSchema(InvestigationSchema),
-      'investigations/create'
+      'investigations/create',
     ),
     list: createValidatedHandler(
       PaginatedResponseSchema(InvestigationSchema),
-      'investigations/list'
+      'investigations/list',
     ),
     getById: createValidatedHandler(
       ApiResponseSchema(InvestigationSchema),
-      'investigations/getById'
+      'investigations/getById',
     ),
   },
 }

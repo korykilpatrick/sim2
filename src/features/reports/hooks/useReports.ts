@@ -61,7 +61,7 @@ export function useCreateReport() {
       // First deduct credits
       await deductCredits(
         creditCost,
-        `${request.reportType === 'compliance' ? 'Compliance' : 'Chronology'} report`
+        `${request.reportType === 'compliance' ? 'Compliance' : 'Chronology'} report`,
       )
 
       // Then create the report

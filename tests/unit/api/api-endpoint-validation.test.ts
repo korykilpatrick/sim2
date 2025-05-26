@@ -5,7 +5,7 @@
  * into actual API endpoints to catch contract mismatches.
  */
 
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { validators, ApiValidationError } from '@/utils/api-validation'
 import type { ApiResponse } from '@/api/types'
 

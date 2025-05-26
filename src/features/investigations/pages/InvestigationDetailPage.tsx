@@ -38,7 +38,10 @@ export default function InvestigationDetailPage() {
   if (error || !investigation) {
     return (
       <PageLayout title="Investigation Not Found">
-        <Alert variant="error" message="Unable to load investigation details." />
+        <Alert
+          variant="error"
+          message="Unable to load investigation details."
+        />
         <Button
           variant="outline"
           size="sm"

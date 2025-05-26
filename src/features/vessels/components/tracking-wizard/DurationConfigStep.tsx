@@ -23,17 +23,17 @@ export function DurationConfigStep({
   onEndDateChange,
 }: DurationConfigStepProps) {
   const { calculateCost, getCostBreakdown } = useCostCalculation()
-  
+
   const costResult = calculateCost('vessel-tracking', {
     criteriaCount: selectedCriteria.length,
     durationDays: trackingDays,
   })
-  
+
   const breakdown = getCostBreakdown('vessel-tracking', {
     criteriaCount: selectedCriteria.length,
     durationDays: trackingDays,
   })
-  
+
   const totalCost = costResult.cost
   const creditsPerDay = breakdown?.dailyCost || 0
 

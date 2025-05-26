@@ -34,11 +34,10 @@ export const TestProviders: React.FC<TestProviderProps> = ({
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <WebSocketProvider>
-            {children}
-          </WebSocketProvider>
-        </ToastProvider>
+        <WebSocketProvider>
+          {children}
+        </WebSocketProvider>
+        <ToastProvider />
       </QueryClientProvider>
     </BrowserRouter>
   )
@@ -69,7 +68,9 @@ export const mockUser: User = {
   company: 'Test Company',
   credits: 1000,
   role: 'user',
-  createdAt: new Date().toISOString()
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  isActive: true
 }
 
 // Helper to set up authenticated state

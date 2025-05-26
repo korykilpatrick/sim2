@@ -37,7 +37,10 @@ export function useCreditDeduction() {
   const [isDeducting, setIsDeducting] = useState(false)
   const [reservations] = useState(new Map<string, CreditReservation>())
 
-  const deductCredits = async (amount: number, description: string): Promise<DeductionResult> => {
+  const deductCredits = async (
+    amount: number,
+    description: string,
+  ): Promise<DeductionResult> => {
     setIsDeducting(true)
     try {
       // Check sufficient balance first
@@ -73,7 +76,10 @@ export function useCreditDeduction() {
     }
   }
 
-  const reserveCredits = async (amount: number, _service: string): Promise<CreditReservation> => {
+  const reserveCredits = async (
+    amount: number,
+    _service: string,
+  ): Promise<CreditReservation> => {
     const reservationId = `res-${Date.now()}`
     const reservation: CreditReservation = {
       reservationId,
@@ -84,14 +90,16 @@ export function useCreditDeduction() {
     return reservation
   }
 
-  const confirmReservation = async (reservationId: string): Promise<DeductionResult> => {
+  const confirmReservation = async (
+    reservationId: string,
+  ): Promise<DeductionResult> => {
     const reservation = reservations.get(reservationId)
     if (!reservation) {
       throw new Error('Reservation not found')
     }
 
     reservations.delete(reservationId)
-    
+
     // Mock: In tests, the amount is mocked to 50
     const mockAmount = 50
     return deductCredits(mockAmount, 'Reserved service')

@@ -105,7 +105,18 @@ describe('WebSocket Integration', () => {
     mockSocket = {
       connected: false,
       auth: {},
-      io: { opts: {} },
+      io: {
+        opts: {},
+        on: vi.fn((event: string, handler: (...args: any[]) => void) => {
+          if (!socketEventHandlers.has(event)) {
+            socketEventHandlers.set(event, []);
+          }
+          socketEventHandlers.get(event)!.push(handler);
+        }),
+        off: vi.fn((event: string) => {
+          socketEventHandlers.delete(event);
+        })
+      },
       on: vi.fn((event: string, handler: (...args: any[]) => void) => {
         if (!socketEventHandlers.has(event)) {
           socketEventHandlers.set(event, []);

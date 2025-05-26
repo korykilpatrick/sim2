@@ -21,7 +21,7 @@ export function AreaCostSummary({
     areaSizeKm2: areaSize,
     durationDays: durationMonths * 30, // Convert months to days
   })
-  
+
   const costBreakdown = getCostBreakdown('area-monitoring', {
     areaSizeKm2: areaSize,
     durationDays: durationMonths * 30,
@@ -31,7 +31,10 @@ export function AreaCostSummary({
   const costDetails = costBreakdown
     ? {
         baseCredits: costBreakdown.baseRate * durationMonths * 30,
-        criteriaCredits: (costBreakdown.dailyCost - costBreakdown.baseRate) * durationMonths * 30,
+        criteriaCredits:
+          (costBreakdown.dailyCost - costBreakdown.baseRate) *
+          durationMonths *
+          30,
         creditsPerDay: costBreakdown.dailyCost,
         totalCredits: costResult.cost,
       }
