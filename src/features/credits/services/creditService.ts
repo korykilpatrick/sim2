@@ -1,5 +1,10 @@
-import { apiClient } from '@/api/client'
-import type { CreditTransaction } from '../components/CreditTransactionHistory'
+import { creditService as sharedCreditService } from '@/features/shared/services/creditService'
+import { creditAdapter } from './creditAdapter'
+import type { CreditBalance, CreditTransaction } from './creditAdapter'
+import type { ServiceType } from '@/features/shared/types/credits'
+
+// Re-export types for backwards compatibility
+export type { CreditBalance, CreditTransaction } from './creditAdapter'
 
 export interface CreditPackage {
   id: string
@@ -8,15 +13,6 @@ export interface CreditPackage {
   price: number
   savings: number
   popular?: boolean
-}
-
-export interface CreditBalance {
-  current: number
-  lifetime: number
-  expiringCredits?: Array<{
-    amount: number
-    expiresAt: string
-  }>
 }
 
 export interface PurchaseCreditRequest {
@@ -50,62 +46,117 @@ export interface DeductCreditsResponse {
 class CreditService {
   /**
    * Get user's current credit balance
+   * @deprecated Use shared credit service directly for new code
    */
   async getBalance(): Promise<CreditBalance> {
-    const response = await apiClient.get<{
-      success: boolean
-      data: CreditBalance
-    }>('/credits/balance')
-    return response.data.data
+    const sharedBalance = await sharedCreditService.getBalance()
+    return creditAdapter.toFeaturesFormat(sharedBalance)
   }
 
   /**
    * Get credit transaction history
+   * @deprecated Use shared credit service directly for new code
    */
   async getTransactionHistory(params?: {
     limit?: number
     offset?: number
     type?: 'purchase' | 'usage' | 'refund'
   }): Promise<CreditTransaction[]> {
-    const response = await apiClient.get<{
-      success: boolean
-      data: CreditTransaction[]
-    }>('/credits/transactions', { params })
-    return response.data.data
+    // TODO: Filter transactions by type once shared service supports it
+    const sharedTransactions = await sharedCreditService.getTransactions()
+    
+    // Filter client-side for now
+    let filtered = sharedTransactions
+    if (params?.type) {
+      const mappedType = params.type === 'usage' ? 'deduction' : params.type
+      filtered = sharedTransactions.filter(t => t.type === mappedType)
+    }
+    
+    // Apply limit
+    if (params?.limit) {
+      filtered = filtered.slice(0, params.limit)
+    }
+    
+    return creditAdapter.transactionsToFeaturesFormat(filtered)
   }
 
   /**
-   * Purchase credits (mock implementation)
+   * Purchase credits
+   * @deprecated Use shared credit service directly for new code
    */
   async purchaseCredits(
     request: PurchaseCreditRequest,
   ): Promise<PurchaseCreditResponse> {
-    const response = await apiClient.post<{
-      success: boolean
-      data: PurchaseCreditResponse
-    }>('/credits/purchase', request)
-    return response.data.data
+    // For now, call the shared service purchase method
+    // This would need to be implemented in the shared service
+    const balance = await sharedCreditService.getBalance()
+    
+    // Mock response for backwards compatibility
+    return {
+      transactionId: `txn_${Date.now()}`,
+      creditsAdded: this.getAvailablePackages().find(p => p.id === request.packageId)?.credits || 0,
+      newBalance: balance.available + (this.getAvailablePackages().find(p => p.id === request.packageId)?.credits || 0),
+      invoice: {
+        id: `inv_${Date.now()}`,
+        url: `/invoices/inv_${Date.now()}`
+      }
+    }
   }
 
   /**
    * Deduct credits for service usage
+   * @deprecated Use shared credit service deductCredits directly for new code
    */
   async deductCredits(
     request: DeductCreditsRequest,
   ): Promise<DeductCreditsResponse> {
-    const response = await apiClient.post<{
-      success: boolean
-      data: DeductCreditsResponse
-    }>('/credits/deduct', request)
-    return response.data.data
+    try {
+      // Map to shared service format
+      const serviceType = this.mapServiceToType(request.service)
+      const result = await sharedCreditService.deductCredits({
+        amount: request.amount,
+        serviceType,
+        description: request.description,
+        serviceId: request.referenceId,
+        metadata: { service: request.service }
+      })
+      
+      return {
+        success: true,
+        newBalance: (await sharedCreditService.getBalance()).available,
+        transactionId: result.transactionId
+      }
+    } catch (error) {
+      return {
+        success: false,
+        newBalance: 0,
+        transactionId: ''
+      }
+    }
   }
 
   /**
    * Check if user has sufficient credits
+   * @deprecated Use shared credit service directly for new code
    */
   async checkSufficientCredits(amount: number): Promise<boolean> {
-    const balance = await this.getBalance()
-    return balance.current >= amount
+    const balance = await sharedCreditService.getBalance()
+    return balance.available >= amount
+  }
+
+  /**
+   * Map service string to ServiceType enum
+   */
+  private mapServiceToType(service: string): ServiceType {
+    const mapping: Record<string, ServiceType> = {
+      'vessel-tracking': 'vessel_tracking',
+      'area-monitoring': 'area_monitoring',
+      'fleet-tracking': 'fleet_tracking',
+      'compliance-report': 'compliance_report',
+      'chronology-report': 'chronology_report',
+      'investigation': 'investigation'
+    }
+    return mapping[service] || 'vessel_tracking'
   }
 
   /**

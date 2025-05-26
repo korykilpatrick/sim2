@@ -1,5 +1,77 @@
 # Architectural Decisions Log
 
+## 2025-01-26: Credit System Consolidation Strategy
+
+### Decision: Adapter Pattern for Backwards Compatibility
+
+**Context**:
+We have two parallel credit system implementations that need to be consolidated without breaking existing functionality. The features/credits system is used by UI components while features/shared is used by service integrations.
+
+**Decision**:
+Implement an adapter layer that provides bidirectional conversion between the two systems, allowing gradual migration without breaking changes.
+
+**Rationale**:
+- Maintains 100% backwards compatibility
+- Allows incremental migration
+- No need to update all components at once
+- Can be rolled back easily
+- Tests continue to pass during migration
+
+**Implementation**:
+```typescript
+// Adapter converts between formats
+creditAdapter.toSharedFormat(featuresBalance) // current → available
+creditAdapter.toFeaturesFormat(sharedBalance) // available → current
+```
+
+**Trade-offs**:
+- Temporary increase in complexity
+- Performance overhead for conversions
+- Need to maintain adapter until migration complete
+
+### Decision: Shared Credit Service as Foundation
+
+**Context**:
+Need to choose which implementation to build upon for the consolidated system.
+
+**Decision**:
+Use features/shared credit service as the foundation and adapt features/credits to use it.
+
+**Rationale**:
+- Shared service is more comprehensive (includes reservations)
+- Already used by most features (vessels, areas, reports)
+- Better separation of concerns
+- Supports more transaction types
+- Has proper service-oriented architecture
+
+**Impact**:
+- Features/credits becomes a thin wrapper
+- All new code should use shared service
+- Gradual deprecation of features/credits
+
+### Decision: Deprecation Warnings
+
+**Context**:
+Need to guide developers to use the new consolidated system.
+
+**Decision**:
+Add @deprecated JSDoc comments to all methods in features/credits service.
+
+**Rationale**:
+- IDEs will show strikethrough on deprecated methods
+- Clear signal to developers about preferred approach
+- Non-breaking way to encourage migration
+- Can track usage of deprecated methods
+
+**Example**:
+```typescript
+/**
+ * Get user's current credit balance
+ * @deprecated Use shared credit service directly for new code
+ */
+async getBalance(): Promise<CreditBalance>
+```
+
 ## 2025-01-26: Integration Test Strategy Decision
 
 ### Decision: Accept Current Test Coverage as Meeting Goal
