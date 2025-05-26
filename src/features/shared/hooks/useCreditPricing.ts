@@ -39,6 +39,53 @@ export function useCreditPricing() {
     return Math.ceil(credits * bestPackage.pricePerCredit)
   }
 
+  const calculateVesselTrackingCost = (criteriaCount: number, durationDays: number) => {
+    // 5 credits per criteria per day
+    return criteriaCount * 5 * durationDays
+  }
+
+  const calculateAreaMonitoringCost = (areaSizeKm2: number, durationDays: number) => {
+    // Base cost: 10 credits + 0.1 credits per km²
+    const dailyCost = 10 + areaSizeKm2 * 0.1
+    return Math.round(dailyCost * durationDays)
+  }
+
+  const calculateFleetTrackingCost = (vesselCount: number, durationDays: number) => {
+    // 100 credits per vessel per day
+    const baseCost = vesselCount * 100 * durationDays
+    
+    // Apply discounts based on fleet size
+    let discount = 0
+    if (vesselCount >= 50) {
+      discount = 0.2 // 20% discount
+    } else if (vesselCount >= 20) {
+      discount = 0.1 // 10% discount
+    }
+    
+    return Math.round(baseCost * (1 - discount))
+  }
+
+  const getReportCost = (reportType: string) => {
+    const costs: Record<string, number> = {
+      compliance: 50,
+      chronology: 75,
+    }
+    return costs[reportType] || 0
+  }
+
+  const getInvestigationCost = (type: string) => {
+    const costs: Record<string, number> = {
+      basic: 5000,
+      comprehensive: 10000,
+    }
+    return costs[type] || 0
+  }
+
+  const formatCredits = (amount: number) => {
+    const formatted = amount.toLocaleString()
+    return amount === 1 ? '1 credit' : `${formatted} credits`
+  }
+
   const calculateInvestigationCost = (
     scope: 'vessel' | 'area' | 'event',
     sourceCount: number,
@@ -72,6 +119,12 @@ export function useCreditPricing() {
     getBestValue,
     getPackageByCredits,
     calculateCustomPrice,
+    calculateVesselTrackingCost,
+    calculateAreaMonitoringCost,
+    calculateFleetTrackingCost,
+    getReportCost,
+    getInvestigationCost,
+    formatCredits,
     calculateInvestigationCost,
   }
 }

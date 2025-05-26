@@ -1,5 +1,75 @@
 # Architectural Decisions Log
 
+## 2025-01-25: Credit System Architecture Resolution
+
+### Decision: Maintain Dual Credit System Implementation
+
+**Context**:
+During credit system testing, discovered two parallel implementations:
+1. `/features/credits` - Uses types: `{ current, lifetime, expiringCredits: Array }`
+2. `/features/shared` - Uses types: `{ available, lifetime, expiring: Object }`
+
+**Decision**:
+Keep both implementations for now but create separate test suites and mock handlers for each.
+
+**Rationale**:
+- Refactoring would require updating all dependent components
+- Both systems are used by different parts of the application
+- Separate test suites prevent type conflicts
+- Can be unified in a future refactoring phase
+
+**Trade-offs**:
+- Duplicate code and logic
+- Potential for divergence
+- More complex testing setup
+- Confusion for new developers
+
+**Future Action**:
+Create a unified credit system in Phase 2 that consolidates both implementations.
+
+### Decision: Fix Implementation Rather Than Rewrite Tests
+
+**Context**:
+Credit system tests were failing due to:
+- API response format mismatches
+- Mock handler URL issues
+- Type definition conflicts
+
+**Decision**:
+Fix the implementation issues rather than rewriting tests to work around them.
+
+**Rationale**:
+- Tests document expected behavior
+- Implementation should match test expectations
+- Fixing root causes prevents future issues
+
+**Changes Made**:
+1. Updated mock handlers to wrap responses in ApiResponse format
+2. Fixed API base URL from `/api` to `/api/v1`
+3. Created separate mock handlers for each credit system
+4. Updated services to properly extract data from wrapped responses
+
+### Decision: Defer Integration Test Fixes
+
+**Context**:
+70 credit-related integration tests are failing because they depend on UI components that don't exist yet.
+
+**Decision**:
+Focus on unit tests and defer integration test fixes until UI components are implemented.
+
+**Rationale**:
+- Integration tests require actual component implementations
+- Unit tests provide immediate value
+- UI components are scheduled for later phases
+- Current 147/217 passing tests is acceptable progress
+
+**Impact**:
+- Credit system has working unit tests
+- Integration tests remain as documentation of expected behavior
+- Clear path forward when UI components are ready
+
+# Architectural Decisions Log
+
 ## 2025-01-25: Authentication Testing Strategy
 
 ### Decision: Comprehensive Unit and Integration Testing for Auth

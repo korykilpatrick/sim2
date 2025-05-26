@@ -16,10 +16,17 @@ export function useCredits() {
   const updateUserCredits = useAuthStore((state) => state.updateCredits)
 
   // Get credit balance
-  const { data: balance, isLoading: isLoadingBalance } = useQuery({
+  const {
+    data: balance,
+    isLoading: isLoadingBalance,
+    isError,
+    error,
+    refetch: refetchBalance,
+  } = useQuery({
     queryKey: creditKeys.balance(),
     queryFn: () => creditService.getBalance(),
     staleTime: 30000, // 30 seconds
+    retry: 1,
   })
 
   // Get transaction history
@@ -76,18 +83,28 @@ export function useCredits() {
     }
   }
 
+  // Synchronous check based on current balance
+  const checkSufficientCredits = (amount: number): boolean => {
+    return (balance?.current || 0) >= amount
+  }
+
   return {
     balance: balance?.current || 0,
     lifetimeCredits: balance?.lifetime || 0,
-    expiringCredits: balance?.expiringCredits,
+    expiringCredits: balance?.expiringCredits || [],
     transactions: transactions || [],
+    isLoading: isLoadingBalance,
     isLoadingBalance,
     isLoadingTransactions,
+    isError,
+    error,
+    refetch: refetchBalance,
     purchaseCredits: purchaseMutation.mutate,
     isPurchasing: purchaseMutation.isPending,
     deductCredits: deductMutation.mutate,
     isDeducting: deductMutation.isPending,
     checkCredits,
+    checkSufficientCredits,
     availablePackages: creditService.getAvailablePackages(),
     calculateCost: creditService.calculateServiceCost,
   }

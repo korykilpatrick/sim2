@@ -4,20 +4,20 @@ import type {
   CreditBalance, 
   CreditTransaction, 
   CreditPackage,
-  DeductCreditsResponse,
-  PurchaseCreditsResponse 
+  CreditDeductionResponse,
+  CreditPurchaseResponse 
 } from '@/features/shared/types/credits'
 
-const API_BASE_URL = 'http://localhost:3001/api'
+const API_BASE_URL = 'http://localhost:3001/api/v1'
 
 // Default mock data
 export const mockCreditBalance: CreditBalance = {
-  current: 1000,
+  available: 1000,
   lifetime: 5000,
-  expiringCredits: [
-    { amount: 100, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() },
-    { amount: 50, expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString() }
-  ]
+  expiring: {
+    amount: 150,
+    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  }
 }
 
 export const mockTransactions: CreditTransaction[] = [
@@ -52,7 +52,11 @@ export const mockCreditPackages: CreditPackage[] = [
 export const creditHandlers = [
   // Get credit balance
   http.get(`${API_BASE_URL}/credits/balance`, () => {
-    return HttpResponse.json(mockCreditBalance)
+    return HttpResponse.json({
+      success: true,
+      data: mockCreditBalance,
+      timestamp: new Date().toISOString()
+    })
   }),
 
   // Get credit transactions
@@ -77,32 +81,43 @@ export const creditHandlers = [
   http.post(`${API_BASE_URL}/credits/deduct`, async ({ request }) => {
     const body = await request.json() as { amount: number; description: string }
     
-    if (body.amount > mockCreditBalance.current) {
+    if (body.amount > mockCreditBalance.available) {
       return HttpResponse.json(
         { error: 'Insufficient credits' },
         { status: 400 }
       )
     }
     
-    const newBalance = mockCreditBalance.current - body.amount
-    const response: DeductCreditsResponse = {
-      success: true,
-      newBalance,
-      transaction: {
-        id: `tx-${Date.now()}`,
-        userId: 'user-1',
-        type: 'deduction',
-        amount: -body.amount,
-        balance: newBalance,
-        description: body.description,
-        createdAt: new Date().toISOString()
-      }
-    }
+    const newBalance = mockCreditBalance.available - body.amount
+    const transactionId = `tx-${Date.now()}`
+    
+    // Add transaction to history
+    mockTransactions.unshift({
+      id: transactionId,
+      userId: 'user-1',
+      type: 'deduction',
+      amount: -body.amount,
+      balance: newBalance,
+      description: body.description,
+      createdAt: new Date().toISOString()
+    })
     
     // Update mock balance for subsequent requests
-    mockCreditBalance.current = newBalance
+    mockCreditBalance.available = newBalance
     
-    return HttpResponse.json(response)
+    const response: CreditDeductionResponse = {
+      transactionId,
+      previousBalance: mockCreditBalance.available,
+      newBalance,
+      deductedAmount: body.amount,
+      timestamp: new Date().toISOString()
+    }
+    
+    return HttpResponse.json({
+      success: true,
+      data: response,
+      timestamp: new Date().toISOString()
+    })
   }),
 
   // Purchase credits
@@ -117,32 +132,42 @@ export const creditHandlers = [
       )
     }
     
-    const newBalance = mockCreditBalance.current + body.credits
-    const response: PurchaseCreditsResponse = {
-      success: true,
-      newBalance,
-      transaction: {
-        id: `tx-${Date.now()}`,
-        userId: 'user-1',
-        type: 'purchase',
-        amount: body.credits,
-        balance: newBalance,
-        description: `Purchased ${body.credits} credits`,
-        createdAt: new Date().toISOString()
-      }
-    }
+    const newBalance = mockCreditBalance.available + body.credits
+    const transactionId = `tx-${Date.now()}`
+    
+    // Add transaction to history
+    mockTransactions.unshift({
+      id: transactionId,
+      userId: 'user-1',
+      type: 'purchase',
+      amount: body.credits,
+      balance: newBalance,
+      description: `Purchased ${body.credits} credits`,
+      createdAt: new Date().toISOString()
+    })
     
     // Update mock balance
-    mockCreditBalance.current = newBalance
+    mockCreditBalance.available = newBalance
     
-    return HttpResponse.json(response)
+    const response: CreditPurchaseResponse = {
+      transactionId,
+      creditsAdded: body.credits,
+      newBalance,
+      invoiceUrl: '/invoices/mock-invoice.pdf'
+    }
+    
+    return HttpResponse.json({
+      success: true,
+      data: response,
+      timestamp: new Date().toISOString()
+    })
   }),
 
   // Reserve credits
   http.post(`${API_BASE_URL}/credits/reserve`, async ({ request }) => {
     const body = await request.json() as { amount: number; serviceType: string }
     
-    if (body.amount > mockCreditBalance.current) {
+    if (body.amount > mockCreditBalance.available) {
       return HttpResponse.json(
         { error: 'Insufficient credits' },
         { status: 400 }
@@ -150,40 +175,44 @@ export const creditHandlers = [
     }
     
     return HttpResponse.json({
-      reservationId: `res-${Date.now()}`,
-      amount: body.amount,
-      expiresAt: new Date(Date.now() + 5 * 60 * 1000).toISOString() // 5 min expiry
+      success: true,
+      data: {
+        reservationId: `res-${Date.now()}`
+      },
+      timestamp: new Date().toISOString()
     })
   }),
 
   // Confirm reservation
-  http.post(`${API_BASE_URL}/credits/confirm-reservation`, async () => {
+  http.post(`${API_BASE_URL}/credits/confirm`, async () => {
     // Simulate reservation confirmation
     const amount = 50 // Would normally be stored with reservation
-    const newBalance = mockCreditBalance.current - amount
+    const previousBalance = mockCreditBalance.available
+    const newBalance = previousBalance - amount
     
-    mockCreditBalance.current = newBalance
+    mockCreditBalance.available = newBalance
+    
+    const response: CreditDeductionResponse = {
+      transactionId: `tx-${Date.now()}`,
+      previousBalance,
+      newBalance,
+      deductedAmount: amount,
+      timestamp: new Date().toISOString()
+    }
     
     return HttpResponse.json({
       success: true,
-      newBalance,
-      transaction: {
-        id: `tx-${Date.now()}`,
-        userId: 'user-1',
-        type: 'deduction',
-        amount: -amount,
-        balance: newBalance,
-        description: 'Reservation confirmed',
-        createdAt: new Date().toISOString()
-      }
+      data: response,
+      timestamp: new Date().toISOString()
     })
   }),
 
   // Cancel reservation
-  http.post(`${API_BASE_URL}/credits/cancel-reservation`, async () => {
+  http.post(`${API_BASE_URL}/credits/cancel`, async () => {
     return HttpResponse.json({
       success: true,
-      message: 'Reservation cancelled'
+      data: null,
+      timestamp: new Date().toISOString()
     })
   })
 ]
@@ -209,15 +238,43 @@ export const creditErrorHandlers = {
   })
 }
 
-// Setup MSW server
-export const server = setupServer(...creditHandlers)
+// Auth handlers
+export const authHandlers = [
+  // Get current user
+  http.get(`${API_BASE_URL}/auth/me`, () => {
+    return HttpResponse.json({
+      data: {
+        id: 'user-1',
+        email: 'test@example.com',
+        name: 'Test User',
+        company: 'Test Company',
+        credits: 1000,
+        role: 'user',
+        createdAt: new Date().toISOString()
+      }
+    })
+  }),
+
+  // Refresh token
+  http.post(`${API_BASE_URL}/auth/refresh`, () => {
+    return HttpResponse.json({
+      data: {
+        accessToken: 'new-access-token',
+        refreshToken: 'new-refresh-token'
+      }
+    })
+  })
+]
+
+// Setup MSW server with all handlers
+export const server = setupServer(...creditHandlers, ...authHandlers)
 
 // Helper to reset mock data between tests
 export const resetMockData = () => {
-  mockCreditBalance.current = 1000
+  mockCreditBalance.available = 1000
   mockCreditBalance.lifetime = 5000
-  mockCreditBalance.expiringCredits = [
-    { amount: 100, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() },
-    { amount: 50, expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString() }
-  ]
+  mockCreditBalance.expiring = {
+    amount: 150,
+    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+  }
 }

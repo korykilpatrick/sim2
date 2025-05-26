@@ -1,175 +1,111 @@
-import { useState, useEffect, useCallback } from 'react'
-import {
-  calculateVesselTrackingCost,
-  calculateAreaMonitoringCost,
-  calculateAreaMonitoringCostDetailed,
-  calculateFleetTrackingCost,
-  getReportCost,
-} from '../utils/creditPricing'
+import { useCredits } from '@/features/credits/hooks/useCredits'
 
-interface VesselTrackingCostParams {
-  criteriaCount: number
-  durationDays: number
+interface CostCalculation {
+  cost: number
+  hasSufficientCredits: boolean
+  shortfall: number
 }
 
-interface AreaMonitoringCostParams {
-  size: 'small' | 'medium' | 'large' | 'veryLarge'
-  durationDays: number
-  criteriaCount?: number
+interface CostBreakdown {
+  baseRate: number
+  multiplier: number
+  duration: number
+  total: number
+  dailyCost: number
 }
 
-interface FleetTrackingCostParams {
-  vesselCount: number
-  months: number
-}
-
-export function useVesselTrackingCost({
-  criteriaCount,
-  durationDays,
-}: VesselTrackingCostParams) {
-  const [cost, setCost] = useState(0)
-  const [creditsPerDay, setCreditsPerDay] = useState(0)
-
-  useEffect(() => {
-    const totalCost = calculateVesselTrackingCost(criteriaCount, durationDays)
-    const dailyCost = durationDays > 0 ? totalCost / durationDays : 0
-
-    setCost(totalCost)
-    setCreditsPerDay(dailyCost)
-  }, [criteriaCount, durationDays])
-
-  return {
-    totalCost: cost,
-    creditsPerDay,
-    isValid: criteriaCount > 0 && durationDays > 0,
-  }
-}
-
-export function useAreaMonitoringCost({
-  size,
-  durationDays,
-  criteriaCount = 1,
-}: AreaMonitoringCostParams) {
-  const [cost, setCost] = useState(0)
-  const [creditsPerDay, setCreditsPerDay] = useState(0)
-
-  useEffect(() => {
-    const totalCost = calculateAreaMonitoringCost(
-      size,
-      durationDays,
-      criteriaCount,
-    )
-    const dailyCost = durationDays > 0 ? totalCost / durationDays : 0
-
-    setCost(totalCost)
-    setCreditsPerDay(dailyCost)
-  }, [size, durationDays, criteriaCount])
-
-  return {
-    totalCost: cost,
-    creditsPerDay,
-    isValid: durationDays > 0,
-  }
-}
-
-export function useFleetTrackingCost({
-  vesselCount,
-  months,
-}: FleetTrackingCostParams) {
-  const [cost, setCost] = useState(0)
-  const [creditsPerMonth, setCreditsPerMonth] = useState(0)
-
-  useEffect(() => {
-    const totalCost = calculateFleetTrackingCost(vesselCount, months)
-    const monthlyCost = months > 0 ? totalCost / months : 0
-
-    setCost(totalCost)
-    setCreditsPerMonth(monthlyCost)
-  }, [vesselCount, months])
-
-  return {
-    totalCost: cost,
-    creditsPerMonth,
-    isValid: vesselCount > 0 && months > 0,
-  }
-}
-
-export function useReportCost(
-  reportType: 'compliance' | 'chronology' | 'custom',
-) {
-  const [cost, setCost] = useState(0)
-
-  useEffect(() => {
-    setCost(getReportCost(reportType))
-  }, [reportType])
-
-  return cost
-}
-
-// Generic cost calculation hook for custom scenarios
 export function useCostCalculation() {
-  const calculateVesselTracking = useCallback(
-    (params: VesselTrackingCostParams) => {
-      return calculateVesselTrackingCost(
-        params.criteriaCount,
-        params.durationDays,
-      )
-    },
-    [],
-  )
+  const { balance } = useCredits()
 
-  const calculateAreaMonitoring = useCallback(
-    (
-      params:
-        | AreaMonitoringCostParams
-        | {
-            areaSize: number
-            criteriaCount: number
-            updateFrequency: number
-            durationMonths: number
-          },
-    ) => {
-      // If it has the detailed params, use the detailed function
-      if (
-        'areaSize' in params &&
-        'updateFrequency' in params &&
-        'durationMonths' in params
-      ) {
-        return calculateAreaMonitoringCostDetailed(
-          params.areaSize,
-          params.criteriaCount || 1,
-          params.updateFrequency,
-          params.durationMonths,
-        )
+  const calculateCost = (service: string, params: Record<string, any>): CostCalculation => {
+    let cost = 0
+
+    switch (service) {
+      case 'vessel-tracking': {
+        const { criteriaCount = 1, durationDays = 1 } = params
+        cost = criteriaCount * 5 * durationDays
+        break
       }
-      // Otherwise use the simple function
-      return calculateAreaMonitoringCost(
-        params.size,
-        params.durationDays,
-        params.criteriaCount,
-      )
-    },
-    [],
-  )
+      case 'area-monitoring': {
+        const { areaSizeKm2 = 0, durationDays = 1 } = params
+        // Base cost: 10 credits + 0.3 credits per km² per day
+        const dailyCost = 10 + areaSizeKm2 * 0.3
+        cost = Math.round(dailyCost * durationDays)
+        break
+      }
+      case 'fleet-tracking': {
+        const { vesselCount = 1, durationDays = 1 } = params
+        cost = vesselCount * 100 * durationDays
+        break
+      }
+      case 'report': {
+        const { reportType = 'compliance' } = params
+        cost = reportType === 'chronology' ? 75 : 50
+        break
+      }
+      case 'investigation': {
+        const { type = 'basic' } = params
+        cost = type === 'comprehensive' ? 10000 : 5000
+        break
+      }
+      default:
+        cost = 0
+    }
 
-  const calculateFleetTracking = useCallback(
-    (params: FleetTrackingCostParams) => {
-      return calculateFleetTrackingCost(params.vesselCount, params.months)
-    },
-    [],
-  )
+    const hasSufficientCredits = balance >= cost
+    const shortfall = Math.max(0, cost - balance)
 
-  const calculateReport = useCallback(
-    (reportType: 'compliance' | 'chronology' | 'custom') => {
-      return getReportCost(reportType)
-    },
-    [],
-  )
+    return {
+      cost,
+      hasSufficientCredits,
+      shortfall,
+    }
+  }
+
+  const canAfford = (amount: number): boolean => {
+    return balance >= amount
+  }
+
+  const getCostBreakdown = (service: string, params: Record<string, any>): CostBreakdown | null => {
+    switch (service) {
+      case 'vessel-tracking': {
+        const { criteriaCount = 1, durationDays = 1 } = params
+        const baseRate = 5
+        const total = criteriaCount * baseRate * durationDays
+        const dailyCost = criteriaCount * baseRate
+
+        return {
+          baseRate,
+          multiplier: criteriaCount,
+          duration: durationDays,
+          total,
+          dailyCost,
+        }
+      }
+      case 'area-monitoring': {
+        const { areaSizeKm2 = 0, durationDays = 1 } = params
+        const baseRate = 10
+        const sizeMultiplier = areaSizeKm2 * 0.3
+        const dailyCost = baseRate + sizeMultiplier
+        const total = Math.round(dailyCost * durationDays)
+
+        return {
+          baseRate,
+          multiplier: 1 + sizeMultiplier / baseRate,
+          duration: durationDays,
+          total,
+          dailyCost: Math.round(dailyCost),
+        }
+      }
+      default:
+        return null
+    }
+  }
 
   return {
-    calculateVesselTracking,
-    calculateAreaMonitoring,
-    calculateFleetTracking,
-    calculateReport,
+    balance,
+    calculateCost,
+    canAfford,
+    getCostBreakdown,
   }
 }

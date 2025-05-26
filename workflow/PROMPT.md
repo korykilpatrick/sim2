@@ -165,5 +165,6 @@ Your response should follow this structure:
 - **NEVER decrease test coverage**
 - **ALWAYS update CHANGES.md and DECISIONS.md**
 - **ALWAYS run full test suite before marking complete**
+- **ALWAYS complete the full Post-Implementation Process**
 
 Please begin by checking the current status and identifying the next priority task.
