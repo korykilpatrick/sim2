@@ -74,6 +74,19 @@ The moment you notice:
 
 **STOP and fix it.** Don't add to the problem.
 
+## First Principles Over Backwards Compatibility
+
+**CRITICAL: We have ZERO users. There is no backwards compatibility to maintain.**
+
+This principle fundamentally shapes every architectural decision:
+- **Always choose the architecturally correct solution** - No compromises for compatibility
+- **Refactor fearlessly** - If the current approach isn't ideal, change it completely
+- **Eliminate all tech debt immediately** - Don't work around problems, fix them
+- **Build for the future, not the past** - Every decision should assume a clean slate
+- **Gold standard reference implementation** - This codebase should exemplify best practices
+
+When you find yourself thinking "but this would break existing..."—STOP. We have no existing users. The only thing that matters is delivering a world-class final product. Every line of code should be what you'd write if you were starting fresh with perfect knowledge.
+
 ## Anti-Patterns to Avoid
 
 ### 1. "I'll Document It Later"
@@ -90,6 +103,9 @@ Similar isn't same. Match exactly or document why not.
 
 ### 5. "We Can Refactor Later"
 If you're not proud of it now, don't commit it.
+
+### 6. "This Maintains Backwards Compatibility"
+We have ZERO users. Choose the ideal solution, not the compatible one.
 
 ## Success Metrics
 

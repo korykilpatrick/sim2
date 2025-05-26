@@ -2,6 +2,15 @@
 
 Please help me continue developing the SIM (SynMax Intelligence Marketplace) project by following this systematic workflow:
 
+## Critical Principles (READ FIRST)
+
+### NO BACKWARDS COMPATIBILITY
+**We have ZERO users. Always refactor to the ideal solution.**
+- Never compromise architecture for compatibility
+- If existing code isn't perfect, replace it entirely
+- Choose first-principles solutions over incremental patches
+- Build as if starting fresh with perfect knowledge
+
 ## 1. Check Current Status & Validate Plan Trustworthiness
 
 ### 1.1 Read Current State

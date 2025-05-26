@@ -49,6 +49,7 @@ The project follows the architecture defined in `docs/architecture/FRONTEND-ARCH
 - **TEST FIRST**: Always run `npm test` before ANY commit - 80% coverage required
 - **TDD MANDATORY**: Write failing tests before implementing features
 - **NO EXCEPTIONS**: Code without tests will be rejected
+- **NO BACKWARDS COMPATIBILITY**: We have zero users - always choose the ideal solution
 - After tests pass, run `npm run lint` and `npm run typecheck`
 - The mock API server runs on port 3001
 - The client dev server runs on port 5173 with proxy to API
