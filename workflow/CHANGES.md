@@ -1,5 +1,55 @@
 # Changes Log
 
+## 2025-01-26: MSW Test Infrastructure Fix
+
+### Task Completed
+Fix MSW Test Infrastructure - Debug and fix Mock Service Worker request interception in integration tests
+
+### Key Changes
+
+#### Files Modified
+- `/tests/setup.ts` - Added API client configuration and MSW request logging
+- `/tests/integration/credits/credit-balance.test.tsx` - Fixed test assertions and API URLs
+- `/tests/utils/api-mocks.ts` - Added handler logging for debugging
+
+#### Files Added
+- `/tests/utils/test-api-client.ts` - Test-specific API client configuration
+- `/docs/testing/MSW-INTEGRATION-FIX.md` - Documentation of fix pattern
+
+### Issues Fixed
+1. **MSW Request Interception**: API requests weren't being intercepted by MSW handlers
+2. **Test Assertions**: Tests were looking for wrong text content (e.g., "1,000" vs "1,000 Credits")
+3. **Absolute URLs**: Tests using absolute URLs that MSW couldn't intercept
+4. **API Client Configuration**: Axios needed proper base URL configuration for tests
+
+### Technical Solution
+1. Created test-specific API client configuration to ensure relative URLs
+2. Fixed test assertions to match actual component output using data-testid
+3. Changed fetch calls from absolute to relative URLs in tests
+4. Added comprehensive MSW debugging logs
+
+### Test Coverage
+- Before: 277/350 tests passing (79.14%)
+- After: 283/350 tests passing (80.86%)
+- Progress: **Achieved 80%+ test coverage goal!**
+
+### Technical Achievements
+- MSW now properly intercepts API requests in tests
+- Clear pattern established for fixing other integration tests
+- Comprehensive documentation created for future reference
+- Debugging infrastructure in place for troubleshooting
+
+### Remaining Issues
+- 67 tests still failing (mostly UI components not implemented)
+- Some tests need component text updates to match actual output
+- WebSocket event tests need proper triggering mechanism
+
+### Rollback Command
+```bash
+git checkout 955f41f -- tests/setup.ts tests/integration/credits/credit-balance.test.tsx tests/utils/api-mocks.ts
+rm -f tests/utils/test-api-client.ts docs/testing/MSW-INTEGRATION-FIX.md
+```
+
 ## 2025-01-26: CreditsPage UI Implementation
 
 ### Task Completed

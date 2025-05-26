@@ -3,11 +3,50 @@ import { expect, afterEach, vi, beforeAll, afterAll } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import * as matchers from '@testing-library/jest-dom/matchers'
 import { server } from './utils/api-mocks'
+import { configureApiClientForTests } from './utils/test-api-client'
 
 expect.extend(matchers)
 
-// Start MSW server before all tests
-beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
+// Configure environment for MSW
+beforeAll(() => {
+  // Configure API client for tests
+  configureApiClientForTests()
+  
+  // Set up a base URL for tests
+  // This ensures axios requests in JSDOM have a proper origin
+  Object.defineProperty(window, 'location', {
+    value: {
+      href: 'http://localhost:3000',
+      origin: 'http://localhost:3000',
+      protocol: 'http:',
+      host: 'localhost:3000',
+      hostname: 'localhost',
+      port: '3000',
+      pathname: '/',
+      search: '',
+      hash: ''
+    },
+    writable: true
+  })
+
+  // Start MSW server
+  server.listen({ 
+    onUnhandledRequest: 'error'
+  })
+  
+  // Add request logging for debugging
+  server.events.on('request:start', ({ request }) => {
+    console.log('MSW intercepted:', request.method, request.url)
+  })
+  
+  server.events.on('request:unhandled', ({ request }) => {
+    console.log('MSW missed:', request.method, request.url)
+  })
+  
+  server.events.on('request:match', ({ request, requestId }) => {
+    console.log('MSW matched:', request.method, request.url, 'id:', requestId)
+  })
+})
 
 // Reset handlers after each test
 afterEach(() => {

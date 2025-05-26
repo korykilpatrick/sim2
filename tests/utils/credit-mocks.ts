@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw'
 
-const API_BASE_URL = '/api/v1'
+// Use wildcard pattern to match any origin
+const API_BASE_URL = '*/api/v1'
 
 // Mock data for features/credits (different from shared/credits)
 export const mockCreditBalanceFeatures = {

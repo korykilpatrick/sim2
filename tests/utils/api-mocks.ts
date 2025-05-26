@@ -8,7 +8,8 @@ import type {
   CreditPurchaseResponse 
 } from '@/features/shared/types/credits'
 
-const API_BASE_URL = '/api/v1'
+// Use wildcard pattern to match any origin
+const API_BASE_URL = '*/api/v1'
 
 // Default mock data
 export const mockCreditBalance: CreditBalance = {
@@ -268,6 +269,12 @@ export const authHandlers = [
 
 // Setup MSW server with all handlers
 export const server = setupServer(...creditHandlers, ...authHandlers)
+
+// Log registered handlers
+console.log('MSW: Registered handlers:', {
+  creditHandlers: creditHandlers.map(h => `${h.info.method} ${h.info.path}`),
+  authHandlers: authHandlers.map(h => `${h.info.method} ${h.info.path}`)
+})
 
 // Helper to reset mock data between tests
 export const resetMockData = () => {

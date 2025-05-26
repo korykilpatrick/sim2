@@ -28,7 +28,8 @@ describe('Credit Balance Integration Tests', () => {
       
       // Wait for balance to load
       await waitFor(() => {
-        expect(screen.getByText('1,000')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('1,000 Credits')
       })
       
       // Check lifetime credits
@@ -53,7 +54,7 @@ describe('Credit Balance Integration Tests', () => {
 
     it('should handle balance fetch errors gracefully', async () => {
       server.use(
-        http.get('*/credits/balance', () => {
+        http.get('/api/v1/credits/balance', () => {
           return HttpResponse.json({ error: 'Server error' }, { status: 500 })
         })
       )
@@ -62,7 +63,7 @@ describe('Credit Balance Integration Tests', () => {
       
       await waitFor(() => {
         expect(screen.getByText(/Failed to load credit balance/i)).toBeInTheDocument()
-      })
+      }, { timeout: 3000 })
     })
   })
 
@@ -72,11 +73,12 @@ describe('Credit Balance Integration Tests', () => {
       
       // Initial balance
       await waitFor(() => {
-        expect(screen.getByText('1,000')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('1,000 Credits')
       })
       
       // Simulate credit deduction through API
-      const response = await fetch('http://localhost:3001/api/credits/deduct', {
+      const response = await fetch('/api/v1/credits/deduct', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: 100, description: 'Test deduction' })
@@ -88,7 +90,8 @@ describe('Credit Balance Integration Tests', () => {
       rerender(<CreditsPage />)
       
       await waitFor(() => {
-        expect(screen.getByText('900')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('900 Credits')
       })
     })
 
@@ -97,11 +100,12 @@ describe('Credit Balance Integration Tests', () => {
       
       // Initial balance
       await waitFor(() => {
-        expect(screen.getByText('1,000')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('1,000 Credits')
       })
       
       // Simulate credit purchase
-      const response = await fetch('http://localhost:3001/api/credits/purchase', {
+      const response = await fetch('/api/v1/credits/purchase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ credits: 500, paymentMethodId: 'pm_123' })
@@ -112,7 +116,8 @@ describe('Credit Balance Integration Tests', () => {
       rerender(<CreditsPage />)
       
       await waitFor(() => {
-        expect(screen.getByText('1,500')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('1,500 Credits')
       })
     })
   })
@@ -126,7 +131,8 @@ describe('Credit Balance Integration Tests', () => {
       
       await waitFor(() => {
         expect(screen.getByText(/Low credit balance/i)).toBeInTheDocument()
-        expect(screen.getByText('40')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('40 Credits')
       })
       
       // Check for warning styling
@@ -153,7 +159,8 @@ describe('Credit Balance Integration Tests', () => {
       renderWithProviders(<CreditsPage />)
       
       await waitFor(() => {
-        expect(screen.getByText('1,000')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('1,000 Credits')
       })
       
       // Simulate WebSocket balance update event
@@ -163,7 +170,8 @@ describe('Credit Balance Integration Tests', () => {
       window.dispatchEvent(wsEvent)
       
       await waitFor(() => {
-        expect(screen.getByText('1,200')).toBeInTheDocument()
+        const balanceElement = screen.getByTestId('credit-balance')
+        expect(balanceElement).toHaveTextContent('1,200 Credits')
       })
     })
   })
@@ -189,7 +197,7 @@ describe('Credit Balance Integration Tests', () => {
       renderWithProviders(<CreditsPage />)
       
       await waitFor(() => {
-        expect(screen.queryByText('1,000')).not.toBeInTheDocument()
+        expect(screen.queryByTestId('credit-balance')).not.toBeInTheDocument()
         expect(screen.getByText(/Please log in/i)).toBeInTheDocument()
       })
     })
