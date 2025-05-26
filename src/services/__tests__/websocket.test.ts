@@ -35,14 +35,14 @@ vi.mock('@/config', () => ({
 
 describe('WebSocketService', () => {
   let service: WebSocketService
-  let mockSocket: any
+  let mockSocket: ReturnType<typeof io>
 
   beforeEach(() => {
     vi.clearAllMocks()
     // Reset singleton
-    ;(WebSocketService as any).instance = null
+    ;(WebSocketService as unknown as { instance: null }).instance = null
     service = WebSocketService.getInstance()
-    mockSocket = (io as any).mock.results[0]?.value
+    mockSocket = (io as vi.Mock).mock.results[0]?.value
   })
 
   afterEach(() => {
@@ -80,12 +80,12 @@ describe('WebSocketService', () => {
       expect(service.getStatus()).toBe('connecting')
 
       // Get fresh mock socket after connect
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Simulate connect event
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) {
         mockSocket.connected = true
         connectHandler()
@@ -97,13 +97,13 @@ describe('WebSocketService', () => {
 
     it('should handle disconnection', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
       mockSocket.connected = true
 
       // Simulate connect first
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
 
       service.disconnect()
@@ -115,12 +115,12 @@ describe('WebSocketService', () => {
 
     it('should handle connection errors', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Simulate connect_error event
       const errorHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect_error',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect_error',
+      )?.[1] as ((error: Error) => void) | undefined
       if (errorHandler) {
         const error = new Error('Connection failed')
         errorHandler(error)
@@ -131,7 +131,7 @@ describe('WebSocketService', () => {
 
     it('should not connect when already connected', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
       mockSocket.connected = true
 
       // Clear mock to check second connect
@@ -147,13 +147,13 @@ describe('WebSocketService', () => {
   describe('Authentication', () => {
     beforeEach(() => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Simulate connected state
       mockSocket.connected = true
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
     })
 
@@ -165,8 +165,8 @@ describe('WebSocketService', () => {
 
     it('should handle authentication success', () => {
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -176,8 +176,8 @@ describe('WebSocketService', () => {
 
     it('should handle authentication failure', () => {
       const unauthorizedHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'unauthorized',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'unauthorized',
+      )?.[1] as ((data: { message: string }) => void) | undefined
       if (unauthorizedHandler) {
         unauthorizedHandler({ message: 'Invalid token' })
       }
@@ -191,13 +191,13 @@ describe('WebSocketService', () => {
   describe('Room Management', () => {
     beforeEach(() => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
       mockSocket.connected = true
 
       // Simulate authentication success
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -296,8 +296,8 @@ describe('WebSocketService', () => {
 
       // Simulate reconnection
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) {
         connectHandler()
       }
@@ -311,8 +311,8 @@ describe('WebSocketService', () => {
 
       // After authentication succeeds, manually trying to join rooms would work
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -326,13 +326,13 @@ describe('WebSocketService', () => {
   describe('Event Handling', () => {
     beforeEach(() => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
       mockSocket.connected = true
 
       // Simulate authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -344,8 +344,8 @@ describe('WebSocketService', () => {
 
       // Simulate event
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'vessel_position_update',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'vessel_position_update',
+      )?.[1] as ((data: unknown) => void) | undefined
       if (eventHandler) {
         const positionData = {
           vesselId: 'vessel-1',
@@ -373,8 +373,8 @@ describe('WebSocketService', () => {
 
       // Simulate event
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'area_alert',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'area_alert',
+      )?.[1] as ((data: unknown) => void) | undefined
       if (eventHandler) {
         const alertData = {
           id: 'alert-1',
@@ -401,8 +401,8 @@ describe('WebSocketService', () => {
 
       // Simulate event after unsubscribe
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'credit_balance_updated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'credit_balance_updated',
+      )?.[1] as ((data: { balance: number; change: number }) => void) | undefined
       if (eventHandler) {
         eventHandler({ balance: 100, change: -10 })
       }
@@ -415,13 +415,13 @@ describe('WebSocketService', () => {
   describe('Alert Management', () => {
     beforeEach(() => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
       mockSocket.connected = true
 
       // Simulate authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -459,12 +459,12 @@ describe('WebSocketService', () => {
       service.connect('token')
       expect(service.getStatus()).toBe('connecting')
 
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Simulate connect
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) {
         mockSocket.connected = true
         connectHandler()
@@ -479,7 +479,7 @@ describe('WebSocketService', () => {
       service.connect('token')
       expect(service.isConnected()).toBe(false) // Still connecting
 
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
       mockSocket.connected = true
 
       expect(service.isConnected()).toBe(true)
@@ -497,12 +497,12 @@ describe('WebSocketService', () => {
 
     it('should handle reconnection attempts', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Simulate reconnect attempt on socket.io
       const reconnectAttemptHandler = mockSocket.io.on.mock.calls.find(
-        (call: any) => call[0] === 'reconnect_attempt',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'reconnect_attempt',
+      )?.[1] as ((attemptNumber: number) => void) | undefined
       if (reconnectAttemptHandler) {
         reconnectAttemptHandler(1)
       }
@@ -513,15 +513,15 @@ describe('WebSocketService', () => {
 
     it('should handle reconnection success', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Join a room before disconnect
       service.joinVesselRoom('vessel-1')
 
       // Simulate reconnection
       const reconnectHandler = mockSocket.io.on.mock.calls.find(
-        (call: any) => call[0] === 'reconnect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'reconnect',
+      )?.[1] as ((attemptNumber: number) => void) | undefined
       if (reconnectHandler) {
         reconnectHandler(1)
       }
@@ -531,12 +531,12 @@ describe('WebSocketService', () => {
 
     it('should handle reconnection failure', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Simulate reconnect failed
       const reconnectFailedHandler = mockSocket.io.on.mock.calls.find(
-        (call: any) => call[0] === 'reconnect_failed',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'reconnect_failed',
+      )?.[1] as (() => void) | undefined
       if (reconnectFailedHandler) {
         reconnectFailedHandler()
       }
@@ -548,7 +548,7 @@ describe('WebSocketService', () => {
   describe('Cleanup', () => {
     it('should clean up on disconnect', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Join some rooms
       service.joinVesselRoom('vessel-1')
@@ -574,12 +574,12 @@ describe('WebSocketService', () => {
 
     it('should handle missing event listeners gracefully', () => {
       service.connect('token')
-      mockSocket = (io as any).mock.results[0].value
+      mockSocket = (io as vi.Mock).mock.results[0].value
 
       // Try to trigger event with no listeners
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'server_message',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'server_message',
+      )?.[1] as ((data: { message: string; type: string }) => void) | undefined
       if (eventHandler) {
         // Should not throw
         expect(() => {

@@ -315,7 +315,7 @@ function startAreaSimulation(io: Server, areaId: string) {
             ? 'error'
             : alert.severity === 'high'
               ? 'warning'
-              : ('info' as any),
+              : 'info',
         timestamp: alert.timestamp,
         read: false,
         actionUrl: `/areas/${areaId}`,

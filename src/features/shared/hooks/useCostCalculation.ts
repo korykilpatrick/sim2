@@ -14,12 +14,21 @@ interface CostBreakdown {
   dailyCost: number
 }
 
+interface ServiceParams {
+  criteriaCount?: number
+  durationDays?: number
+  areaSizeKm2?: number
+  vesselCount?: number
+  reportType?: string
+  dataRange?: string
+}
+
 export function useCostCalculation() {
   const { balance } = useCredits()
 
   const calculateCost = (
     service: string,
-    params: Record<string, unknown>,
+    params: ServiceParams,
   ): CostCalculation => {
     let cost = 0
 
@@ -71,7 +80,7 @@ export function useCostCalculation() {
 
   const getCostBreakdown = (
     service: string,
-    params: Record<string, unknown>,
+    params: ServiceParams,
   ): CostBreakdown | null => {
     switch (service) {
       case 'vessel-tracking': {

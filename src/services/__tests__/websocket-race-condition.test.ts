@@ -35,12 +35,12 @@ vi.mock('@/config', () => ({
 
 describe('WebSocket Race Conditions and Authentication Queuing', () => {
   let service: EnhancedWebSocketService
-  let mockSocket: any
+  let mockSocket: ReturnType<typeof io>
 
   beforeEach(() => {
     vi.clearAllMocks()
     // Reset singleton
-    ;(EnhancedWebSocketService as any).instance = null
+    ;(EnhancedWebSocketService as unknown as { instance: null }).instance = null
     service = EnhancedWebSocketService.getInstance()
   })
 
@@ -53,15 +53,15 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
     it('should queue room join requests until authentication completes', async () => {
       // Connect the service
       service.connect('test-token')
-      mockSocket = (io as any).mock.results[0]?.value
+      mockSocket = (io as vi.Mock).mock.results[0]?.value
 
       // Join some rooms while connected
       mockSocket.connected = true
       
       // Simulate initial authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -76,8 +76,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       // Simulate disconnection and reconnection
       mockSocket.connected = false
       const disconnectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'disconnect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'disconnect',
+      )?.[1] as (() => void) | undefined
       if (disconnectHandler) {
         disconnectHandler()
       }
@@ -87,8 +87,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       // Simulate reconnection
       mockSocket.connected = true
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) {
         connectHandler()
       }
@@ -119,7 +119,7 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should queue new room join attempts made during authentication', async () => {
       service.connect('test-token')
-      mockSocket = (io as any).mock.results[0]?.value
+      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Try to join room before authentication completes
@@ -130,8 +130,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
       // Complete authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -144,13 +144,13 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
   describe('Connection State Machine', () => {
     it('should handle authentication failure during connected state', () => {
       service.connect('test-token')
-      mockSocket = (io as any).mock.results[0]?.value
+      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Simulate connect
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
 
       // After connect, it should start authenticating
@@ -159,8 +159,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
       // Simulate authentication failure
       const unauthorizedHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'unauthorized',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'unauthorized',
+      )?.[1] as ((data: { message: string }) => void) | undefined
       if (unauthorizedHandler) {
         unauthorizedHandler({ message: 'Token expired' })
       }
@@ -175,7 +175,7 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should handle disconnect during authentication', () => {
       service.connect('test-token')
-      mockSocket = (io as any).mock.results[0]?.value
+      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Start authentication
@@ -186,8 +186,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       // Disconnect before authentication completes
       mockSocket.connected = false
       const disconnectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'disconnect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'disconnect',
+      )?.[1] as (() => void) | undefined
       if (disconnectHandler) {
         disconnectHandler()
       }
@@ -209,7 +209,7 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should implement exponential backoff for authentication retries', () => {
       service.connect('test-token')
-      mockSocket = (io as any).mock.results[0]?.value
+      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Track authentication attempts
@@ -217,7 +217,7 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       
       // Override emit to track timing
       const originalEmit = mockSocket.emit
-      mockSocket.emit = vi.fn((event, ...args) => {
+      mockSocket.emit = vi.fn((event: string, ...args: unknown[]) => {
         if (event === 'authenticate') {
           authAttempts.push(Date.now())
         }
@@ -226,8 +226,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
       // First auth failure
       const unauthorizedHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'unauthorized',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'unauthorized',
+      )?.[1] as ((data: { message: string }) => void) | undefined
       
       // Simulate multiple auth failures
       for (let i = 0; i < 3; i++) {
@@ -244,13 +244,13 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should implement backoff for room rejoin attempts', () => {
       service.connect('test-token')
-      mockSocket = (io as any).mock.results[0]?.value
+      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Authenticate first
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -260,8 +260,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       
       // Simulate room join failure
       const roomErrorHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'room_join_error',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'room_join_error',
+      )?.[1] as ((data: { room: string; error: string }) => void) | undefined
 
       if (roomErrorHandler) {
         roomErrorHandler({ room: 'vessel-123', error: 'Permission denied' })
@@ -290,19 +290,19 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
       // Connect
       service.connect('test-token')
-      mockSocket = (io as any).mock.results[0]?.value
+      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Complete connection
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'connect',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+      )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
 
       // Complete authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: any) => call[0] === 'authenticated',
-      )?.[1]
+        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
+      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }

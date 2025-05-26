@@ -122,11 +122,11 @@ export const calculateServiceCost = (
         params as { vesselCount: number; durationMonths: number },
       )
     case 'report-generation':
-      return calculateReportCost(params.reportType)
+      return calculateReportCost(params.reportType as 'compliance' | 'chronology')
     case 'investigation':
       return calculateInvestigationCost(
-        params.investigationType,
-        params.customAmount,
+        params.investigationType as 'basic' | 'comprehensive' | 'custom',
+        params.customAmount as number | undefined,
       )
     default:
       throw new Error(`Unknown service type: ${serviceType}`)
