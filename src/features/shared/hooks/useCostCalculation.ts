@@ -19,7 +19,7 @@ export function useCostCalculation() {
 
   const calculateCost = (
     service: string,
-    params: Record<string, any>,
+    params: Record<string, unknown>,
   ): CostCalculation => {
     let cost = 0
 
@@ -71,7 +71,7 @@ export function useCostCalculation() {
 
   const getCostBreakdown = (
     service: string,
-    params: Record<string, any>,
+    params: Record<string, unknown>,
   ): CostBreakdown | null => {
     switch (service) {
       case 'vessel-tracking': {

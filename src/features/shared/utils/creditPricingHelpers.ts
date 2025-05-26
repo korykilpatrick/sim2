@@ -106,7 +106,7 @@ export const calculateServiceCost = (
     | 'fleet-tracking'
     | 'report-generation'
     | 'investigation',
-  params: Record<string, any>,
+  params: Record<string, unknown>,
 ): number => {
   switch (serviceType) {
     case 'vessel-tracking':

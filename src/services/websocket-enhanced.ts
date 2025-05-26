@@ -1,11 +1,14 @@
 import { io, Socket } from 'socket.io-client'
 import { config } from '../config'
+import { createLogger } from './logger'
 import type {
   WebSocketEvents,
   WebSocketEmitEvents,
   WebSocketStatus,
   RoomSubscription,
 } from '../types/websocket'
+
+const logger = createLogger('WebSocket')
 
 // Operation types for queuing
 interface QueuedOperation {
@@ -38,7 +41,7 @@ export class EnhancedWebSocketService {
   private connectionState: ConnectionState = 'disconnected'
   private reconnectAttempts = 0
   private maxReconnectAttempts = 5
-  private listeners: Map<keyof WebSocketEvents, Set<(...args: any[]) => void>> = new Map()
+  private listeners: Map<keyof WebSocketEvents, Set<(...args: unknown[]) => void>> = new Map()
   private rooms: Map<string, RoomSubscription> = new Map()
   private authToken: string | null = null
   
@@ -78,16 +81,16 @@ export class EnhancedWebSocketService {
 
   connect(token?: string): void {
     if (this.socket?.connected) {
-      console.log('[WebSocket] Already connected')
+      logger.debug('Already connected')
       return
     }
 
     if (!config.features.websocket) {
-      console.log('[WebSocket] Feature disabled')
+      logger.debug('Feature disabled')
       return
     }
 
-    console.log('[WebSocket] Connecting to', config.websocketUrl)
+    logger.debug('Connecting to', config.websocketUrl)
     this.authToken = token || null
     this.transitionState('connecting')
 
@@ -107,7 +110,7 @@ export class EnhancedWebSocketService {
   disconnect(): void {
     if (!this.socket) return
 
-    console.log('[WebSocket] Disconnecting')
+    logger.debug('Disconnecting')
     
     // Clear all timers
     this.clearAllTimers()
@@ -137,7 +140,7 @@ export class EnhancedWebSocketService {
     const oldState = this.connectionState
     this.connectionState = newState
     
-    console.log(`[WebSocket] State transition: ${oldState} -> ${newState}`)
+    logger.debug(`State transition: ${oldState} -> ${newState}`)
     
     // Handle state-specific logic
     switch (newState) {
@@ -157,7 +160,7 @@ export class EnhancedWebSocketService {
 
     // Connection events
     this.socket.on('connect', () => {
-      console.log('[WebSocket] Connected')
+      logger.info('Connected')
       this.transitionState('connected')
       this.reconnectAttempts = 0
       this.emit('connect')
@@ -169,27 +172,27 @@ export class EnhancedWebSocketService {
     })
 
     this.socket.on('disconnect', (reason) => {
-      console.log('[WebSocket] Disconnected:', reason)
+      logger.info('Disconnected:', reason)
       // Don't clear rooms on disconnect - we'll rejoin them on reconnect
       this.transitionState('disconnected')
       this.emit('disconnect', reason)
     })
 
     this.socket.on('connect_error', (error) => {
-      console.error('[WebSocket] Connection error:', error.message)
+      logger.error('Connection error:', error.message)
       this.transitionState('error')
       this.emit('connect_error', error)
     })
 
     this.socket.io.on('reconnect_attempt', (attempt) => {
-      console.log('[WebSocket] Reconnection attempt', attempt)
+      logger.debug('Reconnection attempt', attempt)
       this.transitionState('reconnecting')
       this.reconnectAttempts = attempt
       this.emit('reconnect_attempt', attempt)
     })
 
     this.socket.io.on('reconnect', (attempt) => {
-      console.log('[WebSocket] Reconnected after', attempt, 'attempts')
+      logger.info('Reconnected after', { attempts: attempt })
       this.transitionState('connected')
       this.emit('reconnect', attempt)
       
@@ -200,19 +203,19 @@ export class EnhancedWebSocketService {
     })
 
     this.socket.io.on('reconnect_error', (error) => {
-      console.error('[WebSocket] Reconnection error:', error.message)
+      logger.error('Reconnection error:', error.message)
       this.emit('reconnect_error', error)
     })
 
     this.socket.io.on('reconnect_failed', () => {
-      console.error('[WebSocket] Reconnection failed')
+      logger.error('Reconnection failed')
       this.transitionState('error')
       this.emit('reconnect_failed')
     })
 
     // Authentication events
     this.socket.on('authenticated', (data) => {
-      console.log('[WebSocket] Authenticated:', data.success)
+      logger.info('Authenticated:', data.success)
       if (data.success) {
         this.transitionState('authenticated')
         this.emit('authenticated', data)
@@ -222,19 +225,19 @@ export class EnhancedWebSocketService {
     })
 
     this.socket.on('unauthorized', (data) => {
-      console.error('[WebSocket] Unauthorized:', data.message)
+      logger.error('Unauthorized:', data.message)
       this.handleAuthFailure(data)
       this.emit('unauthorized', data)
     })
 
     // Room join/leave confirmations
-    this.socket.on('room_joined' as any, (data: { room: string; type: 'vessel' | 'area' }) => {
-      console.log(`[WebSocket] Successfully joined ${data.type} room:`, data.room)
+    this.socket.on('room_joined' as keyof WebSocketEvents, (data: { room: string; type: 'vessel' | 'area' }) => {
+      logger.debug(`Successfully joined ${data.type} room:`, data.room)
       this.clearRoomRetryTimer(`${data.type}:${data.room}`)
     })
 
-    this.socket.on('room_join_error' as any, (data: { room: string; error: string }) => {
-      console.error('[WebSocket] Room join error:', data.error)
+    this.socket.on('room_join_error' as keyof WebSocketEvents, (data: { room: string; error: string }) => {
+      logger.error('Room join error:', data.error)
       this.handleRoomJoinError(data.room, data.error)
     })
 
@@ -259,7 +262,7 @@ export class EnhancedWebSocketService {
     ]
 
     events.forEach((event) => {
-      this.socket!.on(event as any, (data: any) => {
+      this.socket!.on(event as keyof WebSocketEvents, (data: unknown) => {
         this.emit(event, data)
       })
     })
@@ -283,7 +286,7 @@ export class EnhancedWebSocketService {
       this.authBackoffConfig
     )
     
-    console.log(`[WebSocket] Scheduling auth retry in ${delay}ms (attempt ${this.authRetryCount + 1})`)
+    logger.debug(`Scheduling auth retry in ${delay}ms (attempt ${this.authRetryCount + 1})`)
     
     this.authRetryTimer = setTimeout(() => {
       this.authRetryTimer = null
@@ -311,11 +314,11 @@ export class EnhancedWebSocketService {
 
   authenticate(token: string): void {
     if (!this.socket?.connected) {
-      console.error('[WebSocket] Cannot authenticate: not connected')
+      logger.error('Cannot authenticate: not connected')
       return
     }
 
-    console.log('[WebSocket] Authenticating...')
+    logger.debug('Authenticating...')
     this.authToken = token
     this.transitionState('authenticating')
     this.socket.emit('authenticate', token)
@@ -329,7 +332,7 @@ export class EnhancedWebSocketService {
     
     if (existingIndex === -1) {
       this.operationQueue.push(operation)
-      console.log(`[WebSocket] Queued operation: ${operation.type} ${operation.payload}`)
+      logger.debug(`Queued operation: ${operation.type} ${operation.payload}`)
     }
   }
 
@@ -340,7 +343,7 @@ export class EnhancedWebSocketService {
     
     // Process queued operations if any
     if (this.operationQueue.length > 0) {
-      console.log(`[WebSocket] Processing ${this.operationQueue.length} queued operations`)
+      logger.debug(`Processing ${this.operationQueue.length} queued operations`)
       
       // Process operations in order
       while (this.operationQueue.length > 0) {
@@ -380,11 +383,11 @@ export class EnhancedWebSocketService {
 
   private rejoinRooms(): void {
     if (this.connectionState !== 'authenticated') {
-      console.log('[WebSocket] Cannot rejoin rooms: not authenticated')
+      logger.debug('Cannot rejoin rooms: not authenticated')
       return
     }
     
-    console.log(`[WebSocket] Rejoining ${this.rooms.size} rooms`)
+    logger.debug(`Rejoining ${this.rooms.size} rooms`)
     this.rooms.forEach((subscription) => {
       if (subscription.type === 'vessel') {
         this.socket?.emit('join_vessel_room', subscription.room)
@@ -409,12 +412,12 @@ export class EnhancedWebSocketService {
     }
     
     if (!this.socket?.connected) {
-      console.error('[WebSocket] Cannot join room: not connected')
+      logger.error('Cannot join room: not connected')
       return
     }
     
     if (this.rooms.has(roomName)) {
-      console.log('[WebSocket] Already in vessel room:', vesselId)
+      logger.debug('Already in vessel room:', vesselId)
       return
     }
 
@@ -424,7 +427,7 @@ export class EnhancedWebSocketService {
       type: 'vessel',
       joinedAt: new Date().toISOString(),
     })
-    console.log('[WebSocket] Joined vessel room:', vesselId)
+    logger.debug('Joined vessel room:', vesselId)
   }
 
   leaveVesselRoom(vesselId: string): void {
@@ -432,14 +435,14 @@ export class EnhancedWebSocketService {
 
     const roomName = `vessel:${vesselId}`
     if (!this.rooms.has(roomName)) {
-      console.log('[WebSocket] Not in vessel room:', vesselId)
+      logger.debug('Not in vessel room:', vesselId)
       return
     }
 
     this.socket.emit('leave_vessel_room', vesselId)
     this.rooms.delete(roomName)
     this.clearRoomRetryTimer(roomName)
-    console.log('[WebSocket] Left vessel room:', vesselId)
+    logger.debug('Left vessel room:', vesselId)
   }
 
   joinAreaRoom(areaId: string, fromQueue = false): void {
@@ -457,12 +460,12 @@ export class EnhancedWebSocketService {
     }
     
     if (!this.socket?.connected) {
-      console.error('[WebSocket] Cannot join room: not connected')
+      logger.error('Cannot join room: not connected')
       return
     }
     
     if (this.rooms.has(roomName)) {
-      console.log('[WebSocket] Already in area room:', areaId)
+      logger.debug('Already in area room:', areaId)
       return
     }
 
@@ -472,7 +475,7 @@ export class EnhancedWebSocketService {
       type: 'area',
       joinedAt: new Date().toISOString(),
     })
-    console.log('[WebSocket] Joined area room:', areaId)
+    logger.debug('Joined area room:', areaId)
   }
 
   leaveAreaRoom(areaId: string): void {
@@ -480,14 +483,14 @@ export class EnhancedWebSocketService {
 
     const roomName = `area:${areaId}`
     if (!this.rooms.has(roomName)) {
-      console.log('[WebSocket] Not in area room:', areaId)
+      logger.debug('Not in area room:', areaId)
       return
     }
 
     this.socket.emit('leave_area_room', areaId)
     this.rooms.delete(roomName)
     this.clearRoomRetryTimer(roomName)
-    console.log('[WebSocket] Left area room:', areaId)
+    logger.debug('Left area room:', areaId)
   }
 
   private handleRoomJoinError(room: string, _error: string): void {
@@ -495,12 +498,12 @@ export class EnhancedWebSocketService {
     const retryCount = this.getRoomRetryCount(room)
     
     if (retryCount >= 3) {
-      console.error(`[WebSocket] Max retries reached for room ${room}`)
+      logger.error(`Max retries reached for room ${room}`)
       return
     }
     
     const delay = this.calculateBackoffDelay(retryCount, this.roomRetryBackoffConfig)
-    console.log(`[WebSocket] Retrying room join for ${room} in ${delay}ms`)
+    logger.debug(`Retrying room join for ${room} in ${delay}ms`)
     
     const timer = setTimeout(() => {
       this.roomRetryTimers.delete(room)
@@ -602,7 +605,7 @@ export class EnhancedWebSocketService {
         try {
           handler(...args)
         } catch (error) {
-          console.error(`[WebSocket] Error in ${event} handler:`, error)
+          logger.error(`Error in ${event} handler:`, error)
         }
       })
     }

@@ -7,7 +7,7 @@ export interface Notification {
   timestamp: string
   read: boolean
   actionUrl?: string
-  data?: Record<string, any>
+  data?: Record<string, unknown>
   source?: {
     type: 'vessel' | 'area'
     id: string

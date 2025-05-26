@@ -9,15 +9,15 @@ export function configureApiClientForTests() {
   // Remove any request interceptors that might interfere
   apiClient.interceptors.request.handlers = []
   
-  // Add a simple interceptor that logs requests in tests
-  apiClient.interceptors.request.use(
-    (config) => {
-      console.log('Test API request:', config.method?.toUpperCase(), config.url)
-      return config
-    },
-    (error) => {
-      console.error('Test API request error:', error)
-      return Promise.reject(error)
-    }
-  )
+  // Request logging disabled by default - uncomment for debugging
+  // apiClient.interceptors.request.use(
+  //   (config) => {
+  //     console.log('Test API request:', config.method?.toUpperCase(), config.url)
+  //     return config
+  //   },
+  //   (error) => {
+  //     console.error('Test API request error:', error)
+  //     return Promise.reject(error)
+  //   }
+  // )
 }

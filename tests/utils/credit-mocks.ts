@@ -55,9 +55,7 @@ export const featuresCreditHandlers = [
   }),
 
   // Purchase credits
-  http.post(`${API_BASE_URL}/credits/purchase`, async ({ request }) => {
-    await request.json() as { packageId: string }
-    
+  http.post(`${API_BASE_URL}/credits/purchase`, async () => {
     // Mock successful purchase
     const creditsAdded = 500
     const newBalance = mockCreditBalanceFeatures.available + creditsAdded
@@ -80,7 +78,7 @@ export const featuresCreditHandlers = [
 
   // Deduct credits - for features/credits
   http.post(`${API_BASE_URL}/credits/deduct`, async ({ request }) => {
-    const body = await request.json() as any
+    const body = await request.json() as { amount: number; description?: string }
     
     if (body.amount > mockCreditBalanceFeatures.available) {
       return HttpResponse.json(

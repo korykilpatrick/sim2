@@ -80,7 +80,7 @@ export interface AreaAlert {
   severity: 'low' | 'medium' | 'high' | 'critical'
   message: string
   timestamp: string
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 }
 
 export interface AreaVesselEvent {
@@ -104,7 +104,7 @@ export interface Alert {
   timestamp: string
   read: boolean
   actionUrl?: string
-  data?: Record<string, any>
+  data?: Record<string, unknown>
 }
 
 export type WebSocketStatus =

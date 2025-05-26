@@ -1,17 +1,11 @@
-import React, { createContext, useContext, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { websocketService } from '../services/websocket'
 import { useAuth } from '../features/auth/hooks/useAuth'
 import { config } from '../config'
+import { createLogger } from '../services/logger'
+import { WebSocketContext } from './WebSocketContext'
 
-interface WebSocketContextValue {
-  isConnected: boolean
-}
-
-const WebSocketContext = createContext<WebSocketContextValue>({
-  isConnected: false,
-})
-
-export const useWebSocketContext = () => useContext(WebSocketContext)
+const logger = createLogger('WebSocketProvider')
 
 interface WebSocketProviderProps {
   children: React.ReactNode
@@ -30,25 +24,25 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
 
     // Connect when user is authenticated
     if (user && token) {
-      console.log('[WebSocketProvider] Initializing WebSocket connection')
+      logger.info('Initializing WebSocket connection')
       hasInitialized.current = true
       websocketService.connect(token)
 
       // Listen for connection state changes
       const unsubscribers = [
         websocketService.on('connect', () => {
-          console.log('[WebSocketProvider] Connected')
+          logger.info('Connected')
           setIsConnected(true)
         }),
         websocketService.on('disconnect', () => {
-          console.log('[WebSocketProvider] Disconnected')
+          logger.info('Disconnected')
           setIsConnected(false)
         }),
         websocketService.on('authenticated', (data) => {
-          console.log('[WebSocketProvider] Authenticated:', data.success)
+          logger.info('Authenticated:', data.success)
         }),
         websocketService.on('unauthorized', (data) => {
-          console.error('[WebSocketProvider] Unauthorized:', data.message)
+          logger.error('Unauthorized:', data.message)
         }),
       ]
 
@@ -57,9 +51,7 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
       }
     } else if (!user && hasInitialized.current) {
       // Disconnect when user logs out
-      console.log(
-        '[WebSocketProvider] User logged out, disconnecting WebSocket',
-      )
+      logger.info('User logged out, disconnecting WebSocket')
       websocketService.disconnect()
       hasInitialized.current = false
       setIsConnected(false)
@@ -72,10 +64,10 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
 
     const unsubscribers = [
       websocketService.on('server_message', (data) => {
-        console.log('[WebSocket] Server message:', data)
+        logger.debug('Server message:', data)
       }),
       websocketService.on('maintenance_mode', (data) => {
-        console.log('[WebSocket] Maintenance mode:', data)
+        logger.debug('Maintenance mode:', data)
       }),
     ]
 

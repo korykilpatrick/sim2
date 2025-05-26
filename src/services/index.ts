@@ -6,3 +6,5 @@
 export { analytics } from './analytics'
 export { storage } from './storage'
 export { validation } from './validation'
+export { logger, createLogger } from './logger'
+export type { LogLevel } from './logger'

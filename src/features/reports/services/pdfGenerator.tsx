@@ -3,6 +3,7 @@ import { ComplianceReportTemplate } from '../templates/ComplianceReportTemplate'
 import { ChronologyReportTemplate } from '../templates/ChronologyReportTemplate'
 import type { ReportData } from '../templates/types'
 import type { ComplianceReport, ChronologyReport } from '../types'
+import type { ComplianceCheck, SanctionRecord, VesselInfo, ChronologyEvent, ChronologyStatistics } from '../types/pdf'
 
 export type ReportType =
   | 'compliance'
@@ -169,8 +170,8 @@ export function convertToReportData(
         'This compliance report is generated based on available data at the time of generation.',
     } as ReportData & {
       riskScore?: number
-      complianceChecks?: any[]
-      sanctions?: any[]
+      complianceChecks?: ComplianceCheck[]
+      sanctions?: SanctionRecord[]
     }
   } else if (reportType === 'chronology' && 'events' in apiData) {
     const chronologyReport = apiData as ChronologyReport
@@ -203,7 +204,7 @@ export function convertToReportData(
       ...extendedData,
       disclaimer:
         "This chronology report represents the vessel's known activities during the specified timeframe.",
-    } as ReportData & { vesselInfo?: any; events?: any[]; statistics?: any }
+    } as ReportData & { vesselInfo?: VesselInfo; events?: ChronologyEvent[]; statistics?: ChronologyStatistics }
   }
 
   return baseData

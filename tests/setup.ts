@@ -34,18 +34,18 @@ beforeAll(() => {
     onUnhandledRequest: 'error'
   })
   
-  // Add request logging for debugging
-  server.events.on('request:start', ({ request }) => {
-    console.log('MSW intercepted:', request.method, request.url)
-  })
-  
-  server.events.on('request:unhandled', ({ request }) => {
-    console.log('MSW missed:', request.method, request.url)
-  })
-  
-  server.events.on('request:match', ({ request, requestId }) => {
-    console.log('MSW matched:', request.method, request.url, 'id:', requestId)
-  })
+  // Request logging disabled by default - uncomment for debugging
+  // server.events.on('request:start', ({ request }) => {
+  //   console.log('MSW intercepted:', request.method, request.url)
+  // })
+  // 
+  // server.events.on('request:unhandled', ({ request }) => {
+  //   console.log('MSW missed:', request.method, request.url)
+  // })
+  // 
+  // server.events.on('request:match', ({ request, requestId }) => {
+  //   console.log('MSW matched:', request.method, request.url, 'id:', requestId)
+  // })
 })
 
 // Reset handlers after each test

@@ -271,10 +271,11 @@ export const authHandlers = [
 export const server = setupServer(...creditHandlers, ...authHandlers)
 
 // Log registered handlers
-console.log('MSW: Registered handlers:', {
-  creditHandlers: creditHandlers.map(h => `${h.info.method} ${h.info.path}`),
-  authHandlers: authHandlers.map(h => `${h.info.method} ${h.info.path}`)
-})
+// Uncomment for debugging MSW handler registration
+// console.log('MSW: Registered handlers:', {
+//   creditHandlers: creditHandlers.map(h => `${h.info.method} ${h.info.path}`),
+//   authHandlers: authHandlers.map(h => `${h.info.method} ${h.info.path}`)
+// })
 
 // Helper to reset mock data between tests
 export const resetMockData = () => {

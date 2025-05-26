@@ -33,8 +33,27 @@ const WebSocketTestComponent = () => {
     leaveAreaRoom
   } = useWebSocket();
   
-  const [vesselPositions, setVesselPositions] = useState<any[]>([]);
-  const [areaAlerts, setAreaAlerts] = useState<any[]>([]);
+  interface VesselPosition {
+    vesselId: string;
+    timestamp: string;
+    position: { lat: number; lng: number };
+    heading: number;
+    speed: number;
+    status: string;
+  }
+  
+  interface AreaAlert {
+    id: string;
+    areaId: string;
+    areaName: string;
+    type: string;
+    severity: string;
+    message: string;
+    timestamp: string;
+  }
+  
+  const [vesselPositions, setVesselPositions] = useState<VesselPosition[]>([]);
+  const [areaAlerts, setAreaAlerts] = useState<AreaAlert[]>([]);
   const [creditBalance, setCreditBalance] = useState<number>(0);
 
   useEffect(() => {
@@ -91,8 +110,23 @@ const WebSocketTestComponent = () => {
 };
 
 describe('WebSocket Integration', () => {
-  let mockSocket: any;
-  let socketEventHandlers: Map<string, ((...args: any[]) => void)[]>;
+  interface MockSocket {
+    connected: boolean;
+    auth: Record<string, unknown>;
+    io: {
+      opts: Record<string, unknown>;
+      on: jest.Mock;
+      off: jest.Mock;
+    };
+    on: jest.Mock;
+    off: jest.Mock;
+    emit: jest.Mock;
+    connect: jest.Mock;
+    disconnect: jest.Mock;
+  }
+  
+  let mockSocket: MockSocket;
+  let socketEventHandlers: Map<string, ((...args: unknown[]) => void)[]>;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -107,7 +141,7 @@ describe('WebSocket Integration', () => {
       auth: {},
       io: {
         opts: {},
-        on: vi.fn((event: string, handler: (...args: any[]) => void) => {
+        on: vi.fn((event: string, handler: (...args: unknown[]) => void) => {
           if (!socketEventHandlers.has(event)) {
             socketEventHandlers.set(event, []);
           }
@@ -117,7 +151,7 @@ describe('WebSocket Integration', () => {
           socketEventHandlers.delete(event);
         })
       },
-      on: vi.fn((event: string, handler: (...args: any[]) => void) => {
+      on: vi.fn((event: string, handler: (...args: unknown[]) => void) => {
         if (!socketEventHandlers.has(event)) {
           socketEventHandlers.set(event, []);
         }
@@ -138,7 +172,7 @@ describe('WebSocket Integration', () => {
     };
 
     // Mock io constructor
-    (io as any).mockReturnValue(mockSocket);
+    (io as jest.Mock).mockReturnValue(mockSocket);
   });
 
   afterEach(() => {
@@ -148,7 +182,7 @@ describe('WebSocket Integration', () => {
   });
 
   // Helper to trigger socket events
-  const triggerSocketEvent = (event: string, ...args: any[]) => {
+  const triggerSocketEvent = (event: string, ...args: unknown[]) => {
     const handlers = socketEventHandlers.get(event) || [];
     handlers.forEach(handler => handler(...args));
   };

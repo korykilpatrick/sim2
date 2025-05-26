@@ -81,7 +81,7 @@ router.get('/', authenticateToken, (req, res) => {
       return aVal.localeCompare(bVal) * order
     }
 
-    return (aVal as any) > (bVal as any) ? order : -order
+    return (aVal as number) > (bVal as number) ? order : -order
   })
 
   res.json(filtered)

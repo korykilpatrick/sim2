@@ -52,8 +52,8 @@ describe('useMediaQuery', () => {
 
     // Simulate media query change
     act(() => {
-      const changeHandler = mockMatchMedia.addEventListener.mock.calls[0][1]
-      changeHandler({ matches: true })
+      const changeHandler = mockMatchMedia.addEventListener.mock.calls[0][1] as (event: MediaQueryListEvent) => void
+      changeHandler({ matches: true } as MediaQueryListEvent)
     })
 
     expect(result.current).toBe(true)
@@ -61,8 +61,8 @@ describe('useMediaQuery', () => {
 
   it('should handle legacy addListener API', () => {
     // Set up legacy API
-    mockMatchMedia.addEventListener = undefined as any
-    mockMatchMedia.removeEventListener = undefined as any
+    mockMatchMedia.addEventListener = undefined as unknown as typeof mockMatchMedia.addEventListener
+    mockMatchMedia.removeEventListener = undefined as unknown as typeof mockMatchMedia.removeEventListener
     mockMatchMedia.addListener = vi.fn()
     mockMatchMedia.removeListener = vi.fn()
 
@@ -73,8 +73,8 @@ describe('useMediaQuery', () => {
     // Simulate change with legacy API
     act(() => {
       mockMatchMedia.matches = true
-      const changeHandler = mockMatchMedia.addListener.mock.calls[0][0]
-      changeHandler({ matches: true })
+      const changeHandler = mockMatchMedia.addListener.mock.calls[0][0] as (event: MediaQueryListEvent) => void
+      changeHandler({ matches: true } as MediaQueryListEvent)
     })
 
     expect(result.current).toBe(true)
@@ -157,8 +157,8 @@ describe('useMediaQuery', () => {
 
     // Update first query
     act(() => {
-      const changeHandler = firstQueryMock.addEventListener.mock.calls[0][1]
-      changeHandler({ matches: true })
+      const changeHandler = firstQueryMock.addEventListener.mock.calls[0][1] as (event: MediaQueryListEvent) => void
+      changeHandler({ matches: true } as MediaQueryListEvent)
     })
 
     expect(result1.current).toBe(true)

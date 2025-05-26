@@ -52,7 +52,7 @@ describe('API Endpoint Validation Integration', () => {
       }
 
       // Simulate API response
-      const apiResponse: ApiResponse<any> = mockResponse
+      const apiResponse: ApiResponse<unknown> = mockResponse
 
       // Validate the response
       const validatedData = validators.auth.login(apiResponse)
@@ -78,7 +78,7 @@ describe('API Endpoint Validation Integration', () => {
       }
 
       // Simulate API response
-      const apiResponse: ApiResponse<any> = invalidResponse
+      const apiResponse: ApiResponse<unknown> = invalidResponse
 
       // Validation should throw
       expect(() => validators.auth.login(apiResponse)).toThrow(ApiValidationError)
@@ -121,7 +121,7 @@ describe('API Endpoint Validation Integration', () => {
       }
 
       // Simulate API response
-      const apiResponse: ApiResponse<any> = mockResponse
+      const apiResponse: ApiResponse<unknown> = mockResponse
       
       const validatedData = validators.auth.profile(apiResponse)
       expect(validatedData.data.role).toBe('admin')
@@ -166,7 +166,7 @@ describe('API Endpoint Validation Integration', () => {
       }
 
       // Simulate API response
-      const apiResponse: ApiResponse<any> = mockResponse
+      const apiResponse: ApiResponse<unknown> = mockResponse
       
       const validatedData = validators.vessels.search(apiResponse)
       expect(validatedData.data[0].name).toBe('OCEAN TRADER')
@@ -196,7 +196,7 @@ describe('API Endpoint Validation Integration', () => {
       }
 
       // Simulate API response
-      const apiResponse: ApiResponse<any> = invalidResponse
+      const apiResponse: ApiResponse<unknown> = invalidResponse
       
       expect(() => validators.vessels.getById(apiResponse)).toThrow(ApiValidationError)
     })
@@ -240,7 +240,7 @@ describe('API Endpoint Validation Integration', () => {
       }
 
       // Simulate API response
-      const apiResponse: ApiResponse<any> = mockResponse
+      const apiResponse: ApiResponse<unknown> = mockResponse
       
       const validatedData = validators.areas.create(apiResponse)
       expect(validatedData.data.name).toBe('Singapore Anchorage')
@@ -270,7 +270,7 @@ describe('API Endpoint Validation Integration', () => {
       }
 
       // Simulate API response
-      const apiResponse: ApiResponse<any> = invalidResponse
+      const apiResponse: ApiResponse<unknown> = invalidResponse
       
       expect(() => validators.areas.getById(apiResponse)).toThrow(ApiValidationError)
     })
