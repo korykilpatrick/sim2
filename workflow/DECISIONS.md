@@ -1,5 +1,111 @@
 # Architectural Decisions Log
 
+## 2025-01-25: API Contract Validation Strategy
+
+### Decision: Runtime Validation with Zod
+
+**Context**:
+The frontend makes assumptions about API response structures through TypeScript types, but these are compile-time only. Runtime mismatches between frontend expectations and actual API responses can cause crashes or subtle bugs.
+
+**Decision**:
+Implement comprehensive runtime validation using Zod schemas that mirror our TypeScript types. Validate all API responses before using them in the application.
+
+**Rationale**:
+- Catches API contract violations at runtime
+- Provides detailed error messages for debugging
+- Documents expected API structure through schemas
+- Enables graceful error handling
+- Zod integrates well with TypeScript
+
+**Alternatives Considered**:
+1. **io-ts**: More functional approach but steeper learning curve
+2. **Manual validation**: Error-prone and hard to maintain
+3. **JSON Schema**: Less TypeScript integration
+4. **No validation**: Too risky for production
+
+### Decision: Validation at API Boundary
+
+**Context**:
+Where to place validation logic - in components, services, or API layer?
+
+**Decision**:
+Validate at the API client boundary, immediately after receiving responses.
+
+**Rationale**:
+- Single point of validation
+- Fails fast before bad data propagates
+- Easy to enable/disable for performance
+- Clear separation of concerns
+
+**Implementation**:
+```typescript
+// API endpoint returns raw data
+const response = await authApi.login(credentials)
+// Validate before using
+const validatedData = validators.auth.login(response.data)
+```
+
+### Decision: Comprehensive Schema Coverage
+
+**Context**:
+How much of the API surface to cover with validation schemas?
+
+**Decision**:
+Create schemas for ALL API endpoints, not just critical ones.
+
+**Rationale**:
+- Consistency across codebase
+- Prevents validation gaps
+- Serves as API documentation
+- Easier to maintain when complete
+
+**Trade-offs**:
+- More upfront work
+- Larger bundle size (mitigated by tree-shaking)
+- Some overhead for simple endpoints
+
+### Decision: Pre-configured Validators
+
+**Context**:
+Developers need easy access to validators without importing schemas.
+
+**Decision**:
+Export pre-configured validator functions for each endpoint.
+
+**Rationale**:
+- Better developer experience
+- Consistent error messages
+- Centralized configuration
+- Type inference works automatically
+
+**Example**:
+```typescript
+// Instead of this:
+validateApiResponse(response, ApiResponseSchema(UserSchema), 'auth/login')
+
+// Developers use this:
+validators.auth.login(response)
+```
+
+### Decision: Custom Error Class
+
+**Context**:
+How to handle validation failures in a way that's useful for debugging?
+
+**Decision**:
+Create `ApiValidationError` class that includes endpoint name and detailed validation errors.
+
+**Rationale**:
+- Can be caught specifically
+- Includes all context needed for debugging
+- Distinguishes from other errors
+- Enables custom error handling
+
+**Benefits**:
+- Error tracking services can group by endpoint
+- Developers see exactly what failed
+- Can implement retry logic based on error type
+
 ## 2025-01-25: Code Quality Fixes Strategy
 
 ### Decision: Fix Before Refactor
