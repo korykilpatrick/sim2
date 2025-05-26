@@ -20,17 +20,19 @@
 - Fixing these will push us well above 80% coverage
 - These are core features users need (credit display, purchase, tracking)
 
-### 1. Fix Credit System UI Components (Days 1-2)
+### 1. Fix Credit System UI Components (Days 1-2) ✅ COMPLETED
 **Goal**: Make all credit integration tests pass
 
+**Status**: Component fully implemented but tests still failing due to MSW infrastructure issue (see NEXT IMMEDIATE PRIORITY above)
+
 #### CreditsPage Component
-- [ ] Change to named export (not default)
-- [ ] Add data-testid="credit-balance"
-- [ ] Display current, lifetime, and expiring credits
-- [ ] Add loading states with data-testid="loading-spinner"
-- [ ] Add error handling with user-friendly messages
-- [ ] Handle WebSocket credit updates via ws:credit-update events
-- [ ] Show "Please log in" when unauthenticated
+- [x] Change to named export (not default)
+- [x] Add data-testid="credit-balance"
+- [x] Display current, lifetime, and expiring credits
+- [x] Add loading states with data-testid="loading-spinner"
+- [x] Add error handling with user-friendly messages
+- [x] Handle WebSocket credit updates via ws:credit-update events
+- [x] Show "Please log in" when unauthenticated
 
 #### Credit Purchase Flow
 - [ ] Add package selection with data-testid="package-{amount}"
@@ -147,12 +149,59 @@ Then and only then:
 - [ ] Codebase ready for new features
 - [ ] Team confident in foundation
 
-## Next Immediate Action
+## 🚨 NEXT IMMEDIATE PRIORITY: Fix MSW Test Infrastructure
 
-Start with `CreditsPage` component:
-1. Run `npm test tests/integration/credits/credit-balance.test.tsx`
-2. Fix one failing test at a time
-3. Commit after each test passes
-4. Move to next test
+### Why This Is Critical
+- We have 73 failing integration tests that are ready to pass
+- The components are implemented, but MSW isn't intercepting API requests
+- Fixing this will immediately push us well above 80% coverage
+- This blocks all UI integration testing
 
-This approach ensures we build on our TDD foundation and deliver working features quickly.
+### Debugging Steps (Do These First!)
+
+#### 1. Add MSW Request Logging (Day 1, Hour 1)
+- [ ] Add request interceptor logging to see what URLs are being called
+- [ ] Add handler logging to see which handlers are registered
+- [ ] Compare actual request URLs with handler patterns
+- [ ] Check if requests are using correct base URL
+
+```typescript
+// In test setup
+server.events.on('request:start', ({ request }) => {
+  console.log('MSW intercepted:', request.method, request.url)
+})
+
+server.events.on('request:unhandled', ({ request }) => {
+  console.log('MSW missed:', request.method, request.url)
+})
+```
+
+#### 2. Verify Handler Registration (Day 1, Hour 2)
+- [ ] Check that featuresCreditHandlers are properly spread into server
+- [ ] Ensure server.use() is called before component renders
+- [ ] Verify handlers aren't being reset too early
+- [ ] Test with a simple handler to confirm MSW is working
+
+#### 3. Fix Request/Handler Mismatch (Day 1, Hour 3-4)
+- [ ] Update all handler URLs to match actual requests
+- [ ] Ensure axios baseURL configuration in tests
+- [ ] Check for any request interceptors modifying URLs
+- [ ] Verify content-type and other headers match
+
+#### 4. Run Credit Tests to Verify (Day 1, Hour 4)
+- [ ] Run `npm test tests/integration/credits/credit-balance.test.tsx`
+- [ ] Should see multiple tests passing that previously failed
+- [ ] Document the fix for other test files
+
+### Expected Outcome
+- Credit integration tests: 11+ tests passing
+- Overall coverage: Jump from 79.14% to 82%+
+- Pattern established for fixing other integration tests
+
+### If This Doesn't Work
+Only then consider:
+1. Implementing more UI components
+2. Adding unit tests for utilities
+3. Creating component stubs
+
+But MSW fix is the highest ROI task available.

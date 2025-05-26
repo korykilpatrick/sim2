@@ -2,155 +2,119 @@
 *Updated: January 26, 2025*
 
 ## Executive Summary
-The SIM (SynMax Intelligence Marketplace) frontend has made significant progress toward production readiness. We've achieved **79.14% test coverage** (277/350 tests passing), up from ~25% at the start of this session. The codebase demonstrates excellent TypeScript usage (95% coverage) and follows modern React patterns with a feature-based architecture.
+The SIM (SynMax Intelligence Marketplace) frontend has made progress on implementing the CreditsPage UI component. We successfully:
+- Changed CreditsPage from default to named export
+- Added proper loading states and error handling
+- Added data-testid attributes for testing
+- Implemented WebSocket credit update subscriptions
+- Fixed all TypeScript errors (0 errors)
 
-## Test Coverage Progress
+However, the credit integration tests are still failing due to API handler configuration issues in the test environment.
 
-### Current Status
-- **Overall Coverage**: 79.14% (277/350 tests passing)
-- **Test Execution Time**: ~13 seconds for full suite
-- **TypeScript Errors**: 0 (fixed all 5 remaining errors)
-- **ESLint Errors**: 0 (fixed from 26 errors)
-- **ESLint Warnings**: 126 (mostly 'any' types and React Refresh)
+## Current Status
+- **Test Coverage**: Still at 79.14% (277/350 tests passing)
+- **TypeScript Errors**: 0 ✅
+- **ESLint Errors**: 0 ✅
+- **ESLint Warnings**: 126 (unchanged)
 
-### Coverage by Area
-1. **Auth System**: 100% coverage (59 unit tests)
-2. **Core Hooks**: 100% coverage (58 unit tests)
-3. **API Validation**: 100% coverage (51 unit tests)
-4. **WebSocket**: ~80% coverage (51/64 tests passing)
-5. **Credit System**: Unit tests passing, integration tests blocked by missing UI
+## Work Completed on CreditsPage
 
-### Recent Improvements
-- Fixed all TypeScript compilation errors
-- Added comprehensive API contract validation with Zod
-- Implemented thorough testing for all core hooks
-- Fixed WebSocket integration test setup
-- Standardized component prop APIs (Alert component)
+### 1. Export Structure Fixed
+- Changed from `export default` to `export function CreditsPage()`
+- Updated App.tsx lazy loading to handle named export
 
-## Architecture Quality
+### 2. Authentication Handling
+- Added check for `isAuthenticated` state
+- Shows "Please log in to view your credits" when not authenticated
 
-### Strengths
-1. **Feature-Based Architecture**: Clear separation of concerns with 6 major feature modules
-2. **Type Safety**: 95% TypeScript coverage with strict mode compliance
-3. **State Management**: Well-implemented Zustand stores with proper separation
-4. **API Layer**: Clean abstraction with comprehensive runtime validation
-5. **Testing Infrastructure**: Solid foundation with MSW for API mocking
+### 3. Loading States
+- Added loading spinner with `data-testid="loading-spinner"`
+- Shows centered spinner during data fetch
 
-### Areas for Improvement
-1. **Dual Credit System**: Two parallel implementations need consolidation
-2. **Component Coverage**: Many UI components need implementation
-3. **Integration Tests**: 70+ failing due to missing component implementations
-4. **WebSocket Race Conditions**: Room rejoin timing issues need fixing
-5. **Documentation**: Inline JSDoc comments are minimal
+### 4. Error Handling
+- Shows "Failed to load credit balance" on error
+- Includes Retry button that calls `refetch()`
 
-## Technical Debt Analysis
+### 5. Credit Display Updates
+- Current balance displays with `data-testid="credit-balance"`
+- Uses `balance.toLocaleString()` for proper number formatting
+- Shows lifetime credits in separate card
+- Displays expiring credits with dates when available
 
-### High Priority
-1. **Missing UI Components**: Integration tests are failing because components don't exist
-2. **Credit System Duplication**: `/features/credits` vs `/features/shared` implementations
-3. **WebSocket Room Management**: Race condition in authentication/room join sequence
+### 6. WebSocket Integration
+- Subscribes to `credit_balance_updated` events
+- Also listens for custom window event `ws:credit-update`
+- Triggers refetch when balance updates are received
+- Handles case when WebSocket is disabled (in tests)
 
-### Medium Priority
-1. **ESLint Warnings**: 126 warnings, mostly 'any' types that need proper typing
-2. **Console Statements**: Server-side logging needs proper logger implementation
-3. **Test Organization**: Some test utilities could be consolidated
+## Issues Encountered
 
-### Low Priority
-1. **Import Organization**: Some circular dependencies between hooks
-2. **Mock Duplication**: Test setup code could be shared more effectively
-3. **Performance**: No optimization for re-renders or bundle size yet
+### 1. Mock Handler URL Mismatch
+- Tests expect handlers at `/api/v1/*` (relative URLs)
+- Fixed by updating mock handler URLs from absolute to relative
+- However, handlers still not being picked up by MSW in tests
 
-## Code Quality Metrics
+### 2. Dual Credit System Architecture
+- `/features/credits` uses: `{ current, lifetime, expiringCredits }`
+- `/features/shared` uses: `{ available, lifetime, expiring }`
+- Tests written for features/credits structure
+- Mock handlers exist for both systems
 
-### Positive Indicators
-- **Type Coverage**: 95% with strict mode
-- **Test Speed**: 13s for 350 tests is excellent
-- **Error Handling**: Comprehensive error boundaries and validation
-- **Code Organization**: Clear feature boundaries and consistent patterns
+### 3. Test Environment Issues
+- MSW not intercepting requests despite handlers being registered
+- Tests stay in loading state indefinitely
+- WebSocket disabled in test environment (expected)
 
-### Improvement Opportunities
-- **Test Coverage**: Need 3 more passing tests to reach 80% goal
-- **Component Testing**: Limited component-level testing
-- **E2E Tests**: No end-to-end test coverage
-- **Performance Tests**: No performance benchmarks
+## Technical Analysis
 
-## Architectural Decisions Made
+### Why Tests Are Still Failing
+The credit balance integration tests are failing because:
+1. MSW is not intercepting the API requests
+2. The component stays in loading state waiting for API response
+3. The test assertions timeout looking for content that never renders
 
-### Testing Strategy
-1. **Test-First Development**: All new code requires tests before implementation
-2. **Runtime Validation**: Zod schemas validate all API responses
-3. **Mock-First Testing**: Browser APIs and external services are mocked
-4. **Isolated Test Suites**: Separate test files for each concern
+Potential causes:
+- Handler registration timing issue
+- Request URL mismatch between client and handlers
+- Test setup/teardown not properly configured
 
-### Code Organization
-1. **Feature Modules**: Self-contained features with own types/hooks/services
-2. **Centralized Types**: Shared types in common locations
-3. **Export Barrels**: Clean imports through index files
-4. **Provider Hierarchy**: Clear provider nesting for context
+### Code Quality Observations
+- TypeScript compliance is excellent (0 errors)
+- Component follows React best practices
+- Proper separation of concerns
+- Good use of hooks and effects
 
-## Integration Points
+## Next Steps to Reach 80% Coverage
 
-### WebSocket Integration
-- Real-time updates for vessel positions, area alerts, credit balance
-- Room-based subscriptions for efficient data streaming
-- Automatic reconnection with exponential backoff
-- Authentication state synchronization
+### Option 1: Fix Integration Tests (Recommended)
+1. Debug MSW handler registration in test environment
+2. Ensure handlers are available before component renders
+3. Verify API client base URL matches handler patterns
+4. Consider using MSW's request logging to debug
 
-### API Integration
-- RESTful endpoints with consistent response format
-- Runtime validation catches contract mismatches
-- Proper error handling with user-friendly messages
-- Mock server for development and testing
+### Option 2: Add More Unit Tests
+1. Add tests for untested utility functions
+2. Add more service layer tests
+3. Add component unit tests that mock hooks
 
-## Performance Considerations
+### Option 3: Minimal UI Stubs
+1. Create minimal implementations of missing components
+2. Just enough to make integration tests pass
+3. Would immediately push coverage above 80%
 
-### Current State
-- Bundle size: Not yet optimized
-- Initial load time: Not measured
-- Runtime performance: No profiling done
-- Memory usage: Potential leaks in WebSocket listeners
+## Architecture Recommendations
 
-### Recommendations
-1. Implement code splitting for route-based chunks
-2. Add React.memo for expensive components
-3. Use virtualization for large lists
-4. Monitor WebSocket listener cleanup
+### 1. Consolidate Credit Systems
+- Choose one credit data structure
+- Migrate all code to use single implementation
+- Update all tests to match
 
-## Security Analysis
+### 2. Improve Test Infrastructure
+- Create better test utilities for MSW setup
+- Add request/response logging in test mode
+- Document proper test patterns
 
-### Implemented
-- JWT token management with refresh logic
-- Secure credential storage (no tokens in localStorage)
-- API validation prevents injection attacks
-- Proper authentication checks on protected routes
-
-### Needs Attention
-- Content Security Policy not configured
-- No rate limiting on API calls
-- Missing audit logging
-- No encryption for sensitive data in transit
-
-## Next Steps for 80%+ Coverage
-
-### Immediate Actions (to reach 80%)
-1. Fix remaining WebSocket integration tests (need 3 more passing)
-2. Or implement minimal UI component stubs for credit tests
-3. Or add a few more unit tests for untested utilities
-
-### Phase 2 Priorities
-1. Consolidate dual credit system implementations
-2. Implement missing UI components
-3. Fix WebSocket room rejoin race condition
-4. Reduce ESLint warnings by 50%
-
-### Phase 3 Goals
-1. Add E2E test coverage
-2. Implement performance monitoring
-3. Add comprehensive JSDoc documentation
-4. Set up bundle size tracking
-
-## Conclusion
-
-The SIM frontend has made substantial progress with a 54% improvement in test coverage in one day (from 25% to 79.14%). The codebase demonstrates high-quality patterns and solid architectural decisions. With just 3 more passing tests, we'll achieve our 80% coverage goal, establishing a strong foundation for continued development.
-
-The main blockers are missing UI component implementations rather than architectural issues. Once these components are built (following TDD principles), the integration test coverage will increase significantly, likely pushing us well above 80% overall coverage.
+### 3. Component Testing Strategy
+- Separate integration tests from unit tests
+- Mock at appropriate boundaries
+- Test components in isolation when possible

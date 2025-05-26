@@ -50,7 +50,9 @@ const InvestigationWizard = lazy(
 )
 
 // Credits pages
-const CreditsPage = lazy(() => import('@pages/credits/CreditsPage'))
+const CreditsPage = lazy(() => 
+  import('@pages/credits/CreditsPage').then(module => ({ default: module.CreditsPage }))
+)
 
 // Analytics pages
 const AnalyticsPage = lazy(

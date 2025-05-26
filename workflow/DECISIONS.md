@@ -1,5 +1,95 @@
 # Architectural Decisions Log
 
+## 2025-01-26: CreditsPage Implementation Strategy
+
+### Decision: Implement UI Without Full Test Coverage
+
+**Context**:
+The credit integration tests were failing because the CreditsPage component didn't exist. We needed to implement the component to make progress toward 80% test coverage.
+
+**Decision**:
+Implement the CreditsPage with all expected UI elements and behaviors, even though the integration tests would still fail due to MSW configuration issues.
+
+**Rationale**:
+- Component needed to exist for tests to run
+- All UI elements and test IDs are now in place
+- WebSocket integration demonstrates proper patterns
+- TypeScript compliance achieved (0 errors)
+- Sets foundation for fixing test infrastructure
+
+**Trade-offs**:
+- Tests still fail due to MSW issues
+- Didn't achieve coverage increase
+- Need additional work on test setup
+
+### Decision: Use Named Export for CreditsPage
+
+**Context**:
+The tests expected a named export but the component had a default export, causing import errors.
+
+**Decision**:
+Change to named export and update App.tsx lazy loading to handle it.
+
+**Rationale**:
+- Tests already written expecting named export
+- Consistency with other page components
+- Clearer import statements
+- Better tree-shaking potential
+
+**Implementation**:
+```typescript
+// Before
+export default function CreditsPage() { }
+
+// After  
+export function CreditsPage() { }
+
+// App.tsx
+const CreditsPage = lazy(() => 
+  import('@pages/credits/CreditsPage').then(module => ({ default: module.CreditsPage }))
+)
+```
+
+### Decision: Handle WebSocket Gracefully in Tests
+
+**Context**:
+WebSocket is disabled in test environment, causing the component to crash when trying to subscribe to events.
+
+**Decision**:
+Check if WebSocket methods exist before using them.
+
+**Rationale**:
+- Tests should run without WebSocket
+- Component should degrade gracefully
+- Maintains functionality in production
+- Follows defensive programming practices
+
+**Implementation**:
+```typescript
+if (on) {
+  unsubscribeWs = on('credit_balance_updated', handleCreditUpdate)
+}
+```
+
+### Decision: Defer Test Infrastructure Fix
+
+**Context**:
+MSW is not intercepting requests in the test environment, causing all integration tests to fail. This is a complex infrastructure issue.
+
+**Decision**:
+Complete the UI implementation but defer fixing the test infrastructure to a separate task.
+
+**Rationale**:
+- UI implementation is valuable on its own
+- Test infrastructure is a separate concern
+- Other paths to 80% coverage exist
+- Avoids scope creep
+
+**Impact**:
+- Component is fully implemented
+- Tests remain failing but are ready
+- Clear next steps identified
+
 ## 2025-01-25: API Contract Validation Strategy
 
 ### Decision: Runtime Validation with Zod

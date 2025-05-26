@@ -2,19 +2,23 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { screen, waitFor, renderHook } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { renderWithProviders, setupAuthenticatedUser, clearAuth, TestProviders } from '../../utils/test-utils'
-import { server, resetMockData, mockCreditBalance } from '../../utils/api-mocks'
+import { server } from '../../utils/api-mocks'
+import { featuresCreditHandlers, resetFeaturesCreditData, mockCreditBalanceFeatures } from '../../utils/credit-mocks'
 import { CreditsPage } from '@/pages/credits/CreditsPage'
 import { useCredits } from '@/features/credits/hooks/useCredits'
 import { useAuthStore } from '@/features/auth/services/authStore'
 
 beforeEach(() => {
   setupAuthenticatedUser()
-  resetMockData()
+  resetFeaturesCreditData()
+  // Use the features/credits handlers for these tests
+  server.use(...featuresCreditHandlers)
 })
 
 afterEach(() => {
   clearAuth()
   vi.clearAllMocks()
+  server.resetHandlers()
 })
 
 describe('Credit Balance Integration Tests', () => {
@@ -116,7 +120,7 @@ describe('Credit Balance Integration Tests', () => {
   describe('Low Balance Warnings', () => {
     it('should display low balance warning when below threshold', async () => {
       // Set balance below threshold
-      mockCreditBalance.current = 40
+      mockCreditBalanceFeatures.current = 40
       
       renderWithProviders(<CreditsPage />)
       
@@ -131,7 +135,7 @@ describe('Credit Balance Integration Tests', () => {
     })
 
     it('should display critical warning when balance is very low', async () => {
-      mockCreditBalance.current = 10
+      mockCreditBalanceFeatures.current = 10
       
       renderWithProviders(<CreditsPage />)
       

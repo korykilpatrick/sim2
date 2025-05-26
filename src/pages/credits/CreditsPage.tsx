@@ -12,16 +12,46 @@ import CreditPurchaseModal from '@/features/credits/components/CreditPurchaseMod
 import CreditTransactionHistory from '@/features/credits/components/CreditTransactionHistory'
 import LowBalanceWarning from '@/features/credits/components/LowBalanceWarning'
 import { useCredits } from '@/features/credits/hooks/useCredits'
+import { useWebSocket } from '@/hooks/useWebSocket'
 import type { CreditTransaction } from '@/features/credits/components/CreditTransactionHistory'
 
-export default function CreditsPage() {
-  const { user } = useAuth()
-  const { availablePackages } = useCredits()
+export function CreditsPage() {
+  const { user, isAuthenticated } = useAuth()
+  const { balance, lifetimeCredits, expiringCredits, isLoading, error, availablePackages, refetch } = useCredits()
+  const { on, off } = useWebSocket()
   const [selectedPackage, setSelectedPackage] = useState<string>('')
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false)
   const [mockTransactions, setMockTransactions] = useState<CreditTransaction[]>(
     [],
   )
+
+  // Subscribe to WebSocket credit updates
+  useEffect(() => {
+    const handleCreditUpdate = () => {
+      // Trigger a refetch to update the balance
+      refetch()
+    }
+
+    // Listen for both custom window events and WebSocket events
+    const handleWindowEvent = () => {
+      handleCreditUpdate()
+    }
+
+    window.addEventListener('ws:credit-update', handleWindowEvent as EventListener)
+    
+    // Only subscribe to WebSocket if available
+    let unsubscribeWs: (() => void) | undefined
+    if (on) {
+      unsubscribeWs = on('credit_balance_updated', handleCreditUpdate)
+    }
+
+    return () => {
+      window.removeEventListener('ws:credit-update', handleWindowEvent as EventListener)
+      if (unsubscribeWs) {
+        unsubscribeWs()
+      }
+    }
+  }, [on, off, refetch])
 
   // Mock transaction data for demo
   useEffect(() => {
@@ -87,6 +117,36 @@ export default function CreditsPage() {
     (pkg) => pkg.id === selectedPackage,
   )
 
+  // Show login message if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <p className="text-gray-500">Please log in to view your credits</p>
+      </div>
+    )
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div data-testid="loading-spinner" className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Failed to load credit balance</p>
+          <Button onClick={() => refetch()} variant="secondary">Retry</Button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -100,7 +160,7 @@ export default function CreditsPage() {
       {/* Low Balance Warning */}
       {user && (
         <LowBalanceWarning
-          currentBalance={user.credits}
+          currentBalance={balance}
           onPurchaseClick={() => {
             setSelectedPackage('professional')
             setIsPurchaseModalOpen(true)
@@ -116,8 +176,8 @@ export default function CreditsPage() {
               <p className="text-sm font-medium text-gray-500">
                 Current Balance
               </p>
-              <p className="mt-1 text-3xl font-bold text-gray-900">
-                {user?.credits || 0} Credits
+              <p className="mt-1 text-3xl font-bold text-gray-900" data-testid="credit-balance">
+                {balance.toLocaleString()} Credits
               </p>
             </div>
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-yellow-100">
@@ -137,6 +197,39 @@ export default function CreditsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Lifetime Credits */}
+      <Card>
+        <CardContent className="p-6">
+          <div>
+            <p className="text-sm font-medium text-gray-500">Lifetime Credits</p>
+            <p className="mt-1 text-2xl font-semibold text-gray-900">
+              {lifetimeCredits.toLocaleString()}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Expiring Credits */}
+      {expiringCredits && expiringCredits.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Expiring Credits</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {expiringCredits.map((expiring, index) => (
+                <div key={index} className="flex justify-between items-center py-2 border-b last:border-0">
+                  <span>{expiring.amount} credits expiring</span>
+                  <span className="text-sm text-gray-500">
+                    {new Date(expiring.expiresAt).toLocaleDateString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Purchase Credits */}
       <div>

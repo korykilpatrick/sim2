@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw'
 
-const API_BASE_URL = 'http://localhost:3001/api/v1'
+const API_BASE_URL = '/api/v1'
 
 // Mock data for features/credits (different from shared/credits)
 export const mockCreditBalanceFeatures = {
