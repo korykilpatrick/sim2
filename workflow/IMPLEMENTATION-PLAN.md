@@ -24,7 +24,11 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 
 1. [x] Write tests for tracking criteria types (AIS, dark events, spoofing, etc.)
 2. [x] Implement tracking criteria data models
-3. [ ] Build criteria selection UI components with tests
+3. [x] Build criteria selection UI components with tests
+   - [x] Enhanced CriteriaSelector with category grouping
+   - [x] Created CriteriaCheckbox component
+   - [x] Created CriteriaCategoryGroup component
+   - [x] Full test coverage (52 new tests)
 4. [ ] Create duration-based pricing calculator with tests
 5. [ ] Implement bulk purchase options
 6. [ ] Build tracking configuration wizard

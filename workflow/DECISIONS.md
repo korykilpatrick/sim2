@@ -1,5 +1,122 @@
 # Architectural Decisions Log
 
+## 2025-05-27: Vessel Tracking Criteria UI Component Architecture
+
+### Decision: Component Composition Strategy
+
+**Context**:
+We needed to build UI components for selecting vessel tracking criteria. The components needed to support both simple list display and organized category grouping.
+
+**Decision**:
+Create three composable components instead of one monolithic component:
+
+1. **CriteriaSelector** - Main container component
+2. **CriteriaCheckbox** - Individual criterion selection
+3. **CriteriaCategoryGroup** - Category grouping wrapper
+
+**Rationale**:
+
+- **Flexibility**: Components can be used independently or together
+- **Reusability**: CriteriaCheckbox can be used outside of the selector
+- **Maintainability**: Smaller, focused components are easier to test
+- **Performance**: Render optimization is easier with smaller components
+- **Accessibility**: Each component can focus on specific a11y concerns
+
+**Alternatives Considered**:
+
+1. **Single mega-component**: All functionality in CriteriaSelector
+   - Rejected: Would be too complex and hard to test
+   - Rejected: Less flexible for different use cases
+
+2. **Render props pattern**: CriteriaSelector with render prop
+   - Rejected: Adds unnecessary complexity
+   - Rejected: Harder to type with TypeScript
+
+**Trade-offs**:
+
+- **Pro**: Maximum flexibility and reusability
+- **Pro**: Clean separation of concerns
+- **Pro**: Easy to test each component
+- **Con**: More files to maintain
+- **Con**: Need to coordinate props between components
+
+### Decision: Category Grouping as Optional Feature
+
+**Context**:
+The tracking criteria can be organized into categories (Signal Integrity, Vessel Activity, etc.) but not all use cases need this grouping.
+
+**Decision**:
+Make category grouping an optional feature via the `groupByCategory` prop on CriteriaSelector.
+
+**Rationale**:
+
+- Backwards compatible with existing usage
+- Simple flag to enable/disable grouping
+- No performance impact when not used
+- Keeps the default UI simple
+
+**Implementation**:
+```tsx
+<CriteriaSelector
+  criteria={criteria}
+  selectedCriteria={selected}
+  onToggleCriteria={handleToggle}
+  groupByCategory={true} // Optional, defaults to false
+/>
+```
+
+### Decision: Accessibility-First Design
+
+**Context**:
+Maritime monitoring tools are used by professionals who may rely on keyboard navigation or screen readers.
+
+**Decision**:
+Implement comprehensive accessibility features in all components:
+
+- Full keyboard navigation support
+- ARIA attributes on all interactive elements
+- Focus management and visual indicators
+- Screen reader announcements
+
+**Rationale**:
+
+- Professional tools need to be accessible to all users
+- Legal compliance requirements
+- Better UX for power users who prefer keyboard
+- Sets good foundation for future components
+
+**Implementation Details**:
+
+- `role="button"` on clickable divs
+- `aria-pressed` for toggle state
+- `aria-label` for meaningful descriptions
+- `tabIndex` for keyboard navigation
+- Focus trap prevention
+
+### Decision: Credit Cost Display Integration
+
+**Context**:
+Each tracking criterion has an associated credit cost that users need to see when making selections.
+
+**Decision**:
+Add optional `creditCost` prop to CriteriaCheckbox and `showCreditCosts` to CriteriaCategoryGroup.
+
+**Rationale**:
+
+- Cost transparency helps users make informed decisions
+- Optional prop maintains flexibility
+- Can be easily extended for different pricing models
+- Consistent with credit system used elsewhere
+
+**Trade-offs**:
+
+- **Pro**: Clear cost visibility
+- **Pro**: Easy to update pricing
+- **Con**: Couples UI components to business logic
+- **Mitigation**: Keep as optional prop
+
+**Technical Debt**: None - clean implementation with proper separation.
+
 ## 2025-05-27: Tracking Criteria Data Model Design
 
 ### Decision: Centralize Tracking Criteria as Constants
