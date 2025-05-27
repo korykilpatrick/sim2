@@ -25,6 +25,100 @@ const creditKeys = {
     [...creditKeys.all, 'transactions', filter] as const,
 }
 
+/**
+ * Comprehensive hook for managing user credits
+ * 
+ * Provides a unified interface for all credit operations including balance
+ * checking, purchasing, deductions, reservations, and transaction history.
+ * Automatically syncs with auth state and handles real-time updates.
+ * 
+ * @returns {Object} Credit management interface
+ * @returns {number} returns.balance - Current available credit balance
+ * @returns {number} returns.lifetimeCredits - Total credits earned
+ * @returns {Object|null} returns.expiringCredits - Credits expiring soon
+ * @returns {Array} returns.transactions - Recent transaction history
+ * @returns {boolean} returns.isLoading - Loading state for balance
+ * @returns {boolean} returns.isError - Error state
+ * @returns {Error} returns.error - Error details if any
+ * @returns {Function} returns.refetch - Refresh balance and transactions
+ * @returns {Function} returns.purchaseCredits - Purchase credits
+ * @returns {Function} returns.deductCredits - Deduct credits with validation
+ * @returns {Function} returns.checkSufficientCredits - Check if user can afford amount
+ * @returns {Function} returns.reserveCredits - Reserve credits for later
+ * @returns {Function} returns.confirmReservation - Confirm a reservation
+ * @returns {Function} returns.cancelReservation - Cancel a reservation
+ * @returns {Function} returns.calculateCost - Calculate service costs
+ * @returns {Array} returns.availablePackages - Credit packages for purchase
+ * 
+ * @example
+ * ```typescript
+ * function CreditDashboard() {
+ *   const {
+ *     balance,
+ *     expiringCredits,
+ *     transactions,
+ *     isLoading,
+ *     purchaseCredits,
+ *     checkSufficientCredits
+ *   } = useUnifiedCredits()
+ *   
+ *   if (isLoading) return <Spinner />
+ *   
+ *   return (
+ *     <div>
+ *       <h2>Balance: {balance} credits</h2>
+ *       
+ *       {expiringCredits && (
+ *         <Alert>
+ *           {expiringCredits.amount} credits expire on {expiringCredits.date}
+ *         </Alert>
+ *       )}
+ *       
+ *       <TransactionHistory transactions={transactions} />
+ *       
+ *       <button
+ *         onClick={() => purchaseCredits({ packageId: 'credits-1000' })}
+ *       >
+ *         Buy More Credits
+ *       </button>
+ *     </div>
+ *   )
+ * }
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * // Service purchase with credit check
+ * function PurchaseService({ service }: Props) {
+ *   const { checkSufficientCredits, deductCredits } = useUnifiedCredits()
+ *   
+ *   const handlePurchase = async () => {
+ *     if (!checkSufficientCredits(service.cost)) {
+ *       showToast({ type: 'error', message: 'Insufficient credits' })
+ *       return
+ *     }
+ *     
+ *     try {
+ *       await deductCredits(
+ *         service.cost,
+ *         `Purchase ${service.name}`,
+ *         'vessel_tracking',
+ *         service.id
+ *       )
+ *       router.push(`/services/${service.id}`)
+ *     } catch (error) {
+ *       console.error('Purchase failed:', error)
+ *     }
+ *   }
+ *   
+ *   return (
+ *     <button onClick={handlePurchase}>
+ *       Purchase ({service.cost} credits)
+ *     </button>
+ *   )
+ * }
+ * ```
+ */
 export function useUnifiedCredits() {
   const queryClient = useQueryClient()
   const { showToast } = useToast()

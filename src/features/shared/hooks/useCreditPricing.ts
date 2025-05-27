@@ -1,6 +1,66 @@
 import { useMemo } from 'react'
 import { PRICING, getCreditPackageValue } from '../utils/creditPricing'
 
+/**
+ * Hook for credit pricing calculations and package management
+ * 
+ * Provides comprehensive credit pricing utilities including package calculations,
+ * service cost estimations, and formatting functions. All pricing data is
+ * memoized for performance.
+ * 
+ * @returns {Object} Object containing pricing utilities
+ * @returns {Array} returns.packages - Available credit packages with calculations
+ * @returns {Function} returns.getBestValue - Get the package with best price per credit
+ * @returns {Function} returns.getPackageByCredits - Find package by credit amount
+ * @returns {Function} returns.calculateCustomPrice - Calculate price for custom amounts
+ * @returns {Function} returns.calculateVesselTrackingCost - Calculate vessel tracking costs
+ * @returns {Function} returns.calculateAreaMonitoringCost - Calculate area monitoring costs
+ * @returns {Function} returns.calculateFleetTrackingCost - Calculate fleet tracking costs
+ * @returns {Function} returns.getReportCost - Get cost for specific report type
+ * @returns {Function} returns.getInvestigationCost - Get cost for investigation type
+ * @returns {Function} returns.formatCredits - Format credit amount with proper pluralization
+ * @returns {Function} returns.calculateInvestigationCost - Calculate investigation cost with multipliers
+ * 
+ * @example
+ * ```typescript
+ * function CreditPurchase() {
+ *   const { packages, getBestValue, formatCredits } = useCreditPricing()
+ *   const bestDeal = getBestValue()
+ *   
+ *   return (
+ *     <div>
+ *       <h3>Best Value: {formatCredits(bestDeal.totalCredits)}</h3>
+ *       <p>${bestDeal.price} ({bestDeal.savings}% bonus)</p>
+ *       
+ *       {packages.map(pkg => (
+ *         <CreditPackageCard
+ *           key={pkg.id}
+ *           package={pkg}
+ *           isPopular={pkg.popular}
+ *         />
+ *       ))}
+ *     </div>
+ *   )
+ * }
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * function ServiceCostEstimate({ service, params }: Props) {
+ *   const { 
+ *     calculateVesselTrackingCost,
+ *     calculateAreaMonitoringCost,
+ *     formatCredits 
+ *   } = useCreditPricing()
+ *   
+ *   const cost = service === 'vessel'
+ *     ? calculateVesselTrackingCost(params.criteria, params.days)
+ *     : calculateAreaMonitoringCost(params.areaSize, params.days)
+ *   
+ *   return <p>Estimated cost: {formatCredits(cost)}</p>
+ * }
+ * ```
+ */
 export function useCreditPricing() {
   const packages = useMemo(() => {
     return PRICING.credits.packages.map((pkg) => {

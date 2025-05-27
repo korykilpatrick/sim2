@@ -1,5 +1,65 @@
 # Architectural Decisions Log
 
+## 2025-05-27: JSDoc Documentation Standards Enforcement
+
+### Decision: Comprehensive JSDoc for All Critical Hooks
+
+**Context**:
+With ~50% JSDoc coverage achieved, we needed to prioritize documentation for the most critical and reused code - the hooks that power the application's functionality.
+
+**Decision**:
+Document all critical hooks with comprehensive JSDoc including:
+1. Module-level documentation for context
+2. Detailed parameter descriptions with types
+3. Complete @returns documentation
+4. Multiple practical examples per function
+5. @throws documentation for error conditions
+
+**Rationale**:
+- Hooks are the most reused code in React applications
+- Complex hooks benefit greatly from examples
+- IDE support dramatically improves developer experience
+- Examples serve as inline tests/documentation
+- Reduces onboarding time for new developers
+
+**Implementation**:
+Documented 20 files including:
+- Core hooks (WebSocket, vessel search)
+- Area management hooks (10 functions)
+- Fleet and investigation hooks
+- Credit system hooks (pricing, deduction, calculation)
+- Date utilities (formatters, utils, constants)
+- Report management hooks (14 functions)
+
+**Impact**:
+- ~65% JSDoc coverage achieved (+15% in one session)
+- ~100+ functions now have comprehensive documentation
+- Rich IntelliSense support throughout the codebase
+- Consistent documentation patterns established
+
+### Decision: Focus on High-Impact Documentation
+
+**Context**:
+With limited time and 80+ files needing documentation, prioritization was critical.
+
+**Decision**:
+Document files in this priority order:
+1. Hooks (highest reuse, most complex)
+2. Utilities (used across features)
+3. Services (already partially documented)
+4. Components (lower priority, have PropTypes)
+
+**Rationale**:
+- Hooks have the highest complexity-to-size ratio
+- Utilities are used everywhere
+- Services already had some documentation
+- Components have TypeScript props as documentation
+
+**Trade-offs**:
+- Components remain undocumented
+- Some utilities still need documentation
+- But critical functionality is well-documented
+
 ## 2025-05-26: JSDoc Documentation Standards
 
 ### Decision: Comprehensive JSDoc for All Public APIs

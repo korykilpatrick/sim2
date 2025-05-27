@@ -22,14 +22,86 @@ interface DeductionResult {
 }
 
 /**
- * Hook for handling credit deductions when purchasing services.
- * Validates sufficient balance and updates local state after deduction.
- *
+ * Hook for handling credit deductions when purchasing services
+ * 
+ * Provides credit deduction functionality with reservation support. Validates
+ * sufficient balance, performs deductions, and updates local state. Also supports
+ * credit reservation for multi-step workflows.
+ * 
+ * @returns {Object} Credit deduction utilities
+ * @returns {Function} returns.deductCredits - Deduct credits from user balance
+ * @returns {boolean} returns.isDeducting - Whether a deduction is in progress
+ * @returns {Function} returns.reserveCredits - Reserve credits for later confirmation
+ * @returns {Function} returns.confirmReservation - Confirm a credit reservation
+ * @returns {Function} returns.cancelReservation - Cancel a credit reservation
+ * 
  * @example
- * const { deductCredits } = useCreditDeduction();
- *
- * // Deduct credits for a service
- * await deductCredits(150, 'Vessel Tracking Service');
+ * ```typescript
+ * function PurchaseService({ service }: Props) {
+ *   const { deductCredits, isDeducting } = useCreditDeduction()
+ *   
+ *   const handlePurchase = async () => {
+ *     try {
+ *       const result = await deductCredits(
+ *         service.creditCost,
+ *         `Purchase ${service.name}`
+ *       )
+ *       
+ *       if (result.success) {
+ *         showToast({ 
+ *           type: 'success', 
+ *           message: `Service purchased! New balance: ${result.newBalance}` 
+ *         })
+ *         router.push(`/services/${service.id}`)
+ *       }
+ *     } catch (error) {
+ *       showToast({ 
+ *         type: 'error', 
+ *         message: error.message 
+ *       })
+ *     }
+ *   }
+ *   
+ *   return (
+ *     <button
+ *       onClick={handlePurchase}
+ *       disabled={isDeducting}
+ *     >
+ *       {isDeducting ? 'Processing...' : `Purchase (${service.creditCost} credits)`}
+ *     </button>
+ *   )
+ * }
+ * ```
+ * 
+ * @example
+ * ```typescript
+ * // Multi-step workflow with reservation
+ * function MultiStepPurchase({ creditCost }: Props) {
+ *   const { reserveCredits, confirmReservation, cancelReservation } = useCreditDeduction()
+ *   const [reservationId, setReservationId] = useState<string | null>(null)
+ *   
+ *   // Step 1: Reserve credits
+ *   const handleReserve = async () => {
+ *     const reservation = await reserveCredits(creditCost, 'Multi-step service')
+ *     setReservationId(reservation.reservationId)
+ *   }
+ *   
+ *   // Step 2: Confirm or cancel
+ *   const handleConfirm = async () => {
+ *     if (reservationId) {
+ *       await confirmReservation(reservationId)
+ *       showToast({ type: 'success', message: 'Purchase completed!' })
+ *     }
+ *   }
+ *   
+ *   const handleCancel = async () => {
+ *     if (reservationId) {
+ *       await cancelReservation(reservationId)
+ *       setReservationId(null)
+ *     }
+ *   }
+ * }
+ * ```
  */
 export function useCreditDeduction() {
   const updateCredits = useAuthStore((state) => state.updateCredits)

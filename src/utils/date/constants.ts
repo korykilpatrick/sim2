@@ -1,3 +1,24 @@
+/**
+ * Date format constants for consistent formatting across the application
+ * 
+ * @module utils/date/constants
+ */
+
+/**
+ * Date format strings for different contexts
+ * 
+ * @example
+ * ```typescript
+ * import { format } from 'date-fns'
+ * import { DATE_FORMATS } from './constants'
+ * 
+ * // Display format
+ * format(new Date(), DATE_FORMATS.display.date) // "Jan 15, 2024"
+ * 
+ * // API format
+ * format(new Date(), DATE_FORMATS.api.dateTime) // "2024-01-15T10:30:00Z"
+ * ```
+ */
 export const DATE_FORMATS = {
   display: {
     date: 'MMM dd, yyyy',
@@ -15,6 +36,24 @@ export const DATE_FORMATS = {
   },
 } as const
 
+/**
+ * Pre-defined duration options for dropdowns and selectors
+ * 
+ * @example
+ * ```typescript
+ * function DurationSelector({ value, onChange }: Props) {
+ *   return (
+ *     <select value={value} onChange={onChange}>
+ *       {DURATION_OPTIONS.map(option => (
+ *         <option key={option.value} value={option.value}>
+ *           {option.label}
+ *         </option>
+ *       ))}
+ *     </select>
+ *   )
+ * }
+ * ```
+ */
 export const DURATION_OPTIONS = [
   { value: 7, label: '1 week' },
   { value: 14, label: '2 weeks' },
@@ -25,6 +64,21 @@ export const DURATION_OPTIONS = [
   { value: 365, label: '1 year' },
 ] as const
 
+/**
+ * Time unit constants in milliseconds for calculations
+ * 
+ * @example
+ * ```typescript
+ * import { TIME_UNITS } from './constants'
+ * 
+ * // Calculate time differences
+ * const hoursSince = Math.floor(elapsed / TIME_UNITS.hour)
+ * const daysUntil = Math.ceil(remaining / TIME_UNITS.day)
+ * 
+ * // Set intervals
+ * setInterval(updateClock, TIME_UNITS.second)
+ * ```
+ */
 export const TIME_UNITS = {
   second: 1000,
   minute: 60 * 1000,
