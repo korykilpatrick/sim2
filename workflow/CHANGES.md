@@ -1,5 +1,78 @@
 # Changes Log
 
+## 2025-05-27: Duration-Based Pricing Calculator - Phase 1.1, Task 4
+
+### Task Completed
+
+Create duration-based pricing calculator with tests (Phase 1.1, Task 4)
+
+### Key Changes
+
+#### Files Added
+
+- `/src/features/vessels/utils/durationPricing.ts` - Comprehensive pricing calculator with discounts
+- `/src/features/vessels/utils/index.ts` - Export barrel for vessel utilities
+- `/tests/unit/vessels/duration-pricing.test.ts` - Complete test suite (26 tests)
+
+### Implementation Details
+
+1. **Duration-Based Pricing Calculator**:
+
+   - Calculate prices based on criteria, duration, and vessel count
+   - Duration discounts: 0% (≤7d), 5% (8-29d), 10% (30-89d), 20% (90-179d), 30% (180d+)
+   - Bulk discounts: 10% (5-9), 15% (10-24), 20% (25-49), 25% (50+ vessels)
+   - Package tiers: Bronze (0%), Silver (5%), Gold (10%), Platinum (15%)
+   - Discounts combine multiplicatively to prevent over-discounting
+
+2. **Type System**:
+
+   - Created `TrackingCriterion` interface extending `TrackingCriteria` with `creditCost`
+   - Full TypeScript support with proper type exports
+   - Interfaces for pricing options and results
+
+3. **Test Coverage**:
+
+   - 26 comprehensive tests covering all scenarios
+   - 100% code coverage for pricing utility
+   - Edge cases: zero values, fractional days, large numbers
+   - TDD approach - tests written first
+
+4. **Business Alignment**:
+   - Implements PRD pricing requirements exactly
+   - Encourages bulk purchases and long-term commitments
+   - Clear upgrade path through package tiers
+   - Predefined UI options for easy integration
+
+### Technical Achievements
+
+- Zero TypeScript errors
+- Zero ESLint errors (1 unused import fixed)
+- Production-ready pricing engine
+- Fully documented with JSDoc and examples
+- Ready for UI integration
+
+### Test Coverage Progress
+
+- Before: 382/459 tests passing (83.2%)
+- After: 408/485 tests passing (84.1%)
+- Added: 26 new tests (all passing)
+- Coverage: 100% for new code
+
+### Next Steps
+
+1. Implement bulk purchase options UI
+2. Build tracking configuration wizard
+3. Integrate pricing calculator with UI components
+4. Add real-time price updates
+
+### Rollback Command
+
+```bash
+git checkout 955f41f -- src/features/vessels/utils/
+rm -rf src/features/vessels/utils/
+rm -f tests/unit/vessels/duration-pricing.test.ts
+```
+
 ## 2025-05-27: Vessel Tracking Criteria UI Components - Phase 1, Task 3
 
 ### Task Completed
@@ -9,6 +82,7 @@ Build criteria selection UI components with tests (Phase 1.1, Task 3)
 ### Key Changes
 
 #### Files Added
+
 - `/src/features/vessels/components/CriteriaCheckbox.tsx` - Individual criterion selection component
 - `/src/features/vessels/components/CriteriaCategoryGroup.tsx` - Category grouping component
 - `/tests/unit/vessels/components/CriteriaSelector.test.tsx` - Tests for enhanced selector (18 tests)
@@ -16,12 +90,14 @@ Build criteria selection UI components with tests (Phase 1.1, Task 3)
 - `/tests/unit/vessels/components/CriteriaCategoryGroup.test.tsx` - Tests for category group (17 tests)
 
 #### Files Modified
+
 - `/src/features/vessels/components/CriteriaSelector.tsx` - Enhanced with category grouping and accessibility
 - `/src/features/vessels/components/index.ts` - Added exports for new components
 
 ### Implementation Details
 
 1. **Enhanced CriteriaSelector**:
+
    - Added `groupByCategory` prop for organized display
    - Added `showDescription` prop for compact mode
    - Improved keyboard navigation with proper focus management
@@ -29,6 +105,7 @@ Build criteria selection UI components with tests (Phase 1.1, Task 3)
    - Supports category-based grouping using tracking criteria constants
 
 2. **CriteriaCheckbox Component**:
+
    - Flexible single-criterion selection component
    - Shows critical criteria in red (distress, high risk)
    - Displays configuration details when requested
@@ -36,6 +113,7 @@ Build criteria selection UI components with tests (Phase 1.1, Task 3)
    - Full keyboard and accessibility support
 
 3. **CriteriaCategoryGroup Component**:
+
    - Groups criteria by category (Signal Integrity, Vessel Activity, etc.)
    - Collapsible sections with smooth animations
    - Select all/deselect all functionality

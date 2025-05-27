@@ -29,7 +29,11 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
    - [x] Created CriteriaCheckbox component
    - [x] Created CriteriaCategoryGroup component
    - [x] Full test coverage (52 new tests)
-4. [ ] Create duration-based pricing calculator with tests
+4. [x] Create duration-based pricing calculator with tests
+   - [x] Duration discounts (7-365+ days)
+   - [x] Bulk vessel discounts (5-50+ vessels)
+   - [x] Package tier discounts (Bronze/Silver/Gold/Platinum)
+   - [x] 100% test coverage with TDD approach
 5. [ ] Implement bulk purchase options
 6. [ ] Build tracking configuration wizard
 7. [ ] Add real-time status updates via WebSocket
