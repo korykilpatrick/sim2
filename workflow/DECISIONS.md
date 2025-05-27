@@ -1,5 +1,78 @@
 # Architectural Decisions Log
 
+## 2025-05-27: Conventional Commit Standards Adoption
+
+### Decision: Implement Conventional Commits with Commitlint
+
+**Context**:
+The implementation plan called for adding commit message standards to improve git history quality and enable automated tooling. We needed a standardized, enforceable approach to commit messages.
+
+**Decision**:
+Adopt Conventional Commits specification and enforce it using commitlint with git hooks:
+
+1. Use @commitlint/config-conventional as the base ruleset
+2. Enforce via commit-msg hook in husky
+3. Support standard types: feat, fix, docs, style, refactor, perf, test, chore, revert, ci, build
+4. Create comprehensive documentation for the team
+
+**Rationale**:
+
+- Industry standard with wide tooling support
+- Enables automated changelog generation
+- Supports semantic versioning decisions
+- Machine-readable for CI/CD pipelines
+- Clear, consistent commit history
+- Better code review experience
+
+**Implementation**:
+
+- Commitlint validates every commit message
+- Clear error messages guide developers
+- Emergency bypass available with --no-verify
+- Documentation provides extensive examples
+
+### Decision: Use CommonJS for Commitlint Config
+
+**Context**:
+The project uses ES modules ("type": "module" in package.json), but commitlint expected a CommonJS config file, causing module loading errors.
+
+**Decision**:
+Rename commitlint.config.js to commitlint.config.cjs to explicitly mark it as CommonJS.
+
+**Rationale**:
+
+- Commitlint uses cosmiconfig which expects CommonJS
+- .cjs extension forces CommonJS interpretation
+- Simpler than converting to ES module syntax
+- Follows commitlint documentation examples
+
+**Trade-offs**:
+
+- Mixed module systems in the project
+- But isolated to configuration files only
+
+### Decision: Comprehensive Commit Type Coverage
+
+**Context**:
+Need to decide which commit types to support and enforce.
+
+**Decision**:
+Support the full conventional commits type set: feat, fix, docs, style, refactor, perf, test, chore, revert, ci, build.
+
+**Rationale**:
+
+- Covers all common development activities
+- Standard types have clear semantic meaning
+- Enables fine-grained changelog sections
+- Supports semantic versioning logic
+- Familiar to developers from other projects
+
+**Impact**:
+
+- Clear categorization of all changes
+- Automated tooling can parse commit intent
+- Consistent with open source standards
+
 ## 2025-01-27: JSDoc Coverage Target Achievement
 
 ### Decision: Accept 80% JSDoc Coverage as Meeting Goal
