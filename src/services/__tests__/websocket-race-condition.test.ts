@@ -1,25 +1,23 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { io } from 'socket.io-client'
 import { EnhancedWebSocketService } from '../websocket-enhanced'
 
 // Mock socket.io-client
+const mockSocket = {
+  connected: false,
+  on: vi.fn(),
+  off: vi.fn(),
+  emit: vi.fn(),
+  connect: vi.fn(),
+  disconnect: vi.fn(),
+  auth: {},
+  io: {
+    on: vi.fn(),
+    opts: {},
+  },
+}
+
 vi.mock('socket.io-client', () => ({
-  io: vi.fn(() => {
-    const mockSocket = {
-      connected: false,
-      on: vi.fn(),
-      off: vi.fn(),
-      emit: vi.fn(),
-      connect: vi.fn(),
-      disconnect: vi.fn(),
-      auth: {},
-      io: {
-        on: vi.fn(),
-        opts: {},
-      },
-    }
-    return mockSocket
-  }),
+  io: vi.fn(() => mockSocket),
 }))
 
 // Mock config
@@ -35,10 +33,12 @@ vi.mock('@/config', () => ({
 
 describe('WebSocket Race Conditions and Authentication Queuing', () => {
   let service: EnhancedWebSocketService
-  let mockSocket: ReturnType<typeof io>
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset mock socket state
+    mockSocket.connected = false
+    mockSocket.auth = {}
     // Reset singleton
     ;(EnhancedWebSocketService as unknown as { instance: null }).instance = null
     service = EnhancedWebSocketService.getInstance()
@@ -53,7 +53,6 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
     it('should queue room join requests until authentication completes', async () => {
       // Connect the service
       service.connect('test-token')
-      mockSocket = (io as vi.Mock).mock.results[0]?.value
 
       // Join some rooms while connected
       mockSocket.connected = true
@@ -119,7 +118,6 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should queue new room join attempts made during authentication', async () => {
       service.connect('test-token')
-      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Try to join room before authentication completes
@@ -144,7 +142,6 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
   describe('Connection State Machine', () => {
     it('should handle authentication failure during connected state', () => {
       service.connect('test-token')
-      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Simulate connect
@@ -175,7 +172,6 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should handle disconnect during authentication', () => {
       service.connect('test-token')
-      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Start authentication
@@ -209,7 +205,6 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should implement exponential backoff for authentication retries', () => {
       service.connect('test-token')
-      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Track authentication attempts
@@ -244,7 +239,6 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
     it('should implement backoff for room rejoin attempts', () => {
       service.connect('test-token')
-      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Authenticate first
@@ -290,7 +284,6 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
       // Connect
       service.connect('test-token')
-      mockSocket = (io as vi.Mock).mock.results[0]?.value
       mockSocket.connected = true
 
       // Complete connection

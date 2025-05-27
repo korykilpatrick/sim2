@@ -5,7 +5,7 @@ import {
   renderWithProviders,
   clearAuth,
   setupAuthenticatedUser,
-} from '../../../tests/utils/test-utils'
+} from '../../../tests/utils/test-helpers'
 
 // Mock dependencies
 vi.mock('@/services/websocket', () => ({
@@ -148,7 +148,7 @@ describe('WebSocketProvider', () => {
       let connectHandler: () => void
       let disconnectHandler: () => void
 
-      ;(websocketService.on as vi.Mock).mockImplementation(
+      ;(websocketService.on as any).mockImplementation(
         (event: string, handler: () => void) => {
           if (event === 'connect') connectHandler = handler
           if (event === 'disconnect') disconnectHandler = handler
@@ -183,7 +183,7 @@ describe('WebSocketProvider', () => {
     it('should handle authenticated event', async () => {
       let authenticatedHandler: (data: { success: boolean }) => void
 
-      ;(websocketService.on as vi.Mock).mockImplementation(
+      ;(websocketService.on as any).mockImplementation(
         (event: string, handler: (data: { success: boolean }) => void) => {
           if (event === 'authenticated') authenticatedHandler = handler
           return vi.fn()
@@ -216,7 +216,7 @@ describe('WebSocketProvider', () => {
     it('should handle unauthorized event', async () => {
       let unauthorizedHandler: (data: { message: string }) => void
 
-      ;(websocketService.on as vi.Mock).mockImplementation(
+      ;(websocketService.on as any).mockImplementation(
         (event: string, handler: (data: { message: string }) => void) => {
           if (event === 'unauthorized') unauthorizedHandler = handler
           return vi.fn()
@@ -279,7 +279,7 @@ describe('WebSocketProvider', () => {
   describe('Cleanup', () => {
     it('should cleanup event listeners on unmount', async () => {
       const unsubscribeFn = vi.fn()
-      ;(websocketService.on as vi.Mock).mockReturnValue(unsubscribeFn)
+      ;(websocketService.on as any).mockReturnValue(unsubscribeFn)
 
       setupAuthenticatedUser()
 

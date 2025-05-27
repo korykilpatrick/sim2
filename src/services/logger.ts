@@ -3,6 +3,9 @@
  * Provides structured logging with different levels and environments
  */
 
+/**
+ * Log levels for filtering log output
+ */
 export enum LogLevel {
   DEBUG = 0,
   INFO = 1,
@@ -11,6 +14,9 @@ export enum LogLevel {
   NONE = 4,
 }
 
+/**
+ * Structure of a log entry
+ */
 interface LogEntry {
   timestamp: string;
   level: LogLevel;
@@ -19,6 +25,10 @@ interface LogEntry {
   context?: string;
 }
 
+/**
+ * Singleton logger class that provides structured logging
+ * with different levels and environment-aware output
+ */
 class Logger {
   private static instance: Logger;
   private level: LogLevel;
@@ -29,6 +39,10 @@ class Logger {
     this.level = this.isDevelopment ? LogLevel.DEBUG : LogLevel.WARN;
   }
 
+  /**
+   * Gets the singleton logger instance
+   * @returns {Logger} The logger instance
+   */
   static getInstance(): Logger {
     if (!Logger.instance) {
       Logger.instance = new Logger();
@@ -36,6 +50,14 @@ class Logger {
     return Logger.instance;
   }
 
+  /**
+   * Sets the minimum log level for output
+   * @param {LogLevel} level - Minimum level to log
+   * @example
+   * ```typescript
+   * logger.setLevel(LogLevel.WARN) // Only warnings and errors
+   * ```
+   */
   setLevel(level: LogLevel): void {
     this.level = level;
   }
@@ -88,18 +110,42 @@ class Logger {
     // Example: sendToLoggingService(entry);
   }
 
+  /**
+   * Logs a debug message (only in development)
+   * @param {string} message - Message to log
+   * @param {unknown} [data] - Additional data to log
+   * @param {string} [context] - Context identifier
+   */
   debug(message: string, data?: unknown, context?: string): void {
     this.log(LogLevel.DEBUG, message, data, context);
   }
 
+  /**
+   * Logs an info message
+   * @param {string} message - Message to log
+   * @param {unknown} [data] - Additional data to log
+   * @param {string} [context] - Context identifier
+   */
   info(message: string, data?: unknown, context?: string): void {
     this.log(LogLevel.INFO, message, data, context);
   }
 
+  /**
+   * Logs a warning message
+   * @param {string} message - Message to log
+   * @param {unknown} [data] - Additional data to log
+   * @param {string} [context] - Context identifier
+   */
   warn(message: string, data?: unknown, context?: string): void {
     this.log(LogLevel.WARN, message, data, context);
   }
 
+  /**
+   * Logs an error message
+   * @param {string} message - Message to log
+   * @param {unknown} [data] - Additional error data or Error object
+   * @param {string} [context] - Context identifier
+   */
   error(message: string, data?: unknown, context?: string): void {
     this.log(LogLevel.ERROR, message, data, context);
   }
@@ -108,7 +154,16 @@ class Logger {
 // Export singleton instance
 export const logger = Logger.getInstance();
 
-// Export type-safe logger for specific contexts
+/**
+ * Creates a context-specific logger that automatically includes context in all logs
+ * @param {string} context - Context identifier for this logger
+ * @returns {Object} Logger with context-bound methods
+ * @example
+ * ```typescript
+ * const wsLogger = createLogger('WebSocket')
+ * wsLogger.info('Connected') // Logs: [WebSocket] Connected
+ * ```
+ */
 export function createLogger(context: string) {
   return {
     debug: (message: string, data?: unknown) => logger.debug(message, data, context),

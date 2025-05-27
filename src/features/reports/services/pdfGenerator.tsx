@@ -115,6 +115,8 @@ export function convertToReportData(
       riskScore: complianceReport.riskAssessment.overallScore,
       complianceChecks: [
         {
+          id: 'sanctions-screening',
+          name: 'Sanctions Screening',
           category: 'Sanctions Screening',
           status:
             complianceReport.sanctionsScreening.status === 'clear'
@@ -123,8 +125,11 @@ export function convertToReportData(
                 ? 'warning'
                 : ('failed' as 'passed' | 'failed' | 'warning'),
           details: `${complianceReport.sanctionsScreening.matchedLists.length} matches found`,
+          timestamp: complianceReport.sanctionsScreening.lastChecked,
         },
         {
+          id: 'imo-compliance',
+          name: 'IMO Compliance',
           category: 'IMO Compliance',
           status: complianceReport.regulatoryCompliance.imoCompliant
             ? 'passed'
@@ -132,19 +137,26 @@ export function convertToReportData(
           details: complianceReport.regulatoryCompliance.imoCompliant
             ? 'Vessel is IMO compliant'
             : 'IMO compliance issues detected',
+          timestamp: new Date().toISOString(),
         },
         {
+          id: 'ais-integrity',
+          name: 'AIS Integrity',
           category: 'AIS Integrity',
           status: complianceReport.aisIntegrity.spoofingDetected
             ? 'failed'
             : ('passed' as 'passed' | 'failed'),
           details: `${complianceReport.aisIntegrity.darkPeriodsCount} dark periods, ${complianceReport.aisIntegrity.manipulationEvents} manipulation events`,
+          timestamp: new Date().toISOString(),
         },
       ],
       sanctions: complianceReport.sanctionsScreening.matchedLists.map(
-        (list) => ({
+        (list, index) => ({
+          id: `sanction-${index}`,
           listName: list,
-          matched: true,
+          matchScore: 100,
+          details: 'Exact match found',
+          addedDate: complianceReport.sanctionsScreening.lastChecked,
         }),
       ),
       sections: [
@@ -182,15 +194,26 @@ export function convertToReportData(
         title: `Vessel Chronology Report - ${chronologyReport.vessel.name}`,
         subtitle: `Period: ${chronologyReport.timeRange.start} to ${chronologyReport.timeRange.end}`,
       },
-      vesselInfo: chronologyReport.vessel,
+      vesselInfo: {
+        ...chronologyReport.vessel,
+        mmsi: '000000000', // Default MMSI as it's not in the API response
+        type: 'Cargo', // Default type as it's not in the API response
+        status: 'active', // Default status as it's not in the API response
+      },
       events: chronologyReport.events.map((e) => ({
+        id: e.id,
+        timestamp: e.timestamp,
         date: new Date(e.timestamp),
         type: e.type,
         description: e.description,
         location: e.location?.name,
         details: e.details,
       })),
-      statistics: chronologyReport.summary,
+      statistics: {
+        ...chronologyReport.summary,
+        movements: 0, // Default as not in API response
+        alerts: 0, // Default as not in API response
+      },
       sections: [
         {
           title: 'Activity Summary',

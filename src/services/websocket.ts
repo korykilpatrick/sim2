@@ -377,13 +377,13 @@ export class WebSocketService {
       this.listeners.set(event, new Set())
     }
 
-    this.listeners.get(event)!.add(handler)
+    this.listeners.get(event)!.add(handler as (...args: unknown[]) => void)
 
     // Return unsubscribe function
     return () => {
       const handlers = this.listeners.get(event)
       if (handlers) {
-        handlers.delete(handler)
+        handlers.delete(handler as (...args: unknown[]) => void)
       }
     }
   }
@@ -414,7 +414,7 @@ export class WebSocketService {
       // Remove specific handler
       const handlers = this.listeners.get(event)
       if (handlers) {
-        handlers.delete(handler)
+        handlers.delete(handler as (...args: unknown[]) => void)
       }
     }
   }

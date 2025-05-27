@@ -21,6 +21,7 @@ interface ServiceParams {
   vesselCount?: number
   reportType?: string
   dataRange?: string
+  type?: string
 }
 
 export function useCostCalculation() {

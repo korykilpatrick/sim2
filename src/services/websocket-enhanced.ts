@@ -231,12 +231,12 @@ export class EnhancedWebSocketService {
     })
 
     // Room join/leave confirmations
-    this.socket.on('room_joined' as keyof WebSocketEvents, (data: { room: string; type: 'vessel' | 'area' }) => {
+    this.socket.on('room_joined', (data: { room: string; type: 'vessel' | 'area' }) => {
       logger.debug(`Successfully joined ${data.type} room:`, data.room)
       this.clearRoomRetryTimer(`${data.type}:${data.room}`)
     })
 
-    this.socket.on('room_join_error' as keyof WebSocketEvents, (data: { room: string; error: string }) => {
+    this.socket.on('room_join_error', (data: { room: string; error: string }) => {
       logger.error('Room join error:', data.error)
       this.handleRoomJoinError(data.room, data.error)
     })
@@ -263,7 +263,7 @@ export class EnhancedWebSocketService {
 
     events.forEach((event) => {
       this.socket!.on(event as keyof WebSocketEvents, (data: unknown) => {
-        this.emit(event, data)
+        this.emit(event as keyof WebSocketEvents, data as any)
       })
     })
   }
@@ -568,13 +568,13 @@ export class EnhancedWebSocketService {
       this.listeners.set(event, new Set())
     }
 
-    this.listeners.get(event)!.add(handler)
+    this.listeners.get(event)!.add(handler as (...args: unknown[]) => void)
 
     // Return unsubscribe function
     return () => {
       const handlers = this.listeners.get(event)
       if (handlers) {
-        handlers.delete(handler)
+        handlers.delete(handler as (...args: unknown[]) => void)
       }
     }
   }
@@ -590,7 +590,7 @@ export class EnhancedWebSocketService {
       // Remove specific handler
       const handlers = this.listeners.get(event)
       if (handlers) {
-        handlers.delete(handler)
+        handlers.delete(handler as (...args: unknown[]) => void)
       }
     }
   }

@@ -72,14 +72,14 @@ describe('useWebSocket', () => {
       const { result } = renderHook(() => useWebSocket())
 
       // Find and call the connect callback
-      const connectCallback = (websocketService.on as jest.Mock).mock.calls.find(
+      const connectCallback = (websocketService.on as any).mock.calls.find(
         (call: [string, () => void]) => call[0] === 'connect',
       )?.[1]
 
       // Update mock to return connected state
-      ;(websocketService.getStatus as jest.Mock).mockReturnValue('connected')
-      ;(websocketService.getIsAuthenticated as jest.Mock).mockReturnValue(true)
-      ;(websocketService.getState as jest.Mock).mockReturnValue({
+      ;(websocketService.getStatus as any).mockReturnValue('connected')
+      ;(websocketService.getIsAuthenticated as any).mockReturnValue(true)
+      ;(websocketService.getState as any).mockReturnValue({
         status: 'connected',
         isAuthenticated: true,
         reconnectAttempts: 0,
@@ -99,12 +99,12 @@ describe('useWebSocket', () => {
     it('should handle error states', async () => {
       const { result } = renderHook(() => useWebSocket())
 
-      const errorCallback = (websocketService.on as jest.Mock).mock.calls.find(
+      const errorCallback = (websocketService.on as any).mock.calls.find(
         (call: [string, () => void]) => call[0] === 'connect_error',
       )?.[1]
 
-      ;(websocketService.getStatus as jest.Mock).mockReturnValue('error')
-      ;(websocketService.getState as jest.Mock).mockReturnValue({
+      ;(websocketService.getStatus as any).mockReturnValue('error')
+      ;(websocketService.getState as any).mockReturnValue({
         status: 'error',
         isAuthenticated: false,
         reconnectAttempts: 3,
@@ -152,7 +152,7 @@ describe('useWebSocket', () => {
 
     it('should cleanup event subscriptions on unmount', () => {
       const unsubscribe = vi.fn()
-      ;(websocketService.on as jest.Mock).mockReturnValue(unsubscribe)
+      ;(websocketService.on as any).mockReturnValue(unsubscribe)
 
       const { result, unmount } = renderHook(() => useWebSocket())
       const handler = vi.fn()
@@ -290,12 +290,12 @@ describe('useWebSocket', () => {
       const { result } = renderHook(() => useWebSocket())
 
       // Find a state update callback
-      const connectCallback = (websocketService.on as jest.Mock).mock.calls.find(
+      const connectCallback = (websocketService.on as any).mock.calls.find(
         (call: [string, () => void]) => call[0] === 'connect',
       )?.[1]
 
       // Update mock to return new state
-      ;(websocketService.getState as jest.Mock).mockReturnValue({
+      ;(websocketService.getState as any).mockReturnValue({
         status: 'connected',
         isAuthenticated: true,
         reconnectAttempts: 0,
@@ -344,7 +344,7 @@ describe('useWebSocket', () => {
       const unsubscribe2 = vi.fn()
       const unsubscribe3 = vi.fn()
 
-      ;(websocketService.on as jest.Mock)
+      ;(websocketService.on as any)
         .mockReturnValueOnce(unsubscribe1)
         .mockReturnValueOnce(unsubscribe2)
         .mockReturnValueOnce(unsubscribe3)

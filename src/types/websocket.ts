@@ -40,6 +40,10 @@ export interface WebSocketEvents {
   credit_balance_updated: (data: { balance: number; change: number }) => void
   credit_low_balance: (data: { balance: number; threshold: number }) => void
 
+  // Room events
+  room_joined: (data: { room: string; type: 'vessel' | 'area' }) => void
+  room_join_error: (data: { room: string; error: string }) => void
+
   // System events
   server_message: (data: {
     message: string
