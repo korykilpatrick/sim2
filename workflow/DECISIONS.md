@@ -1,5 +1,55 @@
 # Architectural Decisions Log
 
+## 2025-05-27: Tracking Criteria Data Model Design
+
+### Decision: Centralize Tracking Criteria as Constants
+
+**Context**:
+The vessel tracking service needs tracking criteria definitions. The mock API provides these via an endpoint, but the frontend needs a reliable source of truth for criteria types, configurations, and business logic.
+
+**Decision**:
+Implement tracking criteria as centralized constants in `/src/constants/tracking-criteria.ts` following the established pattern from products:
+
+1. Define all 11 criteria types with default configurations
+2. Create helper functions for lookup and categorization
+3. Group criteria into logical categories for UI display
+4. Provide use-case based suggestions
+
+**Rationale**:
+
+- **Consistency**: Follows the successful pattern established by `/src/constants/products.ts`
+- **Type Safety**: Compile-time validation of criteria types
+- **Performance**: No API call needed for static data
+- **Maintainability**: Single source of truth for criteria definitions
+- **Offline Support**: Criteria available without network
+- **Developer Experience**: IntelliSense and type checking for all criteria
+
+**Alternatives Considered**:
+
+1. **API-only approach**: Rely entirely on API responses
+
+   - Rejected: Would require API calls for static data
+   - Rejected: No compile-time type safety
+
+2. **Embed in components**: Define criteria where used
+
+   - Rejected: Would create duplication
+   - Rejected: Harder to maintain consistency
+
+3. **JSON configuration file**: External config file
+   - Rejected: Loses TypeScript type safety
+   - Rejected: Requires runtime parsing
+
+**Trade-offs**:
+
+- **Pro**: Immediate access to criteria data
+- **Pro**: Type-safe usage throughout app
+- **Pro**: Can extend with business logic
+- **Con**: Must keep in sync with backend
+- **Con**: Increases bundle size slightly
+
+**Technical Debt**: None - this approach reduces debt by centralizing definitions.
+
 ## 2025-05-27: Conventional Commit Standards Adoption
 
 ### Decision: Implement Conventional Commits with Commitlint

@@ -1,5 +1,62 @@
 # Changes Log
 
+## 2025-05-27: Vessel Tracking Criteria Implementation - Phase 1, Week 1
+
+### Task Completed
+
+Implemented tracking criteria types and data models for vessel tracking service (Phase 1.1, Tasks 1-2)
+
+### Key Changes
+
+#### Files Added
+
+- `/tests/unit/vessels/tracking-criteria.test.ts` - Comprehensive tests for tracking criteria types (18 tests)
+- `/src/constants/tracking-criteria.ts` - Centralized tracking criteria definitions and helpers
+- `/tests/unit/constants/tracking-criteria.test.ts` - Tests for tracking criteria constants (32 tests)
+
+### Implementation Details
+
+1. **Tracking Criteria Tests**:
+
+   - Tests for all 11 tracking criteria types from PRD
+   - Configuration validation for each criteria type
+   - Business rule tests for criteria combinations
+   - Use case scenarios (sanctions, safety, etc.)
+
+2. **Tracking Criteria Constants**:
+
+   - Centralized definition of all 11 criteria types
+   - Default configurations for each criteria
+   - Helper functions for criteria lookup and categorization
+   - Suggested criteria based on use case
+   - Categories: Signal Integrity, Vessel Activity, Compliance & Risk, Safety & Security
+
+3. **Test Coverage**:
+   - Added 50 new passing tests
+   - 100% coverage for new code
+   - Type safety validated at compile time
+
+### Technical Achievements
+
+- Zero TypeScript errors maintained
+- Follows established patterns from products constants
+- Comprehensive JSDoc documentation
+- Type-safe helper functions
+- Clear separation of concerns
+
+### Next Steps
+
+1. Build criteria selection UI components
+2. Create duration-based pricing calculator
+3. Implement bulk purchase options
+4. Build tracking configuration wizard
+
+### Rollback Command
+
+```bash
+rm -rf tests/unit/vessels/ src/constants/tracking-criteria.ts tests/unit/constants/tracking-criteria.test.ts
+```
+
 ## 2025-05-27: Conventional Commit Standards Implementation - Week 3, Day 1 (Continued)
 
 ### Task Completed

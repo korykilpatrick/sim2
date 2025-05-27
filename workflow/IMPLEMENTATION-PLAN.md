@@ -1,327 +1,331 @@
-# SIM Implementation Plan
+# SIM Implementation Plan - TDD Frontend Completion
 
-> **🚨 THIS IS A LIVING DOCUMENT 🚨**  
-> This plan is continuously updated based on learnings. Phases beyond the current one are **suggestions**, not commitments.  
-> After completing each task, reassess if the next task still makes sense given current reality.  
-> The plan should ALWAYS reflect what actually needs to be done next, not what we originally thought.
+_Last Updated: May 26, 2025_
 
-_Updated: January 26, 2025_
+## Overview
 
-## Current Status ✅ MAJOR MILESTONES ACHIEVED
+This plan outlines the path to complete a fully implemented frontend for the SIM PRD using Test-Driven Development (TDD). The goal is to build a tech-debt-free implementation that can later be enhanced with performance features and connected to a real backend.
 
-- **Test Coverage**: 80.86% (283/350 tests passing) ✅ GOAL EXCEEDED
-- **ESLint**: 0 errors, 0 warnings ✅ ZERO WARNINGS ACHIEVED
-- **TypeScript**: 0 errors ✅ CLEAN CODEBASE
-- **Code Quality**: 8.5/10 Professional Enterprise-Grade
-- **Architecture**: Credit system unified ✅, WebSocket fixed ✅
-- **Remaining**: 67 UI integration tests document expected behavior (not blockers)
+## Guiding Principles
 
-## 🎯 WHAT TO DO NEXT
+1. **TDD First**: Write failing tests before implementing any feature
+2. **Zero Tech Debt**: Fix issues immediately, never compromise quality
+3. **PRD Alignment**: Every feature must match PRD specifications exactly
+4. **No Backwards Compatibility**: We have zero users - always choose the ideal solution
+5. **Mock Everything**: Build against comprehensive mock data until real backend available
 
-We are at 8.5/10 quality. To reach 10/10 world-class status, focus on:
+## Phase 1: Core Monitoring Services (Week 1-2)
 
-1. **TODAY**: Start with Documentation & Standards (Week 3, Day 1-2)
-2. **THIS WEEK**: Add Observability, then E2E Tests
-3. **NEXT WEEK**: Repository Pattern, Performance, Feature Flags
+### 1.1 Vessel Tracking Service (VTS) Implementation
 
-DO NOT go back to fixing the 67 failing UI tests - we've already exceeded our coverage goal.
+**Goal**: Complete individual vessel monitoring with all criteria
 
-## ✅ PHASE 1 COMPLETE: 80% Coverage Goal Achieved!
+#### Tasks:
 
-We have successfully exceeded our 80% test coverage goal. The remaining 67 failing tests are UI integration tests that document expected component behavior for future implementation. These are not blockers - they serve as living documentation.
+1. [x] Write tests for tracking criteria types (AIS, dark events, spoofing, etc.)
+2. [x] Implement tracking criteria data models
+3. [ ] Build criteria selection UI components with tests
+4. [ ] Create duration-based pricing calculator with tests
+5. [ ] Implement bulk purchase options
+6. [ ] Build tracking configuration wizard
+7. [ ] Add real-time status updates via WebSocket
 
-## NEW IMMEDIATE PRIORITY: Achieve 10/10 World-Class Status
+#### Success Criteria:
 
-Based on our 8.5/10 assessment, here are the gaps to world-class:
+- Can create vessel tracking with multiple criteria
+- Pricing updates based on duration and criteria
+- Bulk discounts applied correctly
+- All criteria types from PRD supported
 
-### 1. Complete Documentation & Standards (Week 3, Day 1-2) ✅ MOSTLY COMPLETE
+### 1.2 Alert System Infrastructure
 
-**Goal**: Complete all documentation and enforce standards
+**Goal**: Unified alert system for all monitoring services
 
-- [x] Add JSDoc comments to ALL exported functions/types ✅ 80% COVERAGE ACHIEVED
-  - **Progress**: Added comprehensive JSDoc to fleet, areas, investigations, dashboard services and hooks
-  - **Progress**: Completed ALL API endpoint documentation (9 endpoint files)
-  - **Progress**: Documented product, report, logger, analytics, unified credit services
-  - **Progress**: Documented 20+ files including WebSocket, vessel, area, fleet, investigation hooks
-  - **Progress**: Documented all date utilities, credit system hooks, and report management hooks
-  - **Progress**: Added JSDoc to report services, auth services, analytics hooks (8 more files)
-  - **Decision**: Accept 80% coverage as meeting goal - remaining files have lower ROI
-- [x] Document all API endpoints with examples ✅ COMPLETE
-- [x] Set up pre-commit hooks (husky + lint-staged) ✅ COMPLETE
-  - **Progress**: Husky and lint-staged configured with zero-warnings policy
-  - **Progress**: Auto-formatting with Prettier on every commit
-  - **Progress**: TypeScript checking for staged files
-  - **Progress**: Comprehensive documentation created
-- [ ] Create comprehensive component storybook (DEFERRED)
-- [x] Add commit message standards (conventional commits) ✅ COMPLETE
-  - **Progress**: Implemented commitlint with conventional commit rules
-  - **Progress**: Added commit-msg hook via husky
-  - **Progress**: Created comprehensive documentation in COMMIT-STANDARDS.md
-  - **Progress**: Tested and verified enforcement works
-- [ ] Create ADR (Architecture Decision Records) for key decisions (LOW PRIORITY)
+#### Tasks:
 
-**Success Metric**: 100% documentation coverage, pre-commit hooks blocking bad code
-**Current Status**: ~80% JSDoc coverage achieved (goal met), pre-commit hooks operational
+1. [ ] Write tests for alert data models
+2. [ ] Implement alert store with Zustand
+3. [ ] Create alert delivery via WebSocket
+4. [ ] Build alert UI components (badges, lists, details)
+5. [ ] Implement alert filtering and search
+6. [ ] Add alert acknowledgment flow
+7. [ ] Create alert history tracking
 
-### 2. Implement Observability & Monitoring (Week 3, Day 3-4)
+#### Success Criteria:
 
-**Goal**: Production-grade logging and monitoring
+- Alerts delivered in real-time
+- Alert history persisted
+- Filtering by type, severity, service
+- Clear visual indicators for new alerts
 
-- [ ] Enhance logging service with structured logs
-- [ ] Add performance monitoring (Web Vitals)
-- [ ] Implement error tracking (Sentry or similar)
-- [ ] Add application metrics collection
-- [ ] Create health check endpoints
-- [ ] Set up alerting for critical errors
+## Phase 2: Area & Fleet Services (Week 2-3)
 
-**Success Metric**: Full observability stack operational
+### 2.1 Area Monitoring Service (AMS)
 
-### 3. Complete E2E Test Suite (Week 3, Day 5-7)
+**Goal**: Complete area monitoring with geofencing
 
-**Goal**: Comprehensive end-to-end testing
+#### Tasks:
 
-- [ ] Set up Playwright or Cypress
-- [ ] Test critical user journeys:
-  - [ ] User registration and login flow
-  - [ ] Credit purchase flow
-  - [ ] Vessel tracking setup
-  - [ ] Area monitoring configuration
-  - [ ] Report generation
-- [ ] Add visual regression tests
-- [ ] Integrate with CI/CD pipeline
+1. [ ] Write tests for geofencing calculations
+2. [ ] Implement coordinate-based area definitions
+3. [ ] Build area drawing UI (polygon/circle)
+4. [ ] Create area size pricing calculator
+5. [ ] Implement monitoring criteria for areas
+6. [ ] Add vessel entry/exit detection logic
+7. [ ] Build area risk assessment calculator
 
-**Success Metric**: 20+ E2E tests covering all critical paths
+#### Success Criteria:
 
-### 4. Implement Repository Pattern (Week 4, Day 1-2)
+- Can define custom areas on map
+- Pricing based on area size and criteria
+- Real-time vessel tracking within areas
+- Risk scores calculated and displayed
 
-**Goal**: Abstract data access layer
+### 2.2 Fleet Tracking Service (FTS)
 
-- [ ] Create repository interfaces for all entities
-- [ ] Implement repository pattern for:
-  - [ ] User/Auth repository
-  - [ ] Credits repository
-  - [ ] Vessels repository
-  - [ ] Areas repository
-  - [ ] Reports repository
-- [ ] Update services to use repositories
-- [ ] Enable easy switching between data sources
+**Goal**: Centralized fleet monitoring dashboard
 
-**Success Metric**: All data access through repository layer
+#### Tasks:
 
-## Phase 3: Advanced Features (Week 4+)
+1. [ ] Write tests for fleet tracking logic
+2. [ ] Implement fleet-wide criteria application
+3. [ ] Build fleet dashboard with vessel grid
+4. [ ] Create fleet health/risk indicators
+5. [ ] Add fleet alert aggregation
+6. [ ] Implement contract-based pricing
+7. [ ] Build fleet reporting features
 
-### 5. Performance Optimizations (Week 4, Day 3-4)
+#### Success Criteria:
 
-**Goal**: Optimize for scale
+- Single dashboard for entire fleet
+- Criteria applied across all vessels
+- Aggregated alerts and statistics
+- Contract pricing with minimum vessels
 
-- [ ] Implement virtual scrolling for large lists
-- [ ] Add request caching strategies
-- [ ] Optimize bundle splitting
-- [ ] Implement progressive image loading
-- [ ] Add service worker for offline support
-- [ ] Profile and optimize render performance
+## Phase 3: Reporting Services (Week 3-4)
 
-**Success Metric**: Lighthouse score 95+ on all pages
+### 3.1 Vessel Compliance Report
 
-### 6. Feature Flags & A/B Testing (Week 4, Day 5-7)
+**Goal**: Automated compliance assessment generation
 
-**Goal**: Progressive rollout capability
+#### Tasks:
 
-- [ ] Implement feature flag service
-- [ ] Add A/B testing framework
-- [ ] Create flag management UI
-- [ ] Integrate with analytics
-- [ ] Document flag usage patterns
+1. [ ] Write tests for compliance criteria
+2. [ ] Implement sanctions screening logic
+3. [ ] Build regulatory compliance checks
+4. [ ] Create risk scoring algorithm
+5. [ ] Design report PDF template
+6. [ ] Implement report generation service
+7. [ ] Add report caching and history
 
-**Success Metric**: Feature flags controlling 3+ features
+#### Success Criteria:
 
-## ✅ COMPLETED WORK SUMMARY
+- All compliance criteria from PRD checked
+- Risk scores calculated accurately
+- Professional PDF output
+- Reports generated on-demand
 
-### Phase 1: Foundation (✅ COMPLETE)
+### 3.2 Vessel Chronology Report
 
-- **Test Coverage**: 80.86% achieved (goal: 80%)
-- **MSW Infrastructure**: Fixed and operational
-- **Core Features**: All implemented with tests
+**Goal**: Historical timeline report generation
 
-### Phase 2: Architecture (✅ COMPLETE)
+#### Tasks:
 
-- **Credit System**: Unified to single implementation
-- **WebSocket**: Race conditions fixed, stable connection
-- **Code Quality**: 0 ESLint errors/warnings achieved
-- **TypeScript**: 0 errors maintained
-- **Logging**: Centralized service implemented
+1. [ ] Write tests for event timeline logic
+2. [ ] Implement event aggregation by date
+3. [ ] Build custom date range selector
+4. [ ] Create timeline visualization component
+5. [ ] Design chronology PDF template
+6. [ ] Add event detail expansion
+7. [ ] Implement report depth tiers
 
-### What Makes Us 8.5/10
+#### Success Criteria:
 
-- Professional enterprise-grade architecture
-- Comprehensive testing infrastructure
-- World-class documentation (10/10)
-- Modern React patterns throughout
-- Zero technical debt philosophy
-- Real-time capabilities integrated
+- Complete vessel history displayed
+- Custom date ranges supported
+- All event types from PRD included
+- Clear timeline visualization
 
-### Gaps to 10/10 (Our New Focus)
+## Phase 4: Advanced Services (Week 4-5)
 
-1. Missing observability/monitoring
-2. No E2E test coverage
-3. No repository pattern abstraction
-4. No feature flags system
-5. Some JSDoc coverage gaps
+### 4.1 Maritime Investigations Service (MIS)
+
+**Goal**: Complete RFI submission and tracking
+
+#### Tasks:
+
+1. [ ] Write tests for RFI workflow
+2. [ ] Implement RFI form with validation
+3. [ ] Build investigation scope selector
+4. [ ] Create expert consultation scheduler
+5. [ ] Add investigation status tracking
+6. [ ] Implement document management
+7. [ ] Build investigation updates feed
+
+#### Success Criteria:
+
+- Complete RFI submission flow
+- Clear investigation status updates
+- Document upload and management
+- Expert consultation integration
+
+### 4.2 Service Pricing & Packages
+
+**Goal**: Implement all pricing models from PRD
+
+#### Tasks:
+
+1. [ ] Write tests for pricing calculations
+2. [ ] Implement tiered pricing (Platinum, Gold, Silver, Bronze)
+3. [ ] Build package selection UI
+4. [ ] Create discount calculators
+5. [ ] Add subscription management
+6. [ ] Implement usage tracking
+7. [ ] Build pricing comparison tools
+
+#### Success Criteria:
+
+- All pricing models from PRD implemented
+- Bulk discounts calculated correctly
+- Package benefits clearly displayed
+- Usage tracked for billing
+
+## Phase 5: Data Visualization & UX Polish (Week 5-6)
+
+### 5.1 Maps & Visualization
+
+**Goal**: Interactive maps and data visualizations
+
+#### Tasks:
+
+1. [ ] Integrate mapping library (Mapbox/Leaflet)
+2. [ ] Build vessel position display
+3. [ ] Implement area drawing tools
+4. [ ] Create vessel route visualization
+5. [ ] Add heatmaps for risk areas
+6. [ ] Build interactive event markers
+7. [ ] Implement map-based filtering
+
+### 5.2 Enhanced User Experience
+
+**Goal**: Production-ready UX with all flows optimized
+
+#### Tasks:
+
+1. [ ] Add loading states for all async operations
+2. [ ] Implement optimistic updates
+3. [ ] Build comprehensive empty states
+4. [ ] Add guided tours for complex features
+5. [ ] Create contextual help system
+6. [ ] Implement keyboard shortcuts
+7. [ ] Add accessibility features
+
+## Phase 6: Performance & Production Readiness (Week 6+)
+
+### 6.1 Performance Optimization
+
+**Goal**: Sub-second response times, smooth interactions
+
+#### Tasks:
+
+1. [ ] Add React.memo to expensive components
+2. [ ] Implement virtual scrolling for large lists
+3. [ ] Add service workers for offline support
+4. [ ] Optimize bundle sizes
+5. [ ] Implement lazy loading for all routes
+6. [ ] Add request caching strategies
+7. [ ] Profile and optimize render performance
+
+### 6.2 Observability & Analytics
+
+**Goal**: Full visibility into user behavior and system health
+
+#### Tasks:
+
+1. [ ] Integrate error tracking (Sentry)
+2. [ ] Add performance monitoring
+3. [ ] Implement user analytics
+4. [ ] Create custom business metrics
+5. [ ] Add feature usage tracking
+6. [ ] Build admin dashboard
+7. [ ] Implement A/B testing framework
+
+## Testing Strategy
+
+### Test Coverage Goals
+
+- **Unit Tests**: 90% coverage for all business logic
+- **Integration Tests**: All user flows covered
+- **E2E Tests**: Critical paths automated
+- **Visual Regression**: UI consistency validated
+
+### TDD Process for Each Feature
+
+1. Write failing E2E test for user flow
+2. Write failing integration tests for feature
+3. Write failing unit tests for logic
+4. Implement minimal code to pass tests
+5. Refactor for quality
+6. Update documentation
+
+## Migration Strategy
+
+### Backend Integration Preparation
+
+1. All API calls through centralized client
+2. Mock data matches expected backend format
+3. Feature flags for gradual rollout
+4. Comprehensive error handling
+5. Retry logic with exponential backoff
+6. Request/response logging
+
+### Zero-Downtime Migration
+
+1. Dual-mode operation (mock + real)
+2. Feature-by-feature migration
+3. Automated regression testing
+4. Rollback capabilities
+5. Performance comparison metrics
 
 ## Success Metrics
 
-### ✅ Phase 1 & 2 Complete:
+### Code Quality
 
-- [x] Test coverage > 80% (✅ 80.86% achieved)
-- [x] Single credit system implementation ✅
-- [x] WebSocket connection stable ✅
-- [x] ESLint warnings = 0 ✅ ACHIEVED
-- [x] TypeScript errors = 0 ✅
-- [x] Core architecture improvements ✅
-
-### Phase 3: World-Class Status (Week 3-4)
-
+- [ ] 90%+ test coverage
+- [ ] 0 ESLint errors/warnings
+- [ ] 0 TypeScript errors
 - [ ] 100% JSDoc coverage
-- [ ] Pre-commit hooks enforced
-- [ ] Full observability stack
-- [ ] E2E test suite operational
-- [ ] Repository pattern implemented
-- [ ] Lighthouse scores 95+
-- [ ] Feature flags system active
+- [ ] All features match PRD exactly
 
-### 10/10 Achieved When:
+### Performance
 
-- [ ] All Phase 3 items complete
-- [ ] Zero technical debt remains
-- [ ] Codebase indistinguishable from FAANG quality
-- [ ] Full production readiness
-- [ ] Team velocity maximized
+- [ ] < 3s initial load time
+- [ ] < 100ms interaction response
+- [ ] 90+ Lighthouse score
+- [ ] < 500KB initial bundle
 
-## ✅ COMPLETED: Fix MSW Test Infrastructure
+### Business Readiness
 
-### Results
+- [ ] All PRD features implemented
+- [ ] All user flows tested
+- [ ] Mock data comprehensive
+- [ ] Documentation complete
+- [ ] Zero known bugs
 
-- **Test Coverage**: Increased from 79.14% to 80.86% ✅
-- **Tests Passing**: 283/350 (exceeded 80% goal!)
-- **MSW Integration**: Fixed and working properly
-- **Documentation**: Created comprehensive fix guide
+## Next Steps
 
-### What We Accomplished
+1. **Today**: Start with Vessel Tracking Service tests
+2. **This Week**: Complete Phase 1 (Core Monitoring)
+3. **Week 2**: Complete Phase 2 (Area & Fleet)
+4. **Week 3**: Complete Phase 3 (Reporting)
+5. **Week 4**: Complete Phase 4 (Advanced Services)
+6. **Week 5**: Complete Phase 5 (Visualization & UX)
+7. **Week 6+**: Performance & Production Readiness
 
-1. ✅ Configured API client for test environment
-2. ✅ Fixed test assertions to match component output
-3. ✅ Updated URLs from absolute to relative
-4. ✅ Created `/docs/testing/MSW-INTEGRATION-FIX.md`
-5. ✅ Established clear pattern for fixing other tests
+## Notes
 
-## ✅ COMPLETED: Test Coverage Goal Achieved
-
-### Final Results
-
-- **Test Coverage**: 80.86% (283/350 tests passing) ✅
-- **Goal**: 80% coverage ACHIEVED
-- **TypeScript**: 0 errors ✅
-- **ESLint**: 0 errors, 139 warnings
-
-### Key Findings
-
-1. **Vessel/Area/Report Tests Don't Exist**: The test files mentioned in the original plan were never created
-2. **All Failures Are UI Tests**: The 67 failing tests are credit-related integration tests expecting different UI behavior
-3. **MSW Infrastructure Working**: The MSW fix pattern is functioning correctly
-4. **Tests Document Requirements**: Failing tests serve as documentation for expected UI behavior
-
-### Decision Made
-
-Accept 80.86% coverage as meeting the goal. The remaining failures are due to UI implementation differences, not bugs. These tests document expected behavior for future implementation.
-
-## 🚨 NEXT IMMEDIATE PRIORITY: Phase 2 - Architecture Improvements
-
-### Now That Integration Tests Are Stable
-
-With 80%+ test coverage achieved and a stable test foundation, we can proceed to Phase 2 improvements.
-
-### Credit System Consolidation Progress (Days 1-2)
-
-#### Day 1: Type Unification and Adapter ✅ COMPLETED
-
-- [x] Analyze both credit implementations
-- [x] Create consolidation plan document
-- [x] Write adapter tests (13 tests, 100% coverage)
-- [x] Implement credit adapter for bidirectional conversion
-- [x] Update credit service to use shared service via adapter
-- [x] Add deprecation warnings to guide migration
-- [x] Verify all tests still pass
-
-**Results**:
-
-- Clean adapter pattern implemented
-- Tests provide safety net for refactoring
-- Clear migration path established
-- Comprehensive test coverage for adapter
-
-#### Day 2: Complete Credit System Refactor ✅ COMPLETED
-
-- [x] Remove adapter pattern - choose single best credit implementation
-- [x] Delete redundant credit type definitions and services
-- [x] Update ALL components to use the unified credit system
-- [x] Merge both useCredits hooks into single best implementation
-- [x] Update mock handlers to single format
-- [x] Fix all tests to match new architecture
-
-**Results**:
-
-- Single unified credit implementation
-- Zero duplicate code
-- All components using new imports
-- Tests updated for new field names
-- Clean, maintainable architecture
-
-### Fix WebSocket Issues (Days 3-4) ✅ COMPLETED
-
-#### Day 3: WebSocket Architecture Fix ✅ COMPLETED
-
-- [x] Fix room rejoin race condition with operation queuing
-- [x] Add proper authentication queuing
-- [x] Implement connection state machine with enhanced states
-- [x] Add exponential backoff for auth retries
-- [x] Write comprehensive tests for new behavior (7 new race condition tests)
-
-#### Day 4: WebSocket Integration ✅ COMPLETED
-
-- [x] Update all components using WebSocket
-- [x] Ensure credit updates work with new system
-- [x] Test real-time features (all 36 tests passing)
-- [x] Document WebSocket patterns
-
-**Results**:
-
-- Fixed race condition with operation queue that delays room operations until auth completes
-- Implemented proper state machine with 'authenticating' state
-- Added exponential backoff (1s, 2s, 4s, 8s, 16s) for auth retries
-- All 36 WebSocket tests passing (7 new + 29 existing)
-- Robust connection handling for production use
-
-### Next Priority: Achieve Zero Technical Debt (Days 5-7)
-
-With both credit system unified and WebSocket issues resolved, we must now eliminate ALL technical debt to create a pristine codebase.
-
-**Goal: ZERO technical debt - no compromises**
-
-- We have no users, so no backwards compatibility constraints
-- Every warning is a future bug waiting to happen
-- Clean code is easier for AI to understand and extend
-- Half-measures waste time - fix it right the first time
-
-#### Day 5: Eliminate ALL ESLint Warnings ✅ PARTIAL PROGRESS
-
-- [x] Created centralized logging service
-- [x] Replaced all 55 console.log statements with logger
-- [x] Fixed major type safety issues (any → unknown)
-- [x] Fixed React Refresh warnings
-- [x] Reduced warnings from 191 → 72 (62% reduction)
-- [ ] Continue reducing remaining 72 warnings in test files
-
----
-
-_Last Updated: January 26, 2025_
-_Current Phase: Moving from 8.5/10 to 10/10 World-Class Status_
+- Each task should take 2-4 hours with TDD
+- Always verify against PRD requirements
+- Update this plan after each session
+- Maintain zero tech debt throughout
+- Ask for real backend API specs when available
