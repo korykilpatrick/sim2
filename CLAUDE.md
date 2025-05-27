@@ -18,6 +18,35 @@ This project follows test-first development practices. **No code should be commi
 - All new features must be developed using TDD
 - Tests serve as documentation and validation for AI-generated code
 
+## Visual Testing with Puppeteer
+
+**CRITICAL**: Any UI changes MUST be visually verified using Puppeteer before marking complete.
+
+### When to Use Visual Testing
+
+- After implementing ANY UI component
+- After changing styles or layouts
+- After modifying user interactions
+- When fixing visual bugs
+- Before committing frontend changes
+
+### Visual Testing Commands
+
+# Basic visual check
+
+"Use Puppeteer to navigate to http://localhost:5173[route] and take a screenshot. Check for any console errors or visual issues."
+
+# Component-specific testing
+
+"Use Puppeteer to test the [component name]:
+
+1. Navigate to [route]
+2. Take a screenshot of the initial state
+3. Interact with [specific elements]
+4. Verify the expected behavior
+5. Check console for errors
+6. Take a final screenshot"
+
 ## Project Commands
 
 ### Testing (RUN FIRST - ALWAYS!)
