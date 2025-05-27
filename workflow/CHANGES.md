@@ -1,5 +1,67 @@
 # Changes Log
 
+## 2025-05-27: Enhanced JSDoc Documentation - Week 3, Day 1 (Continued)
+
+### Task Completed
+
+Added comprehensive JSDoc documentation to core services and utilities to improve developer experience
+
+### Key Changes
+
+#### Files with JSDoc Added (5 files)
+
+1. **Core Services**:
+   - `/src/services/websocket-enhanced.ts` - Complete JSDoc for EnhancedWebSocketService class and methods
+2. **Core Utilities**:
+
+   - `/src/utils/api-validation.ts` - Enhanced existing JSDoc with better examples and parameter docs
+
+3. **Shared Utilities**:
+   - `/src/features/shared/utils/creditPricing.ts` - Complete JSDoc for all pricing functions and constants
+   - `/src/features/shared/utils/creditPricingHelpers.ts` - Complete JSDoc for extended pricing utilities
+
+#### Files Fixed
+
+- `/src/features/investigations/hooks/useInvestigations.ts` - Fixed JSDoc syntax error (JSX comments)
+
+### Documentation Quality
+
+- Added module-level documentation for all files
+- Documented all function parameters with types and descriptions
+- Included @returns with detailed return type information
+- Added 2-3 practical examples per function
+- Used consistent JSDoc format throughout
+- Fixed syntax issues in existing JSDoc examples
+
+### Coverage Progress
+
+- **Before**: ~70% JSDoc coverage
+- **After**: ~75% JSDoc coverage
+- **Documented Today**: 5 files with ~25+ functions
+- **Fixed**: 1 syntax error in existing JSDoc
+
+### Technical Achievements
+
+- Zero TypeScript errors maintained
+- Zero ESLint errors (16 warnings in test files)
+- Rich IDE support with detailed tooltips
+- Examples serve as inline documentation
+- All tests still passing (no regressions)
+
+### Next Steps
+
+1. Continue documenting remaining ~20 files
+2. Focus on feature services and hooks
+3. Add commit message standards (conventional commits)
+4. Create component storybook
+5. Create ADR for key decisions
+
+### Rollback Command
+
+```bash
+git checkout main -- src/services/websocket-enhanced.ts src/utils/api-validation.ts src/features/shared/utils/creditPricing.ts src/features/shared/utils/creditPricingHelpers.ts src/features/investigations/hooks/useInvestigations.ts
+```
+
 ## 2025-05-27: Pre-Commit Hooks Setup - Week 3, Day 1
 
 ### Task Completed

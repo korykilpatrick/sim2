@@ -3,11 +3,32 @@
  *
  * These utilities provide runtime validation for API responses to catch
  * contract mismatches and provide better error messages.
+ *
+ * @module utils/api-validation
+ * @example
+ * ```typescript
+ * // Validate a vessel API response
+ * const response = await vesselsApi.getById('vessel-123')
+ * const vessel = validators.vessels.getById(response.data)
+ *
+ * // Manual validation with custom schema
+ * const customSchema = z.object({ id: z.string(), name: z.string() })
+ * const validated = validateApiResponse(response, customSchema, 'custom/endpoint')
+ * ```
  */
 
 import { z } from 'zod'
 
-// Base response schemas
+/**
+ * Creates a schema for standard API responses
+ * @template T - The data schema type
+ * @param {z.ZodType<T>} dataSchema - Zod schema for the response data
+ * @returns {z.ZodObject} Schema for the complete API response
+ * @example
+ * ```typescript
+ * const UserResponseSchema = ApiResponseSchema(UserSchema)
+ * ```
+ */
 export const ApiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
   z.object({
     success: z.boolean(),
@@ -22,6 +43,16 @@ export const ApiResponseSchema = <T extends z.ZodType>(dataSchema: T) =>
     ),
   })
 
+/**
+ * Creates a schema for paginated API responses
+ * @template T - The item schema type
+ * @param {z.ZodType<T>} itemSchema - Zod schema for individual items
+ * @returns {z.ZodObject} Schema for paginated response with metadata
+ * @example
+ * ```typescript
+ * const VesselListSchema = PaginatedResponseSchema(VesselSchema)
+ * ```
+ */
 export const PaginatedResponseSchema = <T extends z.ZodType>(itemSchema: T) =>
   z.object({
     success: z.boolean(),
@@ -154,10 +185,12 @@ export const AreaSchema = z.object({
 export const CreditBalanceSchema = z.object({
   available: z.number().min(0),
   lifetime: z.number().min(0),
-  expiring: z.object({
-    amount: z.number(),
-    date: z.string().datetime(),
-  }).nullable(),
+  expiring: z
+    .object({
+      amount: z.number(),
+      date: z.string().datetime(),
+    })
+    .nullable(),
 })
 
 export const CreditTransactionSchema = z.object({
@@ -234,7 +267,20 @@ export const InvestigationSchema = z.object({
   completedAt: z.string().datetime().nullable(),
 })
 
-// Validation error class
+/**
+ * Custom error class for API validation failures
+ * @extends Error
+ * @example
+ * ```typescript
+ * try {
+ *   validateApiResponse(data, schema, 'users/list')
+ * } catch (error) {
+ *   if (error instanceof ApiValidationError) {
+ *     console.error('Validation failed:', error.validationErrors)
+ *   }
+ * }
+ * ```
+ */
 export class ApiValidationError extends Error {
   constructor(
     message: string,
@@ -248,11 +294,18 @@ export class ApiValidationError extends Error {
 
 /**
  * Validates an API response against a schema
- * @param response - The API response to validate
- * @param schema - The Zod schema to validate against
- * @param endpoint - The endpoint name for error reporting
- * @returns The validated data
- * @throws ApiValidationError if validation fails
+ * @template T - The expected response type
+ * @param {unknown} response - The API response to validate
+ * @param {z.ZodType<T>} schema - The Zod schema to validate against
+ * @param {string} endpoint - The endpoint name for error reporting
+ * @returns {T} The validated data
+ * @throws {ApiValidationError} If validation fails
+ * @example
+ * ```typescript
+ * const response = await fetch('/api/v1/users/123')
+ * const data = await response.json()
+ * const user = validateApiResponse(data, UserSchema, 'users/getById')
+ * ```
  */
 export function validateApiResponse<T>(
   response: unknown,
@@ -282,9 +335,15 @@ export function validateApiResponse<T>(
 
 /**
  * Creates a validated API response handler
- * @param schema - The Zod schema for the expected response
- * @param endpoint - The endpoint name for error reporting
- * @returns A function that validates and returns the response data
+ * @template T - The expected response type
+ * @param {z.ZodType<T>} schema - The Zod schema for the expected response
+ * @param {string} endpoint - The endpoint name for error reporting
+ * @returns {(response: unknown) => T} A function that validates and returns the response data
+ * @example
+ * ```typescript
+ * const validateUserResponse = createValidatedHandler(UserSchema, 'users/getById')
+ * const user = validateUserResponse(apiResponse)
+ * ```
  */
 export function createValidatedHandler<T>(
   schema: z.ZodType<T>,
@@ -295,7 +354,20 @@ export function createValidatedHandler<T>(
   }
 }
 
-// Pre-configured validators for common responses
+/**
+ * Pre-configured validators for all API endpoints
+ * @example
+ * ```typescript
+ * // Validate auth response
+ * const authData = validators.auth.login(response)
+ *
+ * // Validate vessel search results
+ * const vessels = validators.vessels.search(response)
+ *
+ * // Validate credit balance
+ * const balance = validators.credits.balance(response)
+ * ```
+ */
 export const validators = {
   auth: {
     login: createValidatedHandler(

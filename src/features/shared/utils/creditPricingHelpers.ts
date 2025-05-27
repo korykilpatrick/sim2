@@ -1,7 +1,28 @@
+/**
+ * Extended credit pricing helper utilities
+ *
+ * Additional pricing calculation functions that provide more detailed
+ * calculations with discounts, validations, and bulk pricing.
+ *
+ * @module features/shared/utils/creditPricingHelpers
+ */
+
 import { CREDIT_COSTS } from './creditPricing'
 
-// Extended credit pricing utilities for comprehensive calculations
-
+/**
+ * Calculate vessel tracking cost with minimum day threshold
+ * @param {Object} params - Calculation parameters
+ * @param {number} params.criteriaCount - Number of tracking criteria
+ * @param {number} params.durationDays - Duration in days (minimum 1 day)
+ * @returns {number} Total credits required
+ * @example
+ * ```typescript
+ * const cost = calculateVesselTrackingCost({
+ *   criteriaCount: 5,
+ *   durationDays: 0.5 // Will be rounded up to 1 day
+ * }) // 25 credits
+ * ```
+ */
 export const calculateVesselTrackingCost = ({
   criteriaCount,
   durationDays,
@@ -21,6 +42,27 @@ export const calculateVesselTrackingCost = ({
   )
 }
 
+/**
+ * Calculate area monitoring cost with size-based multipliers
+ * @param {Object} params - Calculation parameters
+ * @param {number} params.areaSizeKm2 - Area size in square kilometers
+ * @param {number} params.durationDays - Duration in days
+ * @returns {number} Total credits required
+ * @example
+ * ```typescript
+ * // Small area (100 km²) for 30 days
+ * const smallCost = calculateAreaMonitoringCost({
+ *   areaSizeKm2: 100,
+ *   durationDays: 30
+ * }) // 300 credits (base cost only)
+ *
+ * // Large area (1500 km²) for 7 days
+ * const largeCost = calculateAreaMonitoringCost({
+ *   areaSizeKm2: 1500,
+ *   durationDays: 7
+ * }) // 385 credits (includes size multiplier)
+ * ```
+ */
 export const calculateAreaMonitoringCost = ({
   areaSizeKm2,
   durationDays,
@@ -50,6 +92,27 @@ export const calculateAreaMonitoringCost = ({
   return Math.round(totalPerDay * durationDays)
 }
 
+/**
+ * Calculate fleet tracking cost with bulk discounts
+ * @param {Object} params - Calculation parameters
+ * @param {number} params.vesselCount - Number of vessels in fleet
+ * @param {number} params.durationMonths - Duration in months
+ * @returns {number} Total credits required (with discounts applied)
+ * @example
+ * ```typescript
+ * // Small fleet (10 vessels) for 3 months
+ * const smallFleet = calculateFleetTrackingCost({
+ *   vesselCount: 10,
+ *   durationMonths: 3
+ * }) // 3000 credits (no discount)
+ *
+ * // Large fleet (25 vessels) for 6 months
+ * const largeFleet = calculateFleetTrackingCost({
+ *   vesselCount: 25,
+ *   durationMonths: 6
+ * }) // 13500 credits (10% discount applied)
+ * ```
+ */
 export const calculateFleetTrackingCost = ({
   vesselCount,
   durationMonths,
@@ -73,6 +136,16 @@ export const calculateFleetTrackingCost = ({
   return Math.round(baseCost * (1 - discount))
 }
 
+/**
+ * Calculate report generation cost by type
+ * @param {'compliance' | 'chronology'} reportType - Type of report
+ * @returns {number} Credits required for the report
+ * @example
+ * ```typescript
+ * const complianceCost = calculateReportCost('compliance') // 50 credits
+ * const chronologyCost = calculateReportCost('chronology') // 75 credits
+ * ```
+ */
 export const calculateReportCost = (
   reportType: 'compliance' | 'chronology',
 ): number => {
@@ -83,6 +156,18 @@ export const calculateReportCost = (
   )
 }
 
+/**
+ * Calculate investigation cost by type
+ * @param {'basic' | 'comprehensive' | 'custom'} investigationType - Type of investigation
+ * @param {number} [customAmount] - Custom amount for 'custom' type investigations
+ * @returns {number} Credits required for the investigation
+ * @example
+ * ```typescript
+ * const basicCost = calculateInvestigationCost('basic') // 5000 credits
+ * const comprehensiveCost = calculateInvestigationCost('comprehensive') // 10000 credits
+ * const customCost = calculateInvestigationCost('custom', 7500) // 7500 credits
+ * ```
+ */
 export const calculateInvestigationCost = (
   investigationType: 'basic' | 'comprehensive' | 'custom',
   customAmount?: number,
@@ -99,6 +184,32 @@ export const calculateInvestigationCost = (
   }
 }
 
+/**
+ * Calculate cost for any service type with appropriate parameters
+ * @param {string} serviceType - Type of service
+ * @param {Record<string, unknown>} params - Service-specific parameters
+ * @returns {number} Total credits required
+ * @throws {Error} If service type is unknown
+ * @example
+ * ```typescript
+ * // Vessel tracking
+ * const vesselCost = calculateServiceCost('vessel-tracking', {
+ *   criteriaCount: 3,
+ *   durationDays: 7
+ * })
+ *
+ * // Area monitoring
+ * const areaCost = calculateServiceCost('area-monitoring', {
+ *   areaSizeKm2: 500,
+ *   durationDays: 30
+ * })
+ *
+ * // Investigation
+ * const investigationCost = calculateServiceCost('investigation', {
+ *   investigationType: 'comprehensive'
+ * })
+ * ```
+ */
 export const calculateServiceCost = (
   serviceType:
     | 'vessel-tracking'
@@ -122,7 +233,9 @@ export const calculateServiceCost = (
         params as { vesselCount: number; durationMonths: number },
       )
     case 'report-generation':
-      return calculateReportCost(params.reportType as 'compliance' | 'chronology')
+      return calculateReportCost(
+        params.reportType as 'compliance' | 'chronology',
+      )
     case 'investigation':
       return calculateInvestigationCost(
         params.investigationType as 'basic' | 'comprehensive' | 'custom',
@@ -133,10 +246,31 @@ export const calculateServiceCost = (
   }
 }
 
+/**
+ * Format credit amount with locale-appropriate separators
+ * @param {number} amount - Credit amount to format
+ * @returns {string} Formatted credit amount
+ * @example
+ * ```typescript
+ * formatCreditAmount(1000) // "1,000"
+ * formatCreditAmount(1500000) // "1,500,000"
+ * ```
+ */
 export const formatCreditAmount = (amount: number): string => {
   return amount.toLocaleString()
 }
 
+/**
+ * Get discount percentage for credit packages
+ * @param {number} creditAmount - Base credit amount
+ * @returns {number} Discount percentage (0-30)
+ * @example
+ * ```typescript
+ * getCreditPackageDiscount(100) // 0 (no discount)
+ * getCreditPackageDiscount(1000) // 20 (20% discount)
+ * getCreditPackageDiscount(5000) // 30 (30% discount)
+ * ```
+ */
 export const getCreditPackageDiscount = (creditAmount: number): number => {
   const discounts: Record<number, number> = {
     100: 0,
@@ -148,6 +282,22 @@ export const getCreditPackageDiscount = (creditAmount: number): number => {
   return discounts[creditAmount] || 0
 }
 
+/**
+ * Validate if user has sufficient credits for a purchase
+ * @param {number} currentBalance - User's current credit balance
+ * @param {number} requiredAmount - Credits required for purchase
+ * @returns {Object} Validation result
+ * @returns {boolean} returns.sufficient - Whether balance is sufficient
+ * @returns {number} returns.shortfall - Credits needed (0 if sufficient)
+ * @example
+ * ```typescript
+ * const result = validateCreditSufficiency(500, 300)
+ * // { sufficient: true, shortfall: 0 }
+ *
+ * const insufficient = validateCreditSufficiency(100, 300)
+ * // { sufficient: false, shortfall: 200 }
+ * ```
+ */
 export const validateCreditSufficiency = (
   currentBalance: number,
   requiredAmount: number,
@@ -158,7 +308,10 @@ export const validateCreditSufficiency = (
   return { sufficient, shortfall }
 }
 
-// Add missing constants to CREDIT_COSTS
+/**
+ * Extended credit costs including investigation pricing
+ * @extends CREDIT_COSTS
+ */
 export const EXTENDED_CREDIT_COSTS = {
   ...CREDIT_COSTS,
   INVESTIGATIONS: {

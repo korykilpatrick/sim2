@@ -1,5 +1,76 @@
 # Architectural Decisions Log
 
+## 2025-05-27: Enhanced JSDoc Documentation Strategy
+
+### Decision: Continue Incremental JSDoc Documentation
+
+**Context**:
+With ~70% JSDoc coverage achieved, we needed to continue documenting the remaining core services and utilities to reach 100% coverage goal.
+
+**Decision**:
+Focus on documenting high-value files first:
+
+1. Core services (WebSocket, logger)
+2. Shared utilities (pricing calculators)
+3. API validation utilities
+4. Fix any JSDoc syntax errors found
+
+**Rationale**:
+
+- Core services are used throughout the application
+- Shared utilities have complex business logic that benefits from examples
+- API validation is critical for type safety
+- Fixing syntax errors prevents CI/CD failures
+
+**Implementation**:
+
+- Added comprehensive JSDoc to 5 files
+- Fixed JSDoc syntax error in investigations hook
+- Included 2-3 practical examples per function
+- Enhanced existing documentation with better examples
+
+### Decision: JSDoc Example Syntax Standards
+
+**Context**:
+Found JSDoc examples with JSX comments causing ESLint parsing errors.
+
+**Decision**:
+Avoid JSX comment syntax inside JSDoc examples. Use regular JavaScript comments or descriptive text instead.
+
+**Rationale**:
+
+- JSX comments (`{/* */}`) cause parsing errors in JSDoc blocks
+- Regular comments are clearer in documentation context
+- Prevents CI/CD pipeline failures
+
+**Example**:
+
+```javascript
+// Bad: {/* Form fields */}
+// Good: // Form fields go here
+```
+
+### Decision: Comprehensive Examples in JSDoc
+
+**Context**:
+Developers often struggle to understand how to use functions correctly without examples.
+
+**Decision**:
+Include 2-3 practical, runnable examples in every JSDoc block for public functions.
+
+**Rationale**:
+
+- Examples are worth 1000 words of description
+- Developers copy-paste examples to get started quickly
+- Real-world examples prevent common mistakes
+- Examples serve as inline tests of API design
+
+**Impact**:
+
+- Better developer onboarding
+- Fewer support questions
+- Self-documenting codebase
+
 ## 2025-05-27: Pre-Commit Hooks Implementation
 
 ### Decision: Enforce Code Quality with Pre-Commit Hooks

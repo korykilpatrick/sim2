@@ -38,13 +38,14 @@ Based on our 8.5/10 assessment, here are the gaps to world-class:
 
 **Goal**: Complete all documentation and enforce standards
 
-- [x] Add JSDoc comments to ALL exported functions/types (currently ~65% coverage, 55+ files documented)
+- [x] Add JSDoc comments to ALL exported functions/types (currently ~75% coverage, 60+ files documented)
   - **Progress**: Added comprehensive JSDoc to fleet, areas, investigations, dashboard services and hooks
   - **Progress**: Completed ALL API endpoint documentation (9 endpoint files)
   - **Progress**: Documented product, report, logger, analytics, unified credit services (6 more files)
   - **Progress**: Documented 20 more files including WebSocket, vessel, area, fleet, investigation hooks
   - **Progress**: Documented all date utilities, credit system hooks, and report management hooks
-  - **Remaining**: ~25 files still need JSDoc (focus on remaining utils, components)
+  - **Progress**: Added JSDoc to websocket-enhanced, api-validation, creditPricing utilities (5 more files)
+  - **Remaining**: ~20 files still need JSDoc (feature services, hooks, stores, providers)
 - [x] Document all API endpoints with examples ✅ COMPLETE
 - [x] Set up pre-commit hooks (husky + lint-staged) ✅ COMPLETE
   - **Progress**: Husky and lint-staged configured with zero-warnings policy
@@ -56,7 +57,7 @@ Based on our 8.5/10 assessment, here are the gaps to world-class:
 - [ ] Create ADR (Architecture Decision Records) for key decisions
 
 **Success Metric**: 100% documentation coverage, pre-commit hooks blocking bad code
-**Current Status**: ~65% JSDoc coverage achieved, all API endpoints, major services, and critical hooks documented
+**Current Status**: ~75% JSDoc coverage achieved, all API endpoints, major services, critical hooks, and shared utilities documented
 
 ### 2. Implement Observability & Monitoring (Week 3, Day 3-4)
 
