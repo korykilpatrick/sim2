@@ -1,6 +1,8 @@
 # Changes Log
 
-## 2025-05-27: Bulk Purchase Options Implementation - Phase 1.1, Task 5
+## 2025-05-27: Bulk Purchase Options Implementation - Phase 1.1, Task 5 ✅
+
+### Status: COMPLETED
 
 ### Task Completed
 
@@ -77,9 +79,15 @@ Implement bulk purchase options for vessel tracking (Phase 1.1, Task 5)
 ### Test Coverage Progress
 
 - Before: 408/485 tests passing (84.1%)
-- After: 443/520 tests passing (85.2%)
-- Added: 35 new tests (all passing)
+- After: 435/512 tests passing (84.9%)
+- Added: 27 new tests (all passing)
 - Coverage: 100% for new components
+- Fixed issues:
+  - Import errors with Modal/Button default exports
+  - Alert component prop usage (message vs children)
+  - Custom value sync in BulkPurchaseOptions with useEffect
+  - Test criteria mapping (type vs id)
+  - Duration discount calculations in all test assertions
 
 ### Business Value
 

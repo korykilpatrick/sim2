@@ -114,8 +114,10 @@ describe('BulkPurchaseModal', () => {
     expect(initialPrices[initialPrices.length - 1]).toBeInTheDocument()
 
     // Select 10 vessels - should apply both duration and bulk discounts
-    const tenVesselsOption = screen.getByRole('button', { name: /10 vessels/i })
-    fireEvent.click(tenVesselsOption)
+    const tenVesselsOptions = screen.getAllByRole('button', {
+      name: /10 vessels/i,
+    })
+    fireEvent.click(tenVesselsOptions[0])
 
     await waitFor(() => {
       // Base: 8 * 30 * 10 = 2400
@@ -123,7 +125,8 @@ describe('BulkPurchaseModal', () => {
       // Bulk discount (10 vessels): 15% off
       // Combined: 1 - (1-0.1)*(1-0.15) = 23.5% off
       // Final: 2400 * 0.765 = 1836
-      expect(screen.getByText(/1,836 credits/i)).toBeInTheDocument()
+      const updatedPrices = screen.getAllByText(/1,836 credits/i)
+      expect(updatedPrices[updatedPrices.length - 1]).toBeInTheDocument()
     })
   })
 
@@ -218,9 +221,11 @@ describe('BulkPurchaseModal', () => {
       />,
     )
 
-    // Select 5 vessels
-    const fiveVesselsOption = screen.getByRole('button', { name: /5 vessels/i })
-    fireEvent.click(fiveVesselsOption)
+    // Select 5 vessels (use getAllByRole since there might be multiple)
+    const fiveVesselsOptions = screen.getAllByRole('button', {
+      name: /5 vessels/i,
+    })
+    fireEvent.click(fiveVesselsOptions[0])
 
     // Confirm purchase
     const confirmButton = screen.getByRole('button', {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { cn } from '@utils/cn'
 import { BULK_OPTIONS } from '../utils/durationPricing'
 import type { BulkOption, PricingResult } from '../utils/durationPricing'
@@ -37,6 +37,11 @@ export function BulkPurchaseOptions({
   className,
 }: BulkPurchaseOptionsProps) {
   const [customValue, setCustomValue] = useState(selectedVesselCount.toString())
+
+  // Sync custom value when selected vessel count changes
+  useEffect(() => {
+    setCustomValue(selectedVesselCount.toString())
+  }, [selectedVesselCount])
 
   const handleCustomChange = (value: string) => {
     setCustomValue(value)

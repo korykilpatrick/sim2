@@ -30,9 +30,9 @@ describe('Bulk Purchase Integration', () => {
   ).map((criterion) => ({
     ...criterion,
     creditCost:
-      criterion.id === 'ais-reporting'
+      criterion.type === 'ais_reporting'
         ? 5
-        : criterion.id === 'dark-activity'
+        : criterion.type === 'dark_event'
           ? 3
           : 2,
   }))
@@ -50,32 +50,45 @@ describe('Bulk Purchase Integration', () => {
         selectedCriteria={criteriaWithCosts}
         durationDays={30}
         userCredits={5000}
+        initialVesselCount={1}
       />,
     )
 
     // Base price: (5 + 3 + 2) * 30 * 1 = 300 credits
-    expect(screen.getByText(/300 credits/i)).toBeInTheDocument()
+    // With 10% duration discount for 30 days: 300 * 0.9 = 270 credits
+    const initialPrices = screen.getAllByText(/270 credits/i)
+    expect(initialPrices[initialPrices.length - 1]).toBeInTheDocument()
 
-    // Select 10 vessels - should apply 15% bulk discount
-    const tenVesselsOption = screen.getByRole('button', { name: /10 vessels/i })
-    fireEvent.click(tenVesselsOption)
+    // Select 10 vessels - should apply both duration and bulk discounts
+    const tenVesselsOptions = screen.getAllByRole('button', {
+      name: /10 vessels/i,
+    })
+    fireEvent.click(tenVesselsOptions[0])
 
     await waitFor(() => {
       // Base: 300 * 10 = 3000
-      // With 15% bulk discount: 3000 * 0.85 = 2550
-      expect(screen.getByText(/2,550 credits/i)).toBeInTheDocument()
+      // Duration discount (30 days): 10% off
+      // Bulk discount (10 vessels): 15% off
+      // Combined: 1 - (1-0.1)*(1-0.15) = 23.5% off
+      // Final: 3000 * 0.765 = 2295
+      const updatedPrices = screen.getAllByText(/2,295 credits/i)
+      expect(updatedPrices[updatedPrices.length - 1]).toBeInTheDocument()
     })
 
-    // Select 50 vessels - should apply 25% bulk discount
-    const fiftyVesselsOption = screen.getByRole('button', {
+    // Select 50 vessels - should apply both duration and bulk discounts
+    const fiftyVesselsOptions = screen.getAllByRole('button', {
       name: /50 vessels/i,
     })
-    fireEvent.click(fiftyVesselsOption)
+    fireEvent.click(fiftyVesselsOptions[0])
 
     await waitFor(() => {
       // Base: 300 * 50 = 15000
-      // With 25% bulk discount: 15000 * 0.75 = 11250
-      expect(screen.getByText(/11,250 credits/i)).toBeInTheDocument()
+      // Duration discount (30 days): 10% off
+      // Bulk discount (50 vessels): 25% off
+      // Combined: 1 - (1-0.1)*(1-0.25) = 32.5% off
+      // Final: 15000 * 0.675 = 10125
+      const updatedPrices = screen.getAllByText(/10,125 credits/i)
+      expect(updatedPrices[updatedPrices.length - 1]).toBeInTheDocument()
     })
   })
 
@@ -88,14 +101,15 @@ describe('Bulk Purchase Integration', () => {
         selectedCriteria={criteriaWithCosts}
         durationDays={90} // Should apply 20% duration discount
         userCredits={10000}
+        initialVesselCount={1}
       />,
     )
 
     // Select 25 vessels - should apply 20% bulk discount
-    const twentyFiveVesselsOption = screen.getByRole('button', {
+    const twentyFiveVesselsOptions = screen.getAllByRole('button', {
       name: /25 vessels/i,
     })
-    fireEvent.click(twentyFiveVesselsOption)
+    fireEvent.click(twentyFiveVesselsOptions[0])
 
     await waitFor(() => {
       // Base: 10 * 90 * 25 = 22500
@@ -103,7 +117,8 @@ describe('Bulk Purchase Integration', () => {
       // Bulk discount: 20% off
       // Combined multiplicatively: 1 - (1-0.2)*(1-0.2) = 36% off
       // Final: 22500 * 0.64 = 14400
-      expect(screen.getByText(/14,400 credits/i)).toBeInTheDocument()
+      const updatedPrices = screen.getAllByText(/14,400 credits/i)
+      expect(updatedPrices[updatedPrices.length - 1]).toBeInTheDocument()
     })
   })
 
@@ -117,6 +132,7 @@ describe('Bulk Purchase Integration', () => {
         durationDays={30}
         showPackageTiers
         userCredits={5000}
+        initialVesselCount={1}
       />,
     )
 
@@ -125,16 +141,20 @@ describe('Bulk Purchase Integration', () => {
     fireEvent.click(goldTier)
 
     // Select 5 vessels - 10% bulk discount
-    const fiveVesselsOption = screen.getByRole('button', { name: /5 vessels/i })
-    fireEvent.click(fiveVesselsOption)
+    const fiveVesselsOptions = screen.getAllByRole('button', {
+      name: /5 vessels/i,
+    })
+    fireEvent.click(fiveVesselsOptions[0])
 
     await waitFor(() => {
       // Base: 300 * 5 = 1500
+      // Duration: 10% off (30 days)
       // Bulk: 10% off
       // Package: 10% off
-      // Combined: 1 - (1-0.1)*(1-0.1) = 19% off
-      // Final: 1500 * 0.81 = 1215
-      expect(screen.getByText(/1,215 credits/i)).toBeInTheDocument()
+      // Combined: 1 - (1-0.1)*(1-0.1)*(1-0.1) = 27.1% off
+      // Final: 1500 * 0.729 = 1093.5 ≈ 1094
+      const updatedPrices = screen.getAllByText(/1,094 credits/i)
+      expect(updatedPrices[updatedPrices.length - 1]).toBeInTheDocument()
     })
   })
 
@@ -148,12 +168,15 @@ describe('Bulk Purchase Integration', () => {
         selectedCriteria={criteriaWithCosts}
         durationDays={365} // 1 year
         userCredits={1000}
+        initialVesselCount={1}
       />,
     )
 
     // Select 10 vessels - will exceed user credits
-    const tenVesselsOption = screen.getByRole('button', { name: /10 vessels/i })
-    fireEvent.click(tenVesselsOption)
+    const tenVesselsOptions = screen.getAllByRole('button', {
+      name: /10 vessels/i,
+    })
+    fireEvent.click(tenVesselsOptions[0])
 
     await waitFor(() => {
       expect(screen.getByText(/insufficient credits/i)).toBeInTheDocument()
@@ -183,6 +206,7 @@ describe('Bulk Purchase Integration', () => {
         durationDays={30}
         showPackageTiers
         userCredits={5000}
+        initialVesselCount={1}
       />,
     )
 
@@ -191,8 +215,10 @@ describe('Bulk Purchase Integration', () => {
     fireEvent.click(goldTier)
 
     // Select 10 vessels
-    const tenVesselsOption = screen.getByRole('button', { name: /10 vessels/i })
-    fireEvent.click(tenVesselsOption)
+    const tenVesselsOptions = screen.getAllByRole('button', {
+      name: /10 vessels/i,
+    })
+    fireEvent.click(tenVesselsOptions[0])
 
     // Confirm purchase
     const confirmButton = screen.getByRole('button', {
@@ -207,7 +233,11 @@ describe('Bulk Purchase Integration', () => {
         criteria: criteriaWithCosts,
         durationDays: 30,
         pricingTier: 'gold',
-        appliedDiscounts: expect.arrayContaining(['bulk', 'package']),
+        appliedDiscounts: expect.arrayContaining([
+          'duration',
+          'bulk',
+          'package',
+        ]),
       })
     })
   })
@@ -221,6 +251,7 @@ describe('Bulk Purchase Integration', () => {
         selectedCriteria={criteriaWithCosts}
         durationDays={30}
         userCredits={10000}
+        initialVesselCount={1}
       />,
     )
 
@@ -230,10 +261,14 @@ describe('Bulk Purchase Integration', () => {
     fireEvent.blur(customInput)
 
     await waitFor(() => {
-      // 15 vessels should apply 15% bulk discount
+      // 15 vessels should apply bulk and duration discounts
       // Base: 300 * 15 = 4500
-      // With 15% discount: 4500 * 0.85 = 3825
-      expect(screen.getByText(/3,825 credits/i)).toBeInTheDocument()
+      // Duration discount (30 days): 10% off
+      // Bulk discount (15 vessels): 15% off
+      // Combined: 1 - (1-0.1)*(1-0.15) = 23.5% off
+      // Final: 4500 * 0.765 = 3442.5 ≈ 3443
+      const updatedPrices = screen.getAllByText(/3,443 credits/i)
+      expect(updatedPrices[updatedPrices.length - 1]).toBeInTheDocument()
     })
   })
 
@@ -247,6 +282,7 @@ describe('Bulk Purchase Integration', () => {
         durationDays={30}
         allowVesselNames
         userCredits={5000}
+        initialVesselCount={1}
       />,
     )
 
