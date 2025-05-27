@@ -1,5 +1,29 @@
+/**
+ * @module useDashboardServices
+ * @description Hook for retrieving available SIM services displayed on the dashboard.
+ * Returns a static list of services with navigation links and styling information.
+ */
+
 import { DashboardService } from '../types'
 
+/**
+ * Get available dashboard services for navigation
+ * @returns {Object} Object containing services array
+ * @example
+ * ```typescript
+ * function ServicesGrid() {
+ *   const { services } = useDashboardServices()
+ *
+ *   return (
+ *     <div className="grid grid-cols-3 gap-4">
+ *       {services.map(service => (
+ *         <ServiceCard key={service.name} {...service} />
+ *       ))}
+ *     </div>
+ *   )
+ * }
+ * ```
+ */
 export function useDashboardServices() {
   // In a real app, this might come from an API or be based on user permissions
   const services: DashboardService[] = [

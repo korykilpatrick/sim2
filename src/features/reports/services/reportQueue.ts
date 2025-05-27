@@ -1,36 +1,91 @@
+/**
+ * @module reportQueue
+ * @description Report job queue management for handling background report generation, downloads, and email delivery.
+ * Implements a concurrent job processor with progress tracking and state management.
+ */
+
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
+/**
+ * Possible statuses for report jobs
+ */
 export type ReportJobStatus = 'pending' | 'processing' | 'completed' | 'failed'
 
+/**
+ * Report job configuration and state
+ * @interface ReportJob
+ */
 export interface ReportJob {
+  /** Unique job identifier */
   id: string
+  /** Associated report ID */
   reportId: string
+  /** Type of job operation */
   type: 'generate' | 'download' | 'email'
+  /** Current job status */
   status: ReportJobStatus
+  /** Progress percentage (0-100) */
   progress: number
+  /** Additional job data/parameters */
   data: Record<string, unknown>
+  /** Error message if job failed */
   error?: string
+  /** Job creation timestamp */
   createdAt: Date
+  /** Last update timestamp */
   updatedAt: Date
+  /** Completion timestamp */
   completedAt?: Date
 }
 
+/**
+ * Report queue store interface for job management
+ * @interface ReportQueueStore
+ */
 interface ReportQueueStore {
+  /** Map of all jobs by ID */
   jobs: Map<string, ReportJob>
+  /** Number of currently processing jobs */
   activeJobs: number
+  /** Maximum concurrent jobs allowed */
   maxConcurrentJobs: number
 
   // Actions
+  /** Add a new job to the queue */
   addJob: (job: Omit<ReportJob, 'id' | 'createdAt' | 'updatedAt'>) => string
+  /** Update an existing job */
   updateJob: (id: string, updates: Partial<ReportJob>) => void
+  /** Remove a job from the queue */
   removeJob: (id: string) => void
+  /** Get a specific job by ID */
   getJob: (id: string) => ReportJob | undefined
+  /** Get all jobs for a specific report */
   getJobsByReportId: (reportId: string) => ReportJob[]
+  /** Process pending jobs in the queue */
   processQueue: () => Promise<void>
+  /** Clear all completed jobs */
   clearCompleted: () => void
 }
 
+/**
+ * Report queue store for managing background report jobs with concurrent processing
+ * @example
+ * ```typescript
+ * // Add a report generation job
+ * const jobId = useReportQueueStore.getState().addJob({
+ *   reportId: 'report123',
+ *   type: 'generate',
+ *   status: 'pending',
+ *   progress: 0,
+ *   data: { format: 'pdf', template: 'compliance' }
+ * })
+ *
+ * // Monitor job progress
+ * const job = useReportQueueStore.getState().getJob(jobId)
+ * console.log(`Progress: ${job.progress}%`)
+ * ```
+ */
 export const useReportQueueStore = create<ReportQueueStore>()(
   devtools(
     (set, get) => ({
@@ -178,7 +233,13 @@ export const useReportQueueStore = create<ReportQueueStore>()(
   ),
 )
 
-// Job processor
+/**
+ * Process a single job based on its type
+ * @param {ReportJob} job - Job to process
+ * @returns {Promise<void>} Resolves when job is complete
+ * @throws {Error} If job type is unknown
+ * @private
+ */
 async function processJob(job: ReportJob): Promise<void> {
   const { updateJob } = useReportQueueStore.getState()
 
@@ -212,7 +273,25 @@ async function processJob(job: ReportJob): Promise<void> {
   }
 }
 
-// Queue monitor hook
+/**
+ * Hook for monitoring report queue status and statistics
+ * @returns {Object} Queue statistics and job list
+ * @example
+ * ```typescript
+ * function QueueStatus() {
+ *   const { totalJobs, pendingJobs, processingJobs, failedJobs } = useReportQueueMonitor()
+ *
+ *   return (
+ *     <div>
+ *       <p>Total Jobs: {totalJobs}</p>
+ *       <p>Pending: {pendingJobs}</p>
+ *       <p>Processing: {processingJobs}</p>
+ *       <p>Failed: {failedJobs}</p>
+ *     </div>
+ *   )
+ * }
+ * ```
+ */
 export function useReportQueueMonitor() {
   const jobs = useReportQueueStore((state) => Array.from(state.jobs.values()))
   const activeJobs = useReportQueueStore((state) => state.activeJobs)
