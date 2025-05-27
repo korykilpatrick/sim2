@@ -1,5 +1,113 @@
 # Changes Log
 
+## 2025-05-27: Bulk Purchase Options Implementation - Phase 1.1, Task 5
+
+### Task Completed
+
+Implement bulk purchase options for vessel tracking (Phase 1.1, Task 5)
+
+### Key Changes
+
+#### Files Added
+
+- `/src/features/vessels/components/BulkPurchaseOptions.tsx` - Bulk vessel selection UI component
+- `/src/features/vessels/components/BulkPurchaseModal.tsx` - Modal for configuring bulk purchases
+- `/tests/unit/vessels/components/BulkPurchaseOptions.test.tsx` - Comprehensive tests (13 tests)
+- `/tests/unit/vessels/components/BulkPurchaseModal.test.tsx` - Modal tests (14 tests)
+- `/tests/unit/vessels/bulk-purchase-integration.test.tsx` - Integration tests (8 tests)
+
+#### Files Modified
+
+- `/src/features/vessels/components/index.ts` - Added exports for new components
+
+### Implementation Details
+
+1. **BulkPurchaseOptions Component**:
+
+   - Visual grid of preset vessel count options (1, 5, 10, 25, 50, 100)
+   - Shows discount percentages for bulk purchases
+   - "Most Popular" badge on 10 vessels option
+   - "Best Value" badge on 50 vessels option
+   - Custom vessel count input with validation
+   - Optional range slider for vessel selection
+   - Real-time pricing calculation display
+   - Savings summary showing total discount
+   - Full keyboard navigation support
+   - Disabled state support
+
+2. **BulkPurchaseModal Component**:
+
+   - Complete bulk purchase workflow in a modal
+   - Displays selected criteria and duration summary
+   - Integrates BulkPurchaseOptions for vessel selection
+   - Optional package tier selection (Bronze/Silver/Gold/Platinum)
+   - Optional vessel name input for each vessel
+   - Real-time pricing with all discounts applied
+   - Expandable price breakdown details
+   - Credit balance checking with insufficient funds warning
+   - "Add Credits" button integration when balance is low
+   - Loading state during purchase confirmation
+
+3. **Pricing Integration**:
+
+   - Uses existing `calculateDurationBasedPrice` function
+   - Applies duration discounts (5-30% based on days)
+   - Applies bulk discounts (10-25% based on vessel count)
+   - Applies package tier discounts (0-15% based on tier)
+   - Discounts combine multiplicatively to prevent over-discounting
+   - Shows price per vessel and price per day
+
+4. **Test Coverage**:
+   - 35 new tests added (all passing)
+   - 100% coverage for new components
+   - Tests cover all user interactions
+   - Tests verify pricing calculations
+   - Tests check accessibility features
+   - Integration tests verify complete workflow
+
+### Technical Achievements
+
+- Zero TypeScript errors
+- Zero ESLint errors (15 warnings in test files remain)
+- Component composition pattern for flexibility
+- Proper React patterns (useEffect, useState)
+- Accessibility-first design with ARIA attributes
+- Performance optimized with minimal re-renders
+
+### Test Coverage Progress
+
+- Before: 408/485 tests passing (84.1%)
+- After: 443/520 tests passing (85.2%)
+- Added: 35 new tests (all passing)
+- Coverage: 100% for new components
+
+### Business Value
+
+- Enables bulk vessel purchases as specified in PRD
+- Clear discount visibility encourages larger purchases
+- Flexible options from 1 to 100+ vessels
+- Package tiers provide upgrade path
+- User-friendly interface reduces friction
+- Real-time pricing builds trust
+
+### Next Steps
+
+1. Build tracking configuration wizard (Task 6)
+2. Add real-time status updates via WebSocket (Task 7)
+3. Integrate bulk purchase modal into vessel tracking page
+4. Add purchase confirmation and credit deduction flow
+
+### Rollback Command
+
+```bash
+git checkout 955f41f -- src/features/vessels/components/index.ts
+rm -f src/features/vessels/components/BulkPurchaseOptions.tsx
+rm -f src/features/vessels/components/BulkPurchaseModal.tsx
+rm -f tests/unit/vessels/components/BulkPurchaseOptions.test.tsx
+rm -f tests/unit/vessels/components/BulkPurchaseModal.test.tsx
+rm -f tests/unit/vessels/bulk-purchase-integration.test.tsx
+```
+
 ## 2025-05-27: Duration-Based Pricing Calculator - Phase 1.1, Task 4
 
 ### Task Completed

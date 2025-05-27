@@ -1,5 +1,135 @@
 # Architectural Decisions Log
 
+## 2025-05-27: Bulk Purchase Options Architecture
+
+### Decision: Separate Components for Options and Modal
+
+**Context**:
+We needed to implement bulk purchase functionality for vessel tracking. The feature needed to support vessel selection, pricing calculation, and purchase workflow.
+
+**Decision**:
+Create two separate components:
+
+1. **BulkPurchaseOptions** - Reusable vessel selection component
+2. **BulkPurchaseModal** - Complete purchase workflow modal
+
+**Rationale**:
+
+- **Separation of Concerns**: Options component can be used independently
+- **Reusability**: BulkPurchaseOptions can be embedded in other contexts
+- **Flexibility**: Modal orchestrates the full workflow but delegates selection
+- **Testability**: Smaller, focused components are easier to test
+- **Performance**: Options component can be optimized independently
+
+**Alternatives Considered**:
+
+1. **Single mega-component**: All functionality in one component
+
+   - Rejected: Would be too complex and hard to maintain
+   - Rejected: Less flexible for different use cases
+
+2. **Inline selection**: Build selection directly into pages
+   - Rejected: Would duplicate code across features
+   - Rejected: Harder to maintain consistency
+
+**Trade-offs**:
+
+- **Pro**: Maximum flexibility and reusability
+- **Pro**: Clear separation of UI and business logic
+- **Pro**: Easy to test each component independently
+- **Con**: More files to maintain
+- **Con**: Need to coordinate state between components
+
+### Decision: Multiplicative Discount Combination
+
+**Context**:
+Multiple discount types can apply simultaneously (duration, bulk, package). We needed a fair way to combine them without over-discounting.
+
+**Decision**:
+Combine discounts multiplicatively rather than additively:
+
+```typescript
+totalDiscount =
+  1 - (1 - durationDiscount) * (1 - bulkDiscount) * (1 - packageDiscount)
+```
+
+**Rationale**:
+
+- Prevents total discount from exceeding 100%
+- More realistic business model
+- Each subsequent discount applies to already-discounted price
+- Standard e-commerce practice
+
+**Example**:
+
+- Duration: 10% off
+- Bulk: 15% off
+- Package: 5% off
+- Combined: 1 - (0.9 _ 0.85 _ 0.95) = 27.325% off (not 30%)
+
+### Decision: Preset Options with Custom Input
+
+**Context**:
+Users need to select vessel counts, but requirements vary from 1 to 100+ vessels.
+
+**Decision**:
+Provide preset options (1, 5, 10, 25, 50, 100) with optional custom input.
+
+**Rationale**:
+
+- **80/20 Rule**: Presets cover most common use cases
+- **Quick Selection**: One-click for common quantities
+- **Flexibility**: Custom input for specific needs
+- **Visual Clarity**: Grid layout shows all options at once
+- **Psychological Pricing**: Presets guide users to bulk purchases
+
+**Implementation**:
+
+- Visual grid of preset options
+- "Most Popular" badge on 10 vessels
+- "Best Value" badge on 50 vessels
+- Optional custom number input
+- Optional range slider for fine control
+
+### Decision: Real-time Pricing Calculation
+
+**Context**:
+Users need to understand pricing impact of their selections immediately.
+
+**Decision**:
+Calculate and display pricing in real-time as users change selections.
+
+**Rationale**:
+
+- **Transparency**: Users see exact costs before committing
+- **Trust**: No hidden fees or surprise charges
+- **Exploration**: Users can experiment with different options
+- **Conversion**: Clear savings encourage larger purchases
+
+**Implementation**:
+
+- Price updates on every selection change
+- Show base price and discounted price
+- Display savings amount and percentage
+- Breakdown by price per vessel and per day
+
+### Decision: Optional Package Tiers
+
+**Context**:
+PRD specifies Bronze/Silver/Gold/Platinum tiers but not all workflows need them.
+
+**Decision**:
+Make package tier selection optional via `showPackageTiers` prop.
+
+**Rationale**:
+
+- Some use cases only need vessel count selection
+- Reduces complexity when tiers aren't relevant
+- Maintains flexibility for future requirements
+- Progressive disclosure of complexity
+
+**Technical Debt**: None - clean implementation with proper separation.
+
 ## 2025-05-27: Vessel Tracking Criteria UI Component Architecture
 
 ### Decision: Component Composition Strategy
@@ -25,6 +155,7 @@ Create three composable components instead of one monolithic component:
 **Alternatives Considered**:
 
 1. **Single mega-component**: All functionality in CriteriaSelector
+
    - Rejected: Would be too complex and hard to test
    - Rejected: Less flexible for different use cases
 
@@ -56,6 +187,7 @@ Make category grouping an optional feature via the `groupByCategory` prop on Cri
 - Keeps the default UI simple
 
 **Implementation**:
+
 ```tsx
 <CriteriaSelector
   criteria={criteria}
