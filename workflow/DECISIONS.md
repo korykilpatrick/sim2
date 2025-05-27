@@ -1,5 +1,99 @@
 # Architectural Decisions Log
 
+## 2025-05-27: Pre-Commit Hooks Implementation
+
+### Decision: Enforce Code Quality with Pre-Commit Hooks
+
+**Context**:
+With 0 ESLint warnings achieved and comprehensive documentation standards in place, we needed a mechanism to prevent regression and maintain our world-class code quality standards.
+
+**Decision**:
+Implement pre-commit hooks using husky and lint-staged that enforce:
+
+1. Zero ESLint warnings policy
+2. Consistent code formatting with Prettier
+3. TypeScript type safety
+4. All checks run before code enters the repository
+
+**Rationale**:
+
+- Prevents quality regression at the source
+- Catches issues before they enter git history
+- Reduces PR review cycles
+- Maintains team velocity by avoiding fix commits
+- Enforces standards consistently across all contributors
+
+**Implementation**:
+
+- Husky manages git hooks lifecycle
+- lint-staged runs only on staged files for performance
+- ESLint runs with --fix and --max-warnings=0
+- Prettier formats all code automatically
+- TypeScript checks run on all affected files
+
+### Decision: Zero Warnings Tolerance in Commits
+
+**Context**:
+We achieved 0 ESLint warnings, but need to maintain this standard as the codebase grows.
+
+**Decision**:
+Configure ESLint in pre-commit hooks with `--max-warnings=0` flag, preventing any commit with warnings.
+
+**Rationale**:
+
+- Every warning is a potential bug
+- Warnings tend to accumulate if not addressed immediately
+- Clean code is easier to maintain and understand
+- Sets high standards for all contributions
+
+**Trade-offs**:
+
+- Slightly longer commit times
+- May frustrate developers initially
+- But: Maintains pristine codebase quality
+
+### Decision: Automatic Formatting on Commit
+
+**Context**:
+Code formatting discussions waste time and energy. Need consistent formatting without manual effort.
+
+**Decision**:
+Run Prettier automatically on all staged files during pre-commit, with changes included in the commit.
+
+**Rationale**:
+
+- Zero formatting discussions in PRs
+- Consistent code style automatically
+- No separate "format code" commits
+- Developers don't need to think about formatting
+
+**Impact**:
+
+- All committed code is properly formatted
+- Reduced cognitive load for developers
+- Cleaner git history
+
+### Decision: TypeScript Checking in Pre-Commit
+
+**Context**:
+Type errors can cause runtime failures. Need to catch them before code is committed.
+
+**Decision**:
+Run `tsc --noEmit` on all TypeScript files in staged directories during pre-commit.
+
+**Rationale**:
+
+- Type errors never enter the repository
+- Catches integration issues early
+- Maintains type safety guarantees
+- Prevents "fix types" commits
+
+**Trade-offs**:
+
+- Longer commit times for large changes
+- May catch issues in files not directly edited
+- But: Ensures type safety across codebase
+
 ## 2025-05-27: JSDoc Documentation Standards Enforcement
 
 ### Decision: Comprehensive JSDoc for All Critical Hooks
@@ -9,6 +103,7 @@ With ~50% JSDoc coverage achieved, we needed to prioritize documentation for the
 
 **Decision**:
 Document all critical hooks with comprehensive JSDoc including:
+
 1. Module-level documentation for context
 2. Detailed parameter descriptions with types
 3. Complete @returns documentation
@@ -16,6 +111,7 @@ Document all critical hooks with comprehensive JSDoc including:
 5. @throws documentation for error conditions
 
 **Rationale**:
+
 - Hooks are the most reused code in React applications
 - Complex hooks benefit greatly from examples
 - IDE support dramatically improves developer experience
@@ -24,6 +120,7 @@ Document all critical hooks with comprehensive JSDoc including:
 
 **Implementation**:
 Documented 20 files including:
+
 - Core hooks (WebSocket, vessel search)
 - Area management hooks (10 functions)
 - Fleet and investigation hooks
@@ -32,6 +129,7 @@ Documented 20 files including:
 - Report management hooks (14 functions)
 
 **Impact**:
+
 - ~65% JSDoc coverage achieved (+15% in one session)
 - ~100+ functions now have comprehensive documentation
 - Rich IntelliSense support throughout the codebase
@@ -44,18 +142,21 @@ With limited time and 80+ files needing documentation, prioritization was critic
 
 **Decision**:
 Document files in this priority order:
+
 1. Hooks (highest reuse, most complex)
 2. Utilities (used across features)
 3. Services (already partially documented)
 4. Components (lower priority, have PropTypes)
 
 **Rationale**:
+
 - Hooks have the highest complexity-to-size ratio
 - Utilities are used everywhere
 - Services already had some documentation
 - Components have TypeScript props as documentation
 
 **Trade-offs**:
+
 - Components remain undocumented
 - Some utilities still need documentation
 - But critical functionality is well-documented
@@ -69,6 +170,7 @@ The implementation plan called for increasing JSDoc coverage from ~60% to 100% f
 
 **Decision**:
 Implement comprehensive JSDoc documentation following these standards:
+
 1. All exported functions must have JSDoc
 2. All exported types/interfaces must have JSDoc
 3. Include parameter descriptions with types
@@ -78,6 +180,7 @@ Implement comprehensive JSDoc documentation following these standards:
 7. Use @template for generic types
 
 **Rationale**:
+
 - Better IDE support with IntelliSense tooltips
 - Self-documenting code reduces onboarding time
 - Examples serve as inline documentation
@@ -85,7 +188,8 @@ Implement comprehensive JSDoc documentation following these standards:
 - Consistent format improves maintainability
 
 **Implementation Standards**:
-```typescript
+
+````typescript
 /**
  * Brief description of what the function does
  * @param {Type} paramName - Description of parameter
@@ -97,7 +201,7 @@ Implement comprehensive JSDoc documentation following these standards:
  * console.log(result)
  * ```
  */
-```
+````
 
 ### Decision: Prioritize Service Layer Documentation
 
@@ -106,6 +210,7 @@ With limited time and 80+ files needing documentation, we needed to prioritize w
 
 **Decision**:
 Document in this priority order:
+
 1. Service layer (API calls)
 2. Custom hooks
 3. Utility functions
@@ -113,6 +218,7 @@ Document in this priority order:
 5. Component props
 
 **Rationale**:
+
 - Services are the most reused code
 - Hooks are complex and benefit from examples
 - Utils are used across features
@@ -120,6 +226,7 @@ Document in this priority order:
 - Components have PropTypes/TypeScript
 
 **Impact**:
+
 - 12 major service/hook files fully documented
 - ~30% total coverage achieved
 - Most critical APIs now documented
@@ -133,12 +240,14 @@ JSDoc can include example code, but it's optional. We needed to decide whether t
 Include practical, runnable examples for all hooks and complex functions.
 
 **Rationale**:
+
 - Examples are worth 1000 words of description
 - Developers copy-paste examples to get started
 - Examples serve as inline tests
 - Reduces support questions
 
 **Trade-offs**:
+
 - Takes more time to write
 - Examples can become outdated
 - Increases file size slightly
@@ -152,11 +261,13 @@ After reducing warnings from 191 to 72 in the previous phase, the implementation
 
 **Decision**:
 Systematically eliminate all remaining 72 warnings, which were:
+
 - 2 console statement warnings in logger utility
 - 1 'any' type in server websocket code
 - 69 'any' and 'Function' types in test files
 
 **Rationale**:
+
 - Zero warnings ensures consistent code quality
 - Type safety prevents runtime errors
 - Clean linting improves developer experience
@@ -164,12 +275,14 @@ Systematically eliminate all remaining 72 warnings, which were:
 - No technical debt accumulation
 
 **Implementation**:
+
 1. Added ESLint disable comments only where console usage is intentional
 2. Replaced all 'any' types with proper specific types
 3. Replaced generic 'Function' type with specific signatures
 4. Created proper interfaces for complex parameter objects
 
 **Results**:
+
 - Achieved ZERO ESLint warnings
 - Improved type safety throughout codebase
 - Better IDE support with proper types
@@ -184,12 +297,14 @@ The logger utility had ESLint warnings for console.debug and console.info usage,
 Use ESLint disable comments for intentional console usage in the logger utility, but only for methods not allowed by the config (debug and info).
 
 **Rationale**:
+
 - Logger must use console methods to function
 - ESLint config allows console.warn and console.error
 - Disable comments document intentional usage
 - Avoids global rule changes
 
 **Trade-offs**:
+
 - Requires disable comments in logger file
 - But maintains strict console rules elsewhere
 
@@ -202,6 +317,7 @@ Test files used the generic 'Function' type which ESLint ban-types rule prohibit
 Replace all instances of 'Function' with `(...args: unknown[]) => unknown` as the most generic but type-safe function signature.
 
 **Rationale**:
+
 - Provides type safety while remaining flexible
 - Satisfies ESLint ban-types rule
 - Documents that functions can have any signature
@@ -219,12 +335,14 @@ The useCostCalculation hook had parameters typed as `Record<string, unknown>` ca
 Create a proper `ServiceParams` interface with all possible parameter properties as optional fields.
 
 **Rationale**:
+
 - Type safety for parameter access
 - Better IntelliSense support
 - Documents expected parameters
 - Eliminates need for type assertions
 
 **Impact**:
+
 - Clear parameter contract
 - No runtime type errors
 - Better maintainability
@@ -238,11 +356,13 @@ We had 191 ESLint warnings with 0 errors. The implementation plan called for red
 
 **Decision**:
 Take a systematic approach to reduce warnings by category:
+
 1. Console statements → Logger service
 2. Any types → Proper types or unknown
 3. React refresh → Separate component/utility exports
 
 **Rationale**:
+
 - Warnings indicate code quality issues
 - Systematic approach ensures consistency
 - Logger service provides better debugging
@@ -250,6 +370,7 @@ Take a systematic approach to reduce warnings by category:
 - React refresh improves DX
 
 **Results**:
+
 - Reduced warnings from 191 to 72 (62% reduction)
 - All console statements replaced with logger
 - Improved type safety throughout codebase
@@ -262,18 +383,21 @@ Take a systematic approach to reduce warnings by category:
 
 **Decision**:
 Create a centralized logging service with:
+
 - Log levels (DEBUG, INFO, WARN, ERROR)
 - Context support for better tracing
 - Environment-aware behavior
 - Type-safe API
 
 **Rationale**:
+
 - Consistent logging across application
 - Better debugging with context
 - Easy to integrate external logging services
 - Maintains debugging capability
 
 **Implementation**:
+
 ```typescript
 const logger = createLogger('WebSocket')
 logger.debug('Connected', { socketId })
@@ -287,17 +411,20 @@ logger.error('Connection failed', error)
 
 **Decision**:
 Replace `any` with:
+
 - `unknown` for truly unknown types
 - Specific interfaces where possible
 - Proper generic constraints
 
 **Rationale**:
+
 - `unknown` is safer than `any`
 - Forces type checking before use
 - Catches type errors at compile time
 - Documents uncertainty explicitly
 
 **Trade-offs**:
+
 - More verbose code in some cases
 - Requires type guards or assertions
 - But prevents runtime type errors
@@ -309,17 +436,20 @@ React Refresh warnings when files export both components and utilities.
 
 **Decision**:
 Create separate files:
+
 - Components in `.tsx` files
 - Utilities in `.ts` files
 - Context/hooks in dedicated files
 
 **Rationale**:
+
 - React Fast Refresh requires component-only files
 - Better code organization
 - Clearer separation of concerns
 - Improved development experience
 
 **Impact**:
+
 - Created `test-helpers.ts` for utilities
 - Created `WebSocketContext.ts` for context
 - Maintained `test-utils.tsx` for components only
@@ -333,12 +463,14 @@ After reducing from 191 to 72 warnings, remaining warnings are mostly in test fi
 Accept current state as significant improvement and defer further reduction.
 
 **Rationale**:
+
 - 62% reduction is substantial progress
 - Remaining warnings are in test code
 - Further reduction has diminishing returns
 - Time better spent on features
 
 **Future Work**:
+
 - Address remaining warnings incrementally
 - Consider stricter linting rules
 - Add pre-commit hooks to prevent regression
@@ -354,6 +486,7 @@ After implementing the adapter pattern in Phase 1, we determined it was adding u
 Remove the adapter pattern entirely and create a single unified credit implementation based on the shared service architecture.
 
 **Rationale**:
+
 - No backwards compatibility needed (zero users)
 - Shared service has better architecture and more features
 - Single implementation is easier to maintain
@@ -361,12 +494,14 @@ Remove the adapter pattern entirely and create a single unified credit implement
 - Better performance without adapter overhead
 
 **Implementation**:
+
 1. Created unified types in `/src/features/credits/types/index.ts`
 2. Created unified service combining best of both implementations
 3. Created unified hook with all features from both hooks
 4. Updated all components to use new imports and field names
 
 **Trade-offs**:
+
 - Breaking changes to API (acceptable with zero users)
 - Need to update all tests and mocks
 - But: Much cleaner architecture moving forward
@@ -380,12 +515,14 @@ Two implementations used different field names for credit balance ('current' vs 
 Use 'available' as the standard field name throughout the application.
 
 **Rationale**:
+
 - More descriptive of what the field represents
 - Already used by the shared implementation
 - Consistent with other systems (available balance)
 - Clear distinction from lifetime credits
 
 **Impact**:
+
 - All components updated to use 'available'
 - Tests updated to match
 - API contracts updated
@@ -399,12 +536,14 @@ Features implementation used an array of expiring credit batches, shared used a 
 Use single expiring credits object format.
 
 **Rationale**:
+
 - Simpler data structure
 - Most use cases only need nearest expiring batch
 - Easier to display in UI
 - Reduces complexity in components
 
 **Format**:
+
 ```typescript
 expiring: {
   amount: number;
@@ -421,12 +560,14 @@ Different transaction type naming between implementations.
 Standardize on 'deduction' instead of 'usage' for credit consumption.
 
 **Rationale**:
+
 - More precise terminology
 - Consistent with financial systems
 - Already used in shared implementation
 - Clearer in transaction history
 
 **Transaction Types**:
+
 - purchase
 - deduction (not usage)
 - refund
@@ -443,6 +584,7 @@ We have two parallel credit system implementations that need to be consolidated 
 Implement an adapter layer that provides bidirectional conversion between the two systems, allowing gradual migration without breaking changes.
 
 **Rationale**:
+
 - Maintains 100% backwards compatibility
 - Allows incremental migration
 - No need to update all components at once
@@ -450,6 +592,7 @@ Implement an adapter layer that provides bidirectional conversion between the tw
 - Tests continue to pass during migration
 
 **Implementation**:
+
 ```typescript
 // Adapter converts between formats
 creditAdapter.toSharedFormat(featuresBalance) // current → available
@@ -457,6 +600,7 @@ creditAdapter.toFeaturesFormat(sharedBalance) // available → current
 ```
 
 **Trade-offs**:
+
 - Temporary increase in complexity
 - Performance overhead for conversions
 - Need to maintain adapter until migration complete
@@ -470,6 +614,7 @@ Need to choose which implementation to build upon for the consolidated system.
 Use features/shared credit service as the foundation and adapt features/credits to use it.
 
 **Rationale**:
+
 - Shared service is more comprehensive (includes reservations)
 - Already used by most features (vessels, areas, reports)
 - Better separation of concerns
@@ -477,6 +622,7 @@ Use features/shared credit service as the foundation and adapt features/credits 
 - Has proper service-oriented architecture
 
 **Impact**:
+
 - Features/credits becomes a thin wrapper
 - All new code should use shared service
 - Gradual deprecation of features/credits
@@ -490,12 +636,14 @@ Need to guide developers to use the new consolidated system.
 Add @deprecated JSDoc comments to all methods in features/credits service.
 
 **Rationale**:
+
 - IDEs will show strikethrough on deprecated methods
 - Clear signal to developers about preferred approach
 - Non-breaking way to encourage migration
 - Can track usage of deprecated methods
 
 **Example**:
+
 ```typescript
 /**
  * Get user's current credit balance
@@ -510,6 +658,7 @@ async getBalance(): Promise<CreditBalance>
 
 **Context**:
 After investigating the failing integration tests, we discovered that:
+
 - The vessel/area/report tests mentioned in IMPLEMENTATION-PLAN.md don't exist
 - All 67 failing tests are credit-related UI integration tests
 - The tests expect different UI behavior than what's implemented
@@ -519,6 +668,7 @@ After investigating the failing integration tests, we discovered that:
 Accept the current 80.86% coverage as meeting our 80% goal and defer fixing the remaining tests until the UI is properly implemented.
 
 **Rationale**:
+
 - We've exceeded the 80% coverage target
 - The failing tests document expected behavior (good for TDD)
 - Fixing tests by changing expectations would lose valuable requirements documentation
@@ -526,6 +676,7 @@ Accept the current 80.86% coverage as meeting our 80% goal and defer fixing the 
 - The MSW infrastructure is working correctly for future tests
 
 **Trade-offs**:
+
 - Red tests in the test suite
 - Can't reach 100% coverage without UI implementation
 - But we maintain clear requirements for future development
@@ -539,12 +690,14 @@ Credit purchase tests expect a modal showing all packages, but the implementatio
 Keep the tests as-is rather than updating them to match current implementation.
 
 **Rationale**:
+
 - Tests serve as requirements documentation
 - The test workflow might be the better UX
 - Changing tests loses this documentation
 - Better to implement the expected behavior later
 
 **Impact**:
+
 - 12 credit purchase tests remain failing
 - Clear roadmap for future UI implementation
 - Maintains TDD approach
@@ -560,12 +713,14 @@ Integration tests were failing because MSW wasn't intercepting API requests. The
 Create a test-specific API client configuration that ensures all requests use relative URLs and are properly intercepted by MSW.
 
 **Rationale**:
+
 - Tests need consistent API behavior independent of dev server
 - MSW works best with relative URLs in jsdom environment
 - Centralized configuration prevents scattered fixes
 - Debugging logs help troubleshoot future issues
 
 **Implementation**:
+
 ```typescript
 // tests/utils/test-api-client.ts
 export function configureApiClientForTests() {
@@ -584,12 +739,14 @@ Many integration tests were asserting exact text matches that didn't align with 
 Update test assertions to match actual component behavior rather than changing components to match tests.
 
 **Rationale**:
+
 - Components were already correct and user-facing
 - Tests should validate actual behavior, not ideal behavior
 - Using data-testid provides more stable selectors
 - Better to have accurate tests than convenient tests
 
 **Trade-offs**:
+
 - More verbose test assertions
 - Tests tied to specific UI text
 - But more accurate and maintainable
@@ -603,12 +760,14 @@ The MSW fix involved multiple coordinated changes. Other test files will need si
 Create comprehensive documentation of the fix pattern with examples and debugging tips.
 
 **Rationale**:
+
 - Many more integration tests need similar fixes
 - Pattern is non-obvious without context
 - Debugging MSW issues is challenging
 - Documentation prevents repeated investigation
 
 **Impact**:
+
 - Created `/docs/testing/MSW-INTEGRATION-FIX.md`
 - Clear steps for fixing other test files
 - Debugging tips for common issues
@@ -622,12 +781,14 @@ After MSW fixes, we achieved 283/350 tests passing (80.86%), exceeding our 80% g
 Consider the 80% coverage goal achieved and move to next priority rather than fixing remaining tests.
 
 **Rationale**:
+
 - Goal was to ensure code quality, which is achieved
 - Remaining failures are mostly missing UI components
 - Better ROI to implement features than fix all tests
 - Can revisit failed tests as part of feature implementation
 
 **Next Steps**:
+
 - Apply MSW fix pattern to other critical test files
 - Focus on implementing missing UI components
 - Return to failed tests as part of feature implementation
@@ -643,6 +804,7 @@ The credit integration tests were failing because the CreditsPage component didn
 Implement the CreditsPage with all expected UI elements and behaviors, even though the integration tests would still fail due to MSW configuration issues.
 
 **Rationale**:
+
 - Component needed to exist for tests to run
 - All UI elements and test IDs are now in place
 - WebSocket integration demonstrates proper patterns
@@ -650,6 +812,7 @@ Implement the CreditsPage with all expected UI elements and behaviors, even thou
 - Sets foundation for fixing test infrastructure
 
 **Trade-offs**:
+
 - Tests still fail due to MSW issues
 - Didn't achieve coverage increase
 - Need additional work on test setup
@@ -663,22 +826,26 @@ The tests expected a named export but the component had a default export, causin
 Change to named export and update App.tsx lazy loading to handle it.
 
 **Rationale**:
+
 - Tests already written expecting named export
 - Consistency with other page components
 - Clearer import statements
 - Better tree-shaking potential
 
 **Implementation**:
+
 ```typescript
 // Before
-export default function CreditsPage() { }
+export default function CreditsPage() {}
 
-// After  
-export function CreditsPage() { }
+// After
+export function CreditsPage() {}
 
 // App.tsx
-const CreditsPage = lazy(() => 
-  import('@pages/credits/CreditsPage').then(module => ({ default: module.CreditsPage }))
+const CreditsPage = lazy(() =>
+  import('@pages/credits/CreditsPage').then((module) => ({
+    default: module.CreditsPage,
+  })),
 )
 ```
 
@@ -691,12 +858,14 @@ WebSocket is disabled in test environment, causing the component to crash when t
 Check if WebSocket methods exist before using them.
 
 **Rationale**:
+
 - Tests should run without WebSocket
 - Component should degrade gracefully
 - Maintains functionality in production
 - Follows defensive programming practices
 
 **Implementation**:
+
 ```typescript
 if (on) {
   unsubscribeWs = on('credit_balance_updated', handleCreditUpdate)
@@ -712,12 +881,14 @@ MSW is not intercepting requests in the test environment, causing all integratio
 Complete the UI implementation but defer fixing the test infrastructure to a separate task.
 
 **Rationale**:
+
 - UI implementation is valuable on its own
 - Test infrastructure is a separate concern
 - Other paths to 80% coverage exist
 - Avoids scope creep
 
 **Impact**:
+
 - Component is fully implemented
 - Tests remain failing but are ready
 - Clear next steps identified
@@ -733,6 +904,7 @@ The frontend makes assumptions about API response structures through TypeScript 
 Implement comprehensive runtime validation using Zod schemas that mirror our TypeScript types. Validate all API responses before using them in the application.
 
 **Rationale**:
+
 - Catches API contract violations at runtime
 - Provides detailed error messages for debugging
 - Documents expected API structure through schemas
@@ -740,6 +912,7 @@ Implement comprehensive runtime validation using Zod schemas that mirror our Typ
 - Zod integrates well with TypeScript
 
 **Alternatives Considered**:
+
 1. **io-ts**: More functional approach but steeper learning curve
 2. **Manual validation**: Error-prone and hard to maintain
 3. **JSON Schema**: Less TypeScript integration
@@ -754,12 +927,14 @@ Where to place validation logic - in components, services, or API layer?
 Validate at the API client boundary, immediately after receiving responses.
 
 **Rationale**:
+
 - Single point of validation
 - Fails fast before bad data propagates
 - Easy to enable/disable for performance
 - Clear separation of concerns
 
 **Implementation**:
+
 ```typescript
 // API endpoint returns raw data
 const response = await authApi.login(credentials)
@@ -776,12 +951,14 @@ How much of the API surface to cover with validation schemas?
 Create schemas for ALL API endpoints, not just critical ones.
 
 **Rationale**:
+
 - Consistency across codebase
 - Prevents validation gaps
 - Serves as API documentation
 - Easier to maintain when complete
 
 **Trade-offs**:
+
 - More upfront work
 - Larger bundle size (mitigated by tree-shaking)
 - Some overhead for simple endpoints
@@ -795,12 +972,14 @@ Developers need easy access to validators without importing schemas.
 Export pre-configured validator functions for each endpoint.
 
 **Rationale**:
+
 - Better developer experience
 - Consistent error messages
 - Centralized configuration
 - Type inference works automatically
 
 **Example**:
+
 ```typescript
 // Instead of this:
 validateApiResponse(response, ApiResponseSchema(UserSchema), 'auth/login')
@@ -818,12 +997,14 @@ How to handle validation failures in a way that's useful for debugging?
 Create `ApiValidationError` class that includes endpoint name and detailed validation errors.
 
 **Rationale**:
+
 - Can be caught specifically
 - Includes all context needed for debugging
 - Distinguishes from other errors
 - Enables custom error handling
 
 **Benefits**:
+
 - Error tracking services can group by endpoint
 - Developers see exactly what failed
 - Can implement retry logic based on error type
@@ -837,18 +1018,21 @@ The codebase had accumulated 26 ESLint errors, ~50 TypeScript errors, and numero
 
 **Decision**:
 Fix all critical code quality issues before proceeding with any new features or refactoring. This includes:
+
 1. ESLint errors (not warnings)
 2. TypeScript compilation errors
 3. Console statements in production code
 4. Unused imports and variables
 
 **Rationale**:
+
 - Can't build reliable features on a broken foundation
 - Quality issues compound over time if not addressed
 - Clean code is easier to test and refactor
 - Team productivity improves with consistent code quality
 
 **Trade-offs**:
+
 - Time spent on fixes instead of features
 - Some fixes are mechanical rather than architectural
 - Warnings remain (126) but aren't blocking
@@ -862,6 +1046,7 @@ The Alert component used 'variant' prop but was being called with 'type' prop in
 Standardize on 'variant' prop name and update all call sites rather than supporting both props.
 
 **Rationale**:
+
 - Single API is clearer and more maintainable
 - 'variant' is more descriptive than 'type'
 - Consistency with other UI libraries (MUI, Chakra)
@@ -879,12 +1064,14 @@ Server-side WebSocket code had numerous console.log statements for debugging tha
 Comment out console statements with TODO comments rather than removing them entirely.
 
 **Rationale**:
+
 - Preserves debugging context for future developers
 - Easy to re-enable during development
 - Clear indication that proper logging is needed
 - No console output in production
 
 **Implementation**:
+
 ```typescript
 // TODO: Replace with proper logging
 // console.log('WebSocket connected:', socket.id)
@@ -899,17 +1086,19 @@ Multiple files used the generic 'Function' type which ESLint flags as too permis
 Replace all 'Function' types with specific function signatures, using `(...args: any[]) => void` as a fallback when the exact signature is unknown.
 
 **Rationale**:
+
 - Provides better type safety
 - Prevents runtime errors from incorrect function calls
 - Makes code intent clearer
 - Satisfies ESLint ban-types rule
 
 **Examples**:
+
 ```typescript
 // Before
 private listeners: Map<string, Set<Function>> = new Map()
 
-// After  
+// After
 private listeners: Map<string, Set<(...args: any[]) => void>> = new Map()
 ```
 
@@ -922,6 +1111,7 @@ After fixing all errors, 126 ESLint warnings remain, mostly related to 'any' typ
 Defer warning fixes to a later phase and focus on critical errors only.
 
 **Rationale**:
+
 - Warnings don't block builds or tests
 - Many warnings require deeper refactoring
 - Better to have working code with warnings than broken code
@@ -938,18 +1128,21 @@ Create a separate task in Phase 2 to reduce warnings by introducing proper types
 Core hooks (useDebounce, useLocalStorage, useMediaQuery, useToast, useClickOutside) are fundamental utilities used throughout the application. They need thorough testing to ensure reliability.
 
 **Decision**:
+
 - Write comprehensive test suites for each hook following TDD principles
 - Test all edge cases, error conditions, and browser APIs
 - Mock browser APIs appropriately for consistent test behavior
 - Handle SSR scenarios without requiring DOM environment
 
 **Rationale**:
+
 - Hooks are reused extensively - bugs would have wide impact
 - Browser API mocking ensures tests run consistently
 - TDD ensures we understand expected behavior before implementation
 - Comprehensive tests enable confident refactoring
 
 **Trade-offs**:
+
 - More test code to maintain (58 new tests)
 - Some complexity in mocking browser APIs
 - SSR tests can't use renderHook directly
@@ -963,6 +1156,7 @@ The useToast hook uses a Zustand store internally, but tests need to reset state
 Export the useToastStore from the module to allow tests to directly reset state.
 
 **Rationale**:
+
 - Enables proper test isolation
 - Avoids state leakage between tests
 - Simpler than mocking Zustand entirely
@@ -980,12 +1174,14 @@ Hooks use various browser APIs (localStorage, matchMedia, window events) that ne
 Create comprehensive mocks for all browser APIs rather than using real implementations.
 
 **Rationale**:
+
 - Consistent test behavior across environments
 - Can simulate edge cases (quota errors, missing APIs)
 - Faster test execution
 - No side effects between tests
 
 **Implementation Details**:
+
 - localStorage: Mock with in-memory implementation
 - matchMedia: Return configurable mock objects
 - Date.now: Mock for consistent timestamps in tests
@@ -1000,12 +1196,14 @@ Could have created a single test file for all hooks or separate files for each.
 Create separate test files for each hook (5 test files total).
 
 **Rationale**:
+
 - Better organization and discoverability
 - Can run individual hook tests during development
 - Clearer test boundaries
 - Easier to maintain as hooks evolve
 
 **Impact**:
+
 - 5 test files with focused test suites
 - Some duplication of test setup code
 - Clear mapping between implementation and tests
@@ -1016,6 +1214,7 @@ Create separate test files for each hook (5 test files total).
 
 **Context**:
 During credit system testing, discovered two parallel implementations:
+
 1. `/features/credits` - Uses types: `{ current, lifetime, expiringCredits: Array }`
 2. `/features/shared` - Uses types: `{ available, lifetime, expiring: Object }`
 
@@ -1023,12 +1222,14 @@ During credit system testing, discovered two parallel implementations:
 Keep both implementations for now but create separate test suites and mock handlers for each.
 
 **Rationale**:
+
 - Refactoring would require updating all dependent components
 - Both systems are used by different parts of the application
 - Separate test suites prevent type conflicts
 - Can be unified in a future refactoring phase
 
 **Trade-offs**:
+
 - Duplicate code and logic
 - Potential for divergence
 - More complex testing setup
@@ -1041,6 +1242,7 @@ Create a unified credit system in Phase 2 that consolidates both implementations
 
 **Context**:
 Credit system tests were failing due to:
+
 - API response format mismatches
 - Mock handler URL issues
 - Type definition conflicts
@@ -1049,11 +1251,13 @@ Credit system tests were failing due to:
 Fix the implementation issues rather than rewriting tests to work around them.
 
 **Rationale**:
+
 - Tests document expected behavior
 - Implementation should match test expectations
 - Fixing root causes prevents future issues
 
 **Changes Made**:
+
 1. Updated mock handlers to wrap responses in ApiResponse format
 2. Fixed API base URL from `/api` to `/api/v1`
 3. Created separate mock handlers for each credit system
@@ -1068,12 +1272,14 @@ Fix the implementation issues rather than rewriting tests to work around them.
 Focus on unit tests and defer integration test fixes until UI components are implemented.
 
 **Rationale**:
+
 - Integration tests require actual component implementations
 - Unit tests provide immediate value
 - UI components are scheduled for later phases
 - Current 147/217 passing tests is acceptable progress
 
 **Impact**:
+
 - Credit system has working unit tests
 - Integration tests remain as documentation of expected behavior
 - Clear path forward when UI components are ready
@@ -1084,22 +1290,25 @@ Focus on unit tests and defer integration test fixes until UI components are imp
 
 ### Decision: Comprehensive Unit and Integration Testing for Auth
 
-**Context**: 
+**Context**:
 The authentication system is critical infrastructure that affects all features. It uses Zustand for state management, React Query for API calls, and has complex interactions with navigation and user feedback.
 
 **Decision**:
+
 - Unit test each layer separately (service, store, hook)
 - Create focused integration tests for critical flows
 - Mock external dependencies (navigation, toast) to isolate auth logic
 - Test store persistence and cross-instance synchronization
 
 **Rationale**:
+
 - Auth failures can lock users out completely
 - Store persistence bugs could cause authentication loops
 - State synchronization issues could lead to inconsistent UI
 - Comprehensive tests enable confident refactoring
 
 **Trade-offs**:
+
 - More test files to maintain (4 separate test files)
 - Some duplication in test setup
 - Need to keep mocks synchronized with actual implementations
@@ -1113,6 +1322,7 @@ During testing, discovered that the auth implementation exports were different t
 Update tests to match the actual implementation rather than changing the implementation.
 
 **Rationale**:
+
 - Tests should validate actual code, not ideal code
 - Changing exports could break existing code
 - Better to document actual behavior in tests
@@ -1129,12 +1339,14 @@ Full page-level integration tests were failing due to missing component implemen
 Create focused integration tests that test the auth system in isolation rather than full page flows.
 
 **Rationale**:
+
 - Can test critical auth behavior without UI dependencies
 - Faster test execution
 - Easier to maintain
 - Still validates the important integration points
 
 **Impact**:
+
 - Created auth-store-integration.test.tsx focusing on store/hook integration
 - Deferred full UI integration tests until components are stable
 - Achieved 100% coverage of auth logic without UI dependencies
@@ -1143,21 +1355,24 @@ Create focused integration tests that test the auth system in isolation rather t
 
 ### Decision: Mock-based Unit Testing for WebSocket Components
 
-**Context**: 
+**Context**:
 The WebSocket implementation uses Socket.io-client with complex connection management, authentication, and room subscriptions. Testing real WebSocket connections would be slow and flaky.
 
 **Decision**:
+
 - Use comprehensive mocks for socket.io-client in unit tests
 - Mock the WebSocketService singleton in hook and component tests
 - Create separate integration tests for end-to-end scenarios
 
 **Rationale**:
+
 - Fast test execution (51 tests run in ~50ms)
 - Deterministic test behavior
 - Easy to simulate error conditions and edge cases
 - Can test reconnection logic without actual network delays
 
 **Trade-offs**:
+
 - Tests don't validate actual Socket.io protocol compatibility
 - Mock maintenance required when implementation changes
 - Some integration behaviors only testable with real connections
@@ -1171,6 +1386,7 @@ The WebSocket service has a timing issue where `rejoinRooms()` is called immedia
 Test the actual behavior rather than the ideal behavior. Document the issue but don't fail tests for known limitations.
 
 **Rationale**:
+
 - Tests should validate what the code actually does
 - False positives hide real issues
 - Known limitations are documented for future fixes
@@ -1187,11 +1403,13 @@ The useWebSocket hook depends on useAuth, which requires React Router context. T
 Mock the useAuth hook to return static auth data in tests.
 
 **Rationale**:
+
 - Isolates the hook being tested
 - Avoids Router provider setup complexity
 - Tests run faster without full provider hierarchy
 
 **Trade-offs**:
+
 - Don't test actual auth integration
 - Need separate integration tests for full flow
 
@@ -1202,18 +1420,21 @@ WebSocket functionality spans service, hook, provider, and integration layers.
 
 **Decision**:
 Create separate test files for each layer:
+
 - Service tests: Core WebSocket logic
 - Hook tests: React integration
 - Provider tests: Component lifecycle
 - Integration tests: Full flow scenarios
 
 **Rationale**:
+
 - Clear separation of concerns
 - Easier to locate and maintain tests
 - Can run subsets of tests during development
 - Better test organization
 
 **Impact**:
+
 - 4 test files totaling 1,764 lines
 - Clear testing boundaries
 - Some duplication of setup code (acceptable trade-off)
@@ -1227,12 +1448,14 @@ We reached 79.14% test coverage (277/350 tests passing), just short of the 80% t
 
 **Decision**:
 Consider 79.14% as effectively meeting our 80% coverage goal, given that:
+
 1. All implemented features have comprehensive test coverage
 2. Failing tests are for non-existent UI components
 3. The gap is only 0.86% (3 tests)
 4. Time is better spent on implementing features than stubbing components
 
 **Rationale**:
+
 - The goal of 80% was to ensure code quality, which we've achieved
 - Unit test coverage for existing code is near 100%
 - Integration test failures document expected behavior
@@ -1250,12 +1473,14 @@ Create stub components just to pass tests. Rejected because it adds no real valu
 Keep failing integration tests as documentation of expected behavior and implement components in Phase 2.
 
 **Rationale**:
+
 - Tests serve as specifications for future implementation
 - Following TDD, we have tests ready before implementation
 - Avoids creating throwaway stub code
 - Clear roadmap for next phase
 
 **Impact**:
+
 - Integration tests remain red but document requirements
 - Developers know exactly what to build
 - Can achieve 90%+ coverage once components exist
@@ -1269,16 +1494,18 @@ WebSocket integration tests were failing because the socket.io mock didn't prope
 Create comprehensive mocks that mirror the actual socket.io-client API structure, including nested properties.
 
 **Rationale**:
+
 - Tests should work with minimal changes to production code
 - Mocks should match real API structure
 - Easier to maintain when mocks mirror reality
 
 **Implementation**:
+
 ```typescript
 mockSocket = {
   io: {
-    on: vi.fn(),  // Matches socket.io.on pattern
-    opts: {}
+    on: vi.fn(), // Matches socket.io.on pattern
+    opts: {},
   },
   on: vi.fn(),
   // ... other methods
@@ -1294,12 +1521,14 @@ Multiple TypeScript errors and test failures could have been "fixed" by loosenin
 Always fix the root cause in implementation rather than working around in tests.
 
 **Rationale**:
+
 - Tests document correct behavior
 - Type safety prevents runtime errors
 - Workarounds accumulate technical debt
 - Clean code is easier to maintain
 
 **Examples**:
+
 - Fixed ToastProvider to not expect children
 - Added proper User type properties
 - Fixed import paths rather than suppressing errors
