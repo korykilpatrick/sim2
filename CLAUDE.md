@@ -62,6 +62,7 @@ The project follows the architecture defined in `docs/architecture/FRONTEND-ARCH
 - **NO EXCEPTIONS**: Code without tests will be rejected
 - **NO BACKWARDS COMPATIBILITY**: We have zero users - always choose the ideal solution
 - **PRE-COMMIT HOOKS**: All commits are automatically checked for ESLint, Prettier, and TypeScript errors
+- **COMMIT STANDARDS**: All commits must follow Conventional Commits format (see `/docs/standards/COMMIT-STANDARDS.md`)
 - After tests pass, run `npm run lint` and `npm run typecheck`
 - The mock API server runs on port 3001
 - The client dev server runs on port 5173 with proxy to API
