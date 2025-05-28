@@ -1,11 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { screen, waitFor, act } from '@testing-library/react'
+import { screen, waitFor, act, render } from '@testing-library/react'
 import { websocketService } from '@/services/websocket'
 import {
   renderWithProviders,
   clearAuth,
   setupAuthenticatedUser,
 } from '../../../tests/utils/test-helpers'
+import { TestProviders } from '../../../tests/utils/test-utils'
 
 // Mock dependencies
 vi.mock('@/services/websocket', () => ({
@@ -263,11 +264,20 @@ describe('WebSocketProvider', () => {
 
       // Clear module cache and reimport
       vi.resetModules()
-      await import('../WebSocketProvider')
+      const { WebSocketProvider: DebugWebSocketProvider } = await import(
+        '../WebSocketProvider'
+      )
 
       setupAuthenticatedUser()
 
-      renderWithProviders(<TestComponent />)
+      // Use the re-imported provider
+      render(
+        <TestProviders>
+          <DebugWebSocketProvider>
+            <TestComponent />
+          </DebugWebSocketProvider>
+        </TestProviders>,
+      )
 
       await waitFor(() => {
         // Check if debug listeners were registered
@@ -318,6 +328,10 @@ describe('WebSocketProvider', () => {
 
   describe('Edge Cases', () => {
     it('should handle websocket disabled gracefully', async () => {
+      // Clear previous mocks
+      vi.clearAllMocks()
+      ;(websocketService.connect as any).mockClear()
+
       // Mock config with websocket disabled
       vi.doMock('@/config', () => ({
         config: {
@@ -328,14 +342,38 @@ describe('WebSocketProvider', () => {
         },
       }))
 
+      // Clear module cache and reimport both modules
+      vi.resetModules()
+
+      // Import with disabled config
+      const { WebSocketProvider: DisabledWebSocketProvider } = await import(
+        '../WebSocketProvider'
+      )
+
       setupAuthenticatedUser()
 
-      renderWithProviders(<TestComponent />)
+      // Use the re-imported provider
+      const { container } = render(
+        <TestProviders>
+          <DisabledWebSocketProvider>
+            <TestComponent />
+          </DisabledWebSocketProvider>
+        </TestProviders>,
+      )
+
+      // Wait a bit to ensure no connection is attempted
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       // Should not connect when websocket is disabled
       expect(websocketService.connect).not.toHaveBeenCalled()
 
+      // Component should still render
+      expect(
+        container.querySelector('[data-testid="test-component"]'),
+      ).toBeTruthy()
+
       // Restore original mock
+      vi.resetModules()
       vi.doMock('@/config', () => ({
         config: {
           features: {

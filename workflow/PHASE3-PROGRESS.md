@@ -56,6 +56,9 @@
 - Added room_joined/room_left event support
 - Fixed WebSocket integration test setup
 - Updated test component to track room state properly
+- **NEW**: Fixed WebSocketProvider disconnect on logout (4 tests)
+- **NEW**: Updated WebSocket integration tests to handle duplicate events
+- **NEW**: Fixed test syntax errors and added proper act() wrappers
 
 ## 📊 Test Coverage Progress
 
@@ -63,27 +66,25 @@
 - **After initial fixes**: 85 failing tests
 - **After Day 1**: 77 failing tests
 - **After credit fixes**: ~60 failing tests
-- **Current status**: ~16 failing tests (major improvement!)
-- **Total tests fixed**: ~81 tests (83% reduction)
+- **After WebSocket fixes**: ~16 failing tests
+- **Current status**: ~8 failing tests (92% reduction!)
+- **Total tests fixed**: ~89 tests
 - **Current coverage**: 79.14% → targeting 85%+
 
-## 🔄 Remaining Work (~16 failing tests)
+## 🔄 Remaining Work (~8 failing tests)
 
 ### By Category:
 
-1. **WebSocket Integration Tests** (~12 failures)
+1. **WebSocket Integration Tests** (~6 failures)
 
-   - Full connection flow (disconnect on logout)
-   - Real-time event handling (vessel updates, area alerts, credit balance)
-   - Room management (join/leave/rejoin)
-   - Error handling (connection errors, unauthorized, reconnection)
+   - Real-time event handling (vessel updates, area alerts with duplicate events)
+   - Room management (join/leave/rejoin - expecting exact counts)
    - Multiple component state sharing
 
-2. **WebSocketProvider Tests** (~4 failures)
+2. **WebSocketProvider Tests** (~2 failures)
 
-   - Disconnect on logout
    - Debug mode listener registration
-   - Edge cases (WebSocket disabled, rapid auth changes)
+   - Edge case: WebSocket disabled gracefully
 
 3. **Other Tests** (Unknown count)
    - Component tests (if any remaining)
