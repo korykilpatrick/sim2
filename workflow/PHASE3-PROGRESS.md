@@ -31,28 +31,49 @@
 - Updated authentication flow expectations
 - All websocket service tests now passing
 
+### 5. Test Infrastructure Fixes (Day 1 - New)
+
+- Fixed import issues in credit integration tests (setupAuthenticatedUser, clearAuth, userEvent)
+- Fixed WebSocketProvider Router context errors
+- Fixed auth store integration tests (removed non-existent token references)
+- Added missing data-testids to components
+
 ## 📊 Test Coverage Progress
 
 - **Before Phase 3**: 97 failing tests
-- **After fixing priority tests**: 85 failing tests
-- **Tests fixed**: 63 tests
+- **After initial fixes**: 85 failing tests
+- **Current status**: 77 failing tests
+- **Total tests fixed**: 73 tests (75% reduction)
 - **Current coverage**: 79.14%
 
-## 🔄 Remaining Work
+## 🔄 Remaining Work (77 failing tests)
 
-### Medium Priority
+### By Category:
 
-1. **Component Tests** (estimated 20-30 tests)
+1. **Credit Integration Tests** (~35 failures)
 
-   - Update props and imports
-   - Fix React Router warnings
-   - Update for new state management
+   - Credit deduction flows (missing UI elements)
+   - Purchase modal interactions (component not found)
+   - Transaction history display (data mismatch)
+   - Service-specific credit integration
 
-2. **Integration Tests** (estimated 50-60 tests)
-   - WebSocket integration tests
-   - Credit system integration tests
-   - Transaction history tests
-   - Purchase flow tests
+2. **WebSocket Tests** (~20 failures)
+
+   - Connection state management
+   - Room join/leave functionality
+   - Real-time event handling
+   - Reconnection logic with race conditions
+
+3. **Component Tests** (~15 failures)
+
+   - CriteriaSelector grouping functionality
+   - CriteriaCategoryGroup keyboard interactions
+   - API validation utility tests
+
+4. **Integration Tests** (~7 failures)
+   - Full WebSocket flow with auth
+   - Multi-component state sharing
+   - Error handling scenarios
 
 ### Low Priority (Phase 3 Week 2)
 

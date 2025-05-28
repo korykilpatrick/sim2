@@ -23,14 +23,19 @@ export default function LowBalanceWarning({
   const textColor = isVeryLow ? 'text-red-800' : 'text-yellow-800'
 
   return (
-    <div className={`rounded-lg border p-4 ${bgColor}`}>
+    <div
+      className={`rounded-lg border p-4 ${bgColor}`}
+      data-testid="low-balance-warning"
+    >
       <div className="flex">
         <div className="flex-shrink-0">
           <AlertTriangle className={`h-5 w-5 ${iconColor}`} />
         </div>
         <div className="ml-3 flex-1">
           <h3 className={`text-sm font-medium ${textColor}`}>
-            {isVeryLow ? 'Credits Running Very Low' : 'Low Credit Balance'}
+            {isVeryLow
+              ? 'Critical: Very low credit balance'
+              : 'Low credit balance'}
           </h3>
           <div className={`mt-2 text-sm ${textColor}`}>
             <p>

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { screen, waitFor, render } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import { websocketService } from '@/services/websocket'
 import {
   renderWithProviders,
@@ -258,17 +258,11 @@ describe('WebSocketProvider', () => {
 
       // Clear module cache and reimport
       vi.resetModules()
-      const { WebSocketProvider: DebugProvider } = await import(
-        '../WebSocketProvider'
-      )
+      await import('../WebSocketProvider')
 
       setupAuthenticatedUser()
 
-      render(
-        <DebugProvider>
-          <TestComponent />
-        </DebugProvider>,
-      )
+      renderWithProviders(<TestComponent />)
 
       await waitFor(() => {
         // Check if debug listeners were registered
@@ -331,17 +325,11 @@ describe('WebSocketProvider', () => {
 
       // Clear module cache and reimport
       vi.resetModules()
-      const { WebSocketProvider: DisabledProvider } = await import(
-        '../WebSocketProvider'
-      )
+      await import('../WebSocketProvider')
 
       setupAuthenticatedUser()
 
-      render(
-        <DisabledProvider>
-          <TestComponent />
-        </DisabledProvider>,
-      )
+      renderWithProviders(<TestComponent />)
 
       // Should not connect when websocket is disabled
       expect(websocketService.connect).not.toHaveBeenCalled()
