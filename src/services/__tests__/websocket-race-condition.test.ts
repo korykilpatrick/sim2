@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { EnhancedWebSocketService } from '../websocket-enhanced'
+import { WebSocketService } from '../websocket'
 
 // Mock socket.io-client
 const mockSocket = {
@@ -32,7 +32,7 @@ vi.mock('@/config', () => ({
 }))
 
 describe('WebSocket Race Conditions and Authentication Queuing', () => {
-  let service: EnhancedWebSocketService
+  let service: WebSocketService
 
   beforeEach(() => {
     vi.clearAllMocks()
@@ -40,8 +40,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
     mockSocket.connected = false
     mockSocket.auth = {}
     // Reset singleton
-    ;(EnhancedWebSocketService as unknown as { instance: null }).instance = null
-    service = EnhancedWebSocketService.getInstance()
+    ;(WebSocketService as unknown as { instance: null }).instance = null
+    service = WebSocketService.getInstance()
   })
 
   afterEach(() => {

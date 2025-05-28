@@ -5,6 +5,7 @@ import { ConnectionStatus } from '@components/feedback'
 import ProtectedRoute from '@routes/ProtectedRoute'
 import { AppLayout } from '@components/layout'
 import { fetchCSRFToken } from '@utils/csrf'
+import { initializeCreditSync } from '@features/credits'
 
 // Lazy load pages
 const HomePage = lazy(() => import('@pages/HomePage'))
@@ -81,9 +82,13 @@ const PaymentConfirmationPage = lazy(
 )
 
 function App() {
-  // Fetch CSRF token on app initialization
+  // Initialize app services
   useEffect(() => {
+    // Fetch CSRF token
     fetchCSRFToken()
+
+    // Initialize credit sync with WebSocket
+    initializeCreditSync()
   }, [])
 
   return (

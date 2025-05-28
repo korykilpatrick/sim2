@@ -1,13 +1,13 @@
 /**
  * Unified Credit Service
- * 
+ *
  * This service combines the functionality of both credit implementations
  * and serves as the single source of truth for all credit operations.
  */
 
 import { apiClient } from '@/api/client'
 import { ApiResponse } from '@/api/types'
-import { useAuthStore } from '@/features/auth/services/authStore'
+import { useCreditStore } from './creditStore'
 import {
   CreditBalance,
   CreditTransaction,
@@ -40,7 +40,8 @@ class UnifiedCreditService {
    * ```
    */
   async getBalance(): Promise<CreditBalance> {
-    const response = await apiClient.get<ApiResponse<CreditBalance>>('/credits/balance')
+    const response =
+      await apiClient.get<ApiResponse<CreditBalance>>('/credits/balance')
     return response.data.data
   }
 
@@ -56,7 +57,7 @@ class UnifiedCreditService {
    *   type: 'purchase',
    *   limit: 10
    * })
-   * 
+   *
    * // Get transactions for date range
    * const monthly = await creditService.getTransactionHistory({
    *   startDate: '2024-01-01',
@@ -64,17 +65,19 @@ class UnifiedCreditService {
    * })
    * ```
    */
-  async getTransactionHistory(filter?: CreditTransactionFilter): Promise<CreditTransaction[]> {
+  async getTransactionHistory(
+    filter?: CreditTransactionFilter,
+  ): Promise<CreditTransaction[]> {
     const params = new URLSearchParams()
-    
+
     if (filter?.limit) params.append('limit', filter.limit.toString())
     if (filter?.offset) params.append('offset', filter.offset.toString())
     if (filter?.type) params.append('type', filter.type)
     if (filter?.startDate) params.append('startDate', filter.startDate)
     if (filter?.endDate) params.append('endDate', filter.endDate)
-    
+
     const response = await apiClient.get<ApiResponse<CreditTransaction[]>>(
-      `/credits/transactions?${params.toString()}`
+      `/credits/transactions?${params.toString()}`,
     )
     return response.data.data
   }
@@ -93,16 +96,18 @@ class UnifiedCreditService {
    * console.log(`Purchased ${result.creditsAdded} credits`)
    * ```
    */
-  async purchaseCredits(request: CreditPurchaseRequest): Promise<CreditPurchaseResponse> {
+  async purchaseCredits(
+    request: CreditPurchaseRequest,
+  ): Promise<CreditPurchaseResponse> {
     const response = await apiClient.post<ApiResponse<CreditPurchaseResponse>>(
       '/credits/purchase',
-      request
+      request,
     )
-    
-    // Update auth store with new balance
+
+    // Update credit store with new balance
     const newBalance = response.data.data.newBalance
-    useAuthStore.getState().updateCredits(newBalance)
-    
+    useCreditStore.getState().updateBalance(newBalance)
+
     return response.data.data
   }
 
@@ -121,16 +126,18 @@ class UnifiedCreditService {
    * })
    * ```
    */
-  async deductCredits(request: CreditDeductionRequest): Promise<CreditDeductionResponse> {
+  async deductCredits(
+    request: CreditDeductionRequest,
+  ): Promise<CreditDeductionResponse> {
     const response = await apiClient.post<ApiResponse<CreditDeductionResponse>>(
       '/credits/deduct',
-      request
+      request,
     )
-    
-    // Update auth store with new balance
+
+    // Update credit store with new balance
     const newBalance = response.data.data.newBalance
-    useAuthStore.getState().updateCredits(newBalance)
-    
+    useCreditStore.getState().updateBalance(newBalance)
+
     return response.data.data
   }
 
@@ -151,9 +158,9 @@ class UnifiedCreditService {
       const balance = await this.getBalance()
       return balance.available >= amount
     } catch {
-      // Fallback to auth store
-      const user = useAuthStore.getState().user
-      return (user?.credits || 0) >= amount
+      // Fallback to credit store
+      const balance = useCreditStore.getState().balance
+      return balance >= amount
     }
   }
 
@@ -169,7 +176,7 @@ class UnifiedCreditService {
    *   criteria: ['position', 'speed', 'heading'],
    *   days: 7
    * })
-   * 
+   *
    * // Area monitoring cost
    * const areaCost = creditService.calculateServiceCost({
    *   service: 'area_monitoring',
@@ -180,22 +187,32 @@ class UnifiedCreditService {
    */
   calculateServiceCost(params: CreditCostCalculationParams): number {
     const { service } = params
-    
+
     switch (service) {
       case 'vessel_tracking': {
         const { criteria = [], days = 1 } = params
-        return criteria.length * CREDIT_COSTS.VESSEL_TRACKING.PER_CRITERIA_PER_DAY * days
+        return (
+          criteria.length *
+          CREDIT_COSTS.VESSEL_TRACKING.PER_CRITERIA_PER_DAY *
+          days
+        )
       }
 
       case 'area_monitoring': {
         const { areaSize = 1000, days = 1 } = params
         const sizeMultiplier = areaSize <= 1000 ? 1 : areaSize <= 5000 ? 1.5 : 2
-        return Math.ceil(CREDIT_COSTS.AREA_MONITORING.BASE_PER_DAY * sizeMultiplier * days)
+        return Math.ceil(
+          CREDIT_COSTS.AREA_MONITORING.BASE_PER_DAY * sizeMultiplier * days,
+        )
       }
 
       case 'fleet_tracking': {
         const { vesselCount = 0, months = 1 } = params
-        return CREDIT_COSTS.FLEET_TRACKING.PER_VESSEL_PER_MONTH * vesselCount * months
+        return (
+          CREDIT_COSTS.FLEET_TRACKING.PER_VESSEL_PER_MONTH *
+          vesselCount *
+          months
+        )
       }
 
       case 'compliance_report':
@@ -237,10 +254,9 @@ class UnifiedCreditService {
    * ```
    */
   async reserveCredits(amount: number, serviceId: string): Promise<string> {
-    const response = await apiClient.post<ApiResponse<{ reservationId: string }>>(
-      '/credits/reserve',
-      { amount, serviceId }
-    )
+    const response = await apiClient.post<
+      ApiResponse<{ reservationId: string }>
+    >('/credits/reserve', { amount, serviceId })
     return response.data.data.reservationId
   }
 
@@ -255,16 +271,18 @@ class UnifiedCreditService {
    * console.log(`Transaction ${result.transactionId} completed`)
    * ```
    */
-  async confirmReservation(reservationId: string): Promise<CreditDeductionResponse> {
+  async confirmReservation(
+    reservationId: string,
+  ): Promise<CreditDeductionResponse> {
     const response = await apiClient.post<ApiResponse<CreditDeductionResponse>>(
       '/credits/confirm',
-      { reservationId }
+      { reservationId },
     )
-    
-    // Update auth store with new balance
+
+    // Update credit store with new balance
     const newBalance = response.data.data.newBalance
-    useAuthStore.getState().updateCredits(newBalance)
-    
+    useCreditStore.getState().updateBalance(newBalance)
+
     return response.data.data
   }
 
@@ -309,13 +327,13 @@ class UnifiedCreditService {
    * ```
    */
   calculatePackageSavings(packageId: string): number {
-    const pkg = CREDIT_PACKAGES.find(p => p.id === packageId)
+    const pkg = CREDIT_PACKAGES.find((p) => p.id === packageId)
     if (!pkg) return 0
-    
+
     const totalCredits = pkg.credits + pkg.bonus
     const pricePerCredit = pkg.price / totalCredits
     const standardPrice = 0.99 // Base price per credit
-    
+
     return Math.round((1 - pricePerCredit / standardPrice) * 100)
   }
 }
@@ -325,13 +343,13 @@ class UnifiedCreditService {
  * @example
  * ```typescript
  * import { creditService } from '@/features/credits'
- * 
+ *
  * // Check balance
  * const balance = await creditService.getBalance()
- * 
+ *
  * // Purchase credits
  * await creditService.purchaseCredits({ packageId: 'pkg_1000' })
- * 
+ *
  * // Deduct for service
  * await creditService.deductCredits({
  *   amount: 50,

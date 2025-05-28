@@ -51,7 +51,10 @@ export interface User {
   avatar?: string
   /** User's role determining access permissions */
   role: 'user' | 'admin'
-  /** Available credits for vessel tracking */
+  /**
+   * Available credits for vessel tracking
+   * @deprecated Use creditStore for credit balance - this field will be removed in v2.0
+   */
   credits: number
   /** User preferences */
   preferences?: UserPreferences

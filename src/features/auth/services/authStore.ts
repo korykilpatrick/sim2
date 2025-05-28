@@ -15,7 +15,10 @@ interface AuthStore {
   setAuth: (user: User) => void
   /** Updates current user data partially */
   updateUser: (user: Partial<User>) => void
-  /** Updates user credit balance */
+  /**
+   * Updates user credit balance
+   * @deprecated Use creditStore.updateBalance() instead - will be removed in v2.0
+   */
   updateCredits: (credits: number) => void
   /** Clears all authentication data */
   logout: () => void
@@ -47,10 +50,14 @@ export const useAuthStore = create<AuthStore>()(
         set((state) => ({
           user: state.user ? { ...state.user, ...userData } : null,
         })),
-      updateCredits: (credits) =>
+      updateCredits: (credits) => {
+        console.warn(
+          'authStore.updateCredits is deprecated. Use creditStore.updateBalance() instead.',
+        )
         set((state) => ({
           user: state.user ? { ...state.user, credits } : null,
-        })),
+        }))
+      },
       logout: () =>
         set({
           user: null,

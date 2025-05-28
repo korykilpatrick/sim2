@@ -1,6 +1,6 @@
 /**
  * Credits Feature Exports
- * 
+ *
  * This is the main entry point for the credits feature.
  * All credit-related functionality should be imported from here.
  */
@@ -8,8 +8,13 @@
 // Export unified types
 export * from './types'
 
-// Export unified service
+// Export services
 export { creditService } from './services/unifiedCreditService'
+export {
+  useCreditStore,
+  creditSelectors,
+  initializeCreditSync,
+} from './services/creditStore'
 
 // Export unified hook
 export { useUnifiedCredits } from './hooks/useUnifiedCredits'
