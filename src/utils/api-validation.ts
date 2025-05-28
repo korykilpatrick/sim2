@@ -78,11 +78,11 @@ export const UserSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   name: z.string(),
-  company: z.string().optional(),
-  department: z.string().optional(),
-  phone: z.string().optional(),
+  company: z.string(),
+  department: z.string(),
+  phone: z.string(),
   avatar: z.string().nullable(),
-  role: z.enum(['user', 'admin']),
+  role: z.enum(['user', 'admin', 'superadmin']),
   credits: z.number().min(0),
   preferences: z.object({
     theme: z.enum(['light', 'dark']),
@@ -114,8 +114,8 @@ export const UserSchema = z.object({
 
 export const AuthResponseSchema = z.object({
   user: UserSchema,
-  accessToken: z.string(),
-  refreshToken: z.string(),
+  accessToken: z.string().optional(), // Now sent as httpOnly cookie
+  refreshToken: z.string().optional(), // Now sent as httpOnly cookie
 })
 
 // Vessel schemas
@@ -154,7 +154,7 @@ export const CoordinateSchema = z.object({
 export const AreaSchema = z.object({
   id: z.string(),
   name: z.string(),
-  type: z.enum(['custom', 'port', 'anchorage', 'terminal']),
+  type: z.enum(['custom', 'port', 'anchorage', 'terminal', 'zone']),
   coordinates: z.array(CoordinateSchema),
   monitoringConfig: z.object({
     vesselCriteria: z.array(
@@ -183,14 +183,24 @@ export const AreaSchema = z.object({
 
 // Credit schemas
 export const CreditBalanceSchema = z.object({
-  available: z.number().min(0),
+  current: z.number().min(0),
+  available: z.number().min(0).optional(), // backwards compatibility
   lifetime: z.number().min(0),
   expiring: z
     .object({
       amount: z.number(),
       date: z.string().datetime(),
     })
-    .nullable(),
+    .nullable()
+    .optional(),
+  expiringCredits: z
+    .array(
+      z.object({
+        amount: z.number(),
+        expiryDate: z.string(),
+      }),
+    )
+    .optional(),
 })
 
 export const CreditTransactionSchema = z.object({

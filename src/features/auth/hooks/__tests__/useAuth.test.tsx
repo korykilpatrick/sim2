@@ -7,7 +7,7 @@ import { authApi } from '../../services/auth'
 import { useAuthStore } from '../../services/authStore'
 // ToastProvider import removed - not needed for tests
 import { ReactNode } from 'react'
-import type { User } from '../../types/auth'
+import type { User, AuthResponse } from '../../types/auth'
 
 // Mock modules
 vi.mock('../../services/auth')
@@ -19,6 +19,11 @@ vi.mock('@/hooks/useToast', () => ({
     addToast: vi.fn(),
     removeToast: vi.fn(),
   }),
+}))
+vi.mock('@/utils/csrf', () => ({
+  fetchCSRFToken: vi.fn().mockResolvedValue(undefined),
+  clearCSRFToken: vi.fn(),
+  getCSRFToken: vi.fn().mockReturnValue('mock-csrf-token'),
 }))
 
 // Mock router
@@ -265,11 +270,13 @@ describe('useAuth', () => {
 
   describe('loading states', () => {
     it('should track login loading state', async () => {
-      vi.mocked(authApi.login).mockImplementation(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve({ user: mockUser }), 100),
-          ),
+      let resolveLogin: (value: any) => void
+      const loginPromise = new Promise((resolve) => {
+        resolveLogin = resolve
+      })
+
+      vi.mocked(authApi.login).mockReturnValue(
+        loginPromise as Promise<AuthResponse>,
       )
 
       const { result } = renderHook(() => useAuth(), { wrapper })
@@ -278,7 +285,11 @@ describe('useAuth', () => {
 
       result.current.login({ email: 'test@example.com', password: 'password' })
 
-      expect(result.current.isLoggingIn).toBe(true)
+      await waitFor(() => {
+        expect(result.current.isLoggingIn).toBe(true)
+      })
+
+      resolveLogin!({ user: mockUser })
 
       await waitFor(() => {
         expect(result.current.isLoggingIn).toBe(false)
@@ -286,11 +297,13 @@ describe('useAuth', () => {
     })
 
     it('should track register loading state', async () => {
-      vi.mocked(authApi.register).mockImplementation(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve({ user: mockUser }), 100),
-          ),
+      let resolveRegister: (value: any) => void
+      const registerPromise = new Promise((resolve) => {
+        resolveRegister = resolve
+      })
+
+      vi.mocked(authApi.register).mockReturnValue(
+        registerPromise as Promise<AuthResponse>,
       )
 
       const { result } = renderHook(() => useAuth(), { wrapper })
@@ -303,7 +316,11 @@ describe('useAuth', () => {
         name: 'Test User',
       })
 
-      expect(result.current.isRegistering).toBe(true)
+      await waitFor(() => {
+        expect(result.current.isRegistering).toBe(true)
+      })
+
+      resolveRegister!({ user: mockUser })
 
       await waitFor(() => {
         expect(result.current.isRegistering).toBe(false)
@@ -311,9 +328,12 @@ describe('useAuth', () => {
     })
 
     it('should track logout loading state', async () => {
-      vi.mocked(authApi.logout).mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100)),
-      )
+      let resolveLogout: () => void
+      const logoutPromise = new Promise<void>((resolve) => {
+        resolveLogout = resolve
+      })
+
+      vi.mocked(authApi.logout).mockReturnValue(logoutPromise)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
@@ -321,7 +341,11 @@ describe('useAuth', () => {
 
       result.current.logout()
 
-      expect(result.current.isLoggingOut).toBe(true)
+      await waitFor(() => {
+        expect(result.current.isLoggingOut).toBe(true)
+      })
+
+      resolveLogout!()
 
       await waitFor(() => {
         expect(result.current.isLoggingOut).toBe(false)

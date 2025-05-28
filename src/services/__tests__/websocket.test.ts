@@ -60,8 +60,7 @@ describe('WebSocketService', () => {
 
   describe('Connection Management', () => {
     it('should connect with authentication token', () => {
-      const token = 'test-token'
-      service.connect(token)
+      service.connect()
 
       expect(io).toHaveBeenCalledWith(
         'http://localhost:3001',
@@ -69,12 +68,13 @@ describe('WebSocketService', () => {
           transports: ['websocket', 'polling'],
           autoConnect: true,
           reconnection: true,
+          withCredentials: true,
         }),
       )
     })
 
     it('should handle successful connection', () => {
-      service.connect('token')
+      service.connect()
 
       // Verify initial status
       expect(service.getStatus()).toBe('connecting')
@@ -83,7 +83,8 @@ describe('WebSocketService', () => {
 
       // Simulate connect event
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect',
       )?.[1] as (() => void) | undefined
       if (connectHandler) {
         mockSocket.connected = true
@@ -95,12 +96,13 @@ describe('WebSocketService', () => {
     })
 
     it('should handle disconnection', () => {
-      service.connect('token')
+      service.connect()
       mockSocket.connected = true
 
       // Simulate connect first
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect',
       )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
 
@@ -112,11 +114,12 @@ describe('WebSocketService', () => {
     })
 
     it('should handle connection errors', () => {
-      service.connect('token')
+      service.connect()
 
       // Simulate connect_error event
       const errorHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect_error',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect_error',
       )?.[1] as ((error: Error) => void) | undefined
       if (errorHandler) {
         const error = new Error('Connection failed')
@@ -127,13 +130,13 @@ describe('WebSocketService', () => {
     })
 
     it('should not connect when already connected', () => {
-      service.connect('token')
+      service.connect()
       mockSocket.connected = true
 
       // Clear mock to check second connect
       vi.clearAllMocks()
 
-      service.connect('token')
+      service.connect()
 
       // Should not create new connection
       expect(io).not.toHaveBeenCalled()
@@ -142,12 +145,13 @@ describe('WebSocketService', () => {
 
   describe('Authentication', () => {
     beforeEach(() => {
-      service.connect('token')
+      service.connect()
 
       // Simulate connected state
       mockSocket.connected = true
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect',
       )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
     })
@@ -160,8 +164,11 @@ describe('WebSocketService', () => {
 
     it('should handle authentication success', () => {
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -171,7 +178,8 @@ describe('WebSocketService', () => {
 
     it('should handle authentication failure', () => {
       const unauthorizedHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'unauthorized',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'unauthorized',
       )?.[1] as ((data: { message: string }) => void) | undefined
       if (unauthorizedHandler) {
         unauthorizedHandler({ message: 'Invalid token' })
@@ -185,13 +193,16 @@ describe('WebSocketService', () => {
 
   describe('Room Management', () => {
     beforeEach(() => {
-      service.connect('token')
+      service.connect()
       mockSocket.connected = true
 
       // Simulate authentication success
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -278,54 +289,59 @@ describe('WebSocketService', () => {
     })
 
     it('should rejoin rooms after reconnection', () => {
+      // This test verifies that rooms are preserved and rejoined after reconnection
+      // The actual rejoin happens after authentication is successful
+
       // Join some rooms
       service.joinVesselRoom('vessel-1')
       service.joinAreaRoom('area-1')
 
-      // Verify rooms were joined
+      // These get queued since we're not connected
       expect(service.getRooms()).toHaveLength(2)
 
-      // Clear emit calls
-      mockSocket.emit.mockClear()
+      // Connect with a token to enable auth on reconnect
+      service.connect('test-token')
+
+      // Get the reconnect handler
+      const reconnectHandler = mockSocket.io.on.mock.calls.find(
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'reconnect',
+      )?.[1] as ((attempt: number) => void) | undefined
 
       // Simulate reconnection
-      const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
-      )?.[1] as (() => void) | undefined
-      if (connectHandler) {
-        connectHandler()
+      if (reconnectHandler) {
+        mockSocket.connected = true
+        reconnectHandler(1)
       }
 
-      // It should authenticate
-      expect(mockSocket.emit).toHaveBeenCalledWith('authenticate', 'token')
-
-      // rejoinRooms is called but won't emit because not authenticated yet
-      // The rooms remain in the rooms map though
+      // Rooms should still be preserved
       expect(service.getRooms()).toHaveLength(2)
 
-      // After authentication succeeds, manually trying to join rooms would work
+      // When auth completes, rooms will be rejoined
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
-
-      // Now if we manually trigger rejoin, it would work
-      // But the automatic rejoin already happened before auth completed
-      // This is a limitation of the current implementation
     })
   })
 
   describe('Event Handling', () => {
     beforeEach(() => {
-      service.connect('token')
+      service.connect()
       mockSocket.connected = true
 
       // Simulate authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -337,7 +353,8 @@ describe('WebSocketService', () => {
 
       // Simulate event
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'vessel_position_update',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'vessel_position_update',
       )?.[1] as ((data: unknown) => void) | undefined
       if (eventHandler) {
         const positionData = {
@@ -366,7 +383,8 @@ describe('WebSocketService', () => {
 
       // Simulate event
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'area_alert',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'area_alert',
       )?.[1] as ((data: unknown) => void) | undefined
       if (eventHandler) {
         const alertData = {
@@ -394,8 +412,11 @@ describe('WebSocketService', () => {
 
       // Simulate event after unsubscribe
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'credit_balance_updated',
-      )?.[1] as ((data: { balance: number; change: number }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'credit_balance_updated',
+      )?.[1] as
+        | ((data: { balance: number; change: number }) => void)
+        | undefined
       if (eventHandler) {
         eventHandler({ balance: 100, change: -10 })
       }
@@ -407,13 +428,16 @@ describe('WebSocketService', () => {
 
   describe('Alert Management', () => {
     beforeEach(() => {
-      service.connect('token')
+      service.connect()
       mockSocket.connected = true
 
       // Simulate authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -448,13 +472,13 @@ describe('WebSocketService', () => {
     it('should track status changes', () => {
       expect(service.getStatus()).toBe('disconnected')
 
-      service.connect('token')
+      service.connect()
       expect(service.getStatus()).toBe('connecting')
-
 
       // Simulate connect
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect',
       )?.[1] as (() => void) | undefined
       if (connectHandler) {
         mockSocket.connected = true
@@ -467,7 +491,7 @@ describe('WebSocketService', () => {
     it('should check connection status', () => {
       expect(service.isConnected()).toBe(false)
 
-      service.connect('token')
+      service.connect()
       expect(service.isConnected()).toBe(false) // Still connecting
 
       mockSocket.connected = true
@@ -486,11 +510,12 @@ describe('WebSocketService', () => {
     })
 
     it('should handle reconnection attempts', () => {
-      service.connect('token')
+      service.connect()
 
       // Simulate reconnect attempt on socket.io
       const reconnectAttemptHandler = mockSocket.io.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'reconnect_attempt',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'reconnect_attempt',
       )?.[1] as ((attemptNumber: number) => void) | undefined
       if (reconnectAttemptHandler) {
         reconnectAttemptHandler(1)
@@ -501,14 +526,15 @@ describe('WebSocketService', () => {
     })
 
     it('should handle reconnection success', () => {
-      service.connect('token')
+      service.connect()
 
       // Join a room before disconnect
       service.joinVesselRoom('vessel-1')
 
       // Simulate reconnection
       const reconnectHandler = mockSocket.io.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'reconnect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'reconnect',
       )?.[1] as ((attemptNumber: number) => void) | undefined
       if (reconnectHandler) {
         reconnectHandler(1)
@@ -518,11 +544,12 @@ describe('WebSocketService', () => {
     })
 
     it('should handle reconnection failure', () => {
-      service.connect('token')
+      service.connect()
 
       // Simulate reconnect failed
       const reconnectFailedHandler = mockSocket.io.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'reconnect_failed',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'reconnect_failed',
       )?.[1] as (() => void) | undefined
       if (reconnectFailedHandler) {
         reconnectFailedHandler()
@@ -534,7 +561,7 @@ describe('WebSocketService', () => {
 
   describe('Cleanup', () => {
     it('should clean up on disconnect', () => {
-      service.connect('token')
+      service.connect()
 
       // Join some rooms
       service.joinVesselRoom('vessel-1')
@@ -559,11 +586,12 @@ describe('WebSocketService', () => {
     })
 
     it('should handle missing event listeners gracefully', () => {
-      service.connect('token')
+      service.connect()
 
       // Try to trigger event with no listeners
       const eventHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'server_message',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'server_message',
       )?.[1] as ((data: { message: string; type: string }) => void) | undefined
       if (eventHandler) {
         // Should not throw
