@@ -1,0 +1,14 @@
+{
+  "overall_status": "starting",
+  "metrics": {
+    "tasks_completed_today": 0,
+    "tasks_in_progress": 0,
+    "tasks_pending": 24,
+    "test_coverage": 79.14,
+    "build_status": "passing",
+    "active_agents": 0,
+    "system_uptime": 0
+  },
+  "alerts": [],
+  "last_updated": "2025-05-28T12:00:00Z"
+}

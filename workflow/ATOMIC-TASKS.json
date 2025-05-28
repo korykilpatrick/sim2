@@ -1,0 +1,279 @@
+{
+  "metadata": {
+    "version": "2.0.0",
+    "generated_at": "2025-05-28T14:00:00Z",
+    "description": "Atomic task breakdown for autonomous implementation"
+  },
+  "phase0_security_tasks": [
+    {
+      "id": "atomic-001",
+      "parent": "phase0-security-1",
+      "title": "Remove JWT_SECRET from .env file",
+      "type": "security-fix",
+      "effort_minutes": 30,
+      "files_to_edit": [".env", ".env.example"],
+      "files_to_create": ["docs/SECURITY-CONFIG.md"],
+      "test_requirements": [
+        "Verify JWT_SECRET not in version control",
+        "Ensure app still starts without .env JWT_SECRET",
+        "Document new secret management approach"
+      ],
+      "patterns": [],
+      "priority": 95
+    },
+    {
+      "id": "atomic-002",
+      "parent": "phase0-security-2",
+      "title": "Create secure session store implementation",
+      "type": "implementation",
+      "effort_minutes": 90,
+      "files_to_create": [
+        "src/services/sessionStore.ts",
+        "src/services/sessionStore.test.ts"
+      ],
+      "files_to_edit": [],
+      "test_requirements": [
+        "Session data stored securely",
+        "No sensitive data in localStorage",
+        "Session persists across refreshes",
+        "Logout clears all data",
+        "XSS protection verified"
+      ],
+      "patterns": ["service"],
+      "priority": 90
+    },
+    {
+      "id": "atomic-003",
+      "parent": "phase0-security-2",
+      "title": "Migrate auth store to use secure session",
+      "type": "refactor",
+      "effort_minutes": 60,
+      "files_to_edit": [
+        "src/features/auth/services/authStore.ts",
+        "src/features/auth/services/authStore.test.ts"
+      ],
+      "test_requirements": [
+        "Auth store uses sessionStore",
+        "No direct localStorage usage",
+        "All auth flows still work",
+        "Tests updated for new approach"
+      ],
+      "patterns": ["store-refactor"],
+      "priority": 88,
+      "dependencies": ["atomic-002"]
+    }
+  ],
+  "phase1_vessel_tracking_wizard": [
+    {
+      "id": "atomic-101",
+      "parent": "phase1-vessel-1",
+      "title": "Create TrackingWizard container component",
+      "type": "implementation",
+      "effort_minutes": 120,
+      "files_to_create": [
+        "src/features/vessels/components/tracking-wizard/TrackingWizard.tsx",
+        "src/features/vessels/components/tracking-wizard/TrackingWizard.test.tsx",
+        "src/features/vessels/components/tracking-wizard/types.ts"
+      ],
+      "test_requirements": [
+        "Wizard renders with correct steps",
+        "Step navigation works",
+        "Step validation prevents advancement",
+        "Wizard state persists during navigation",
+        "Cancel/close behavior correct"
+      ],
+      "patterns": ["wizard-component"],
+      "priority": 80
+    },
+    {
+      "id": "atomic-102",
+      "parent": "phase1-vessel-1",
+      "title": "Implement VesselSelectionStep component",
+      "type": "implementation",
+      "effort_minutes": 120,
+      "files_to_create": [
+        "src/features/vessels/components/tracking-wizard/VesselSelectionStep.tsx",
+        "src/features/vessels/components/tracking-wizard/VesselSelectionStep.test.tsx"
+      ],
+      "test_requirements": [
+        "Vessel search input works",
+        "Search results display correctly",
+        "Vessel selection updates wizard state",
+        "Validation requires vessel selection",
+        "Loading and error states handled"
+      ],
+      "patterns": ["wizard-step", "search-component"],
+      "priority": 78,
+      "dependencies": ["atomic-101"]
+    },
+    {
+      "id": "atomic-103",
+      "parent": "phase1-vessel-1",
+      "title": "Create useVesselSearch hook with API integration",
+      "type": "implementation",
+      "effort_minutes": 60,
+      "files_to_create": [
+        "src/features/vessels/hooks/useVesselSearch.ts",
+        "src/features/vessels/hooks/useVesselSearch.test.ts"
+      ],
+      "test_requirements": [
+        "Hook fetches vessels on search",
+        "Debouncing implemented",
+        "Loading state managed",
+        "Error handling works",
+        "Results cached appropriately"
+      ],
+      "patterns": ["api-hook", "search-hook"],
+      "priority": 79,
+      "dependencies": ["atomic-102"]
+    },
+    {
+      "id": "atomic-104",
+      "parent": "phase1-vessel-1",
+      "title": "Implement CriteriaSelectionStep with existing components",
+      "type": "implementation",
+      "effort_minutes": 90,
+      "files_to_create": [
+        "src/features/vessels/components/tracking-wizard/CriteriaSelectionStep.tsx",
+        "src/features/vessels/components/tracking-wizard/CriteriaSelectionStep.test.tsx"
+      ],
+      "files_to_edit": [],
+      "test_requirements": [
+        "Integrates existing CriteriaSelector",
+        "Selected criteria saved to wizard state",
+        "Validation requires at least one criterion",
+        "Category organization displayed",
+        "Descriptions shown for each criterion"
+      ],
+      "patterns": ["wizard-step"],
+      "priority": 77,
+      "dependencies": ["atomic-101"]
+    },
+    {
+      "id": "atomic-105",
+      "parent": "phase1-vessel-1",
+      "title": "Create DurationConfigStep with pricing",
+      "type": "implementation",
+      "effort_minutes": 90,
+      "files_to_create": [
+        "src/features/vessels/components/tracking-wizard/DurationConfigStep.tsx",
+        "src/features/vessels/components/tracking-wizard/DurationConfigStep.test.tsx"
+      ],
+      "test_requirements": [
+        "Duration selector works",
+        "Pricing updates based on duration",
+        "Bulk discounts applied if applicable",
+        "Custom duration input validated",
+        "Total cost calculation correct"
+      ],
+      "patterns": ["wizard-step", "pricing-component"],
+      "priority": 76,
+      "dependencies": ["atomic-101"]
+    },
+    {
+      "id": "atomic-106",
+      "parent": "phase1-vessel-1",
+      "title": "Build wizard state management",
+      "type": "implementation",
+      "effort_minutes": 60,
+      "files_to_create": [
+        "src/features/vessels/components/tracking-wizard/useWizard.ts",
+        "src/features/vessels/components/tracking-wizard/useWizard.test.ts"
+      ],
+      "test_requirements": [
+        "State persists across steps",
+        "Validation per step works",
+        "Can navigate back without data loss",
+        "Reset functionality works",
+        "State shape matches requirements"
+      ],
+      "patterns": ["wizard-state-hook"],
+      "priority": 81,
+      "dependencies": ["atomic-101"]
+    }
+  ],
+  "phase1_alert_system": [
+    {
+      "id": "atomic-201",
+      "parent": "phase1-alert-1",
+      "title": "Define alert data types and constants",
+      "type": "implementation",
+      "effort_minutes": 45,
+      "files_to_create": [
+        "src/features/alerts/types/index.ts",
+        "src/features/alerts/constants.ts"
+      ],
+      "test_requirements": [
+        "All alert types defined",
+        "Severity levels enumerated",
+        "Alert sources identified",
+        "Type guards implemented"
+      ],
+      "patterns": ["data-model"],
+      "priority": 85
+    },
+    {
+      "id": "atomic-202",
+      "parent": "phase1-alert-2",
+      "title": "Create alertStore with Zustand",
+      "type": "implementation",
+      "effort_minutes": 90,
+      "files_to_create": [
+        "src/features/alerts/stores/alertStore.ts",
+        "src/features/alerts/stores/alertStore.test.ts"
+      ],
+      "test_requirements": [
+        "Add alert functionality",
+        "Remove alert functionality",
+        "Mark as read functionality",
+        "Filter alerts by criteria",
+        "Sort alerts by date/severity",
+        "Real-time update integration"
+      ],
+      "patterns": ["zustand-store"],
+      "priority": 83,
+      "dependencies": ["atomic-201"]
+    }
+  ],
+  "pattern_definitions": {
+    "wizard-component": {
+      "description": "Multi-step wizard container",
+      "example_files": ["src/components/wizard/FormWizard.tsx"],
+      "key_patterns": [
+        "Step state management",
+        "Navigation controls",
+        "Validation per step",
+        "Progress indicator"
+      ]
+    },
+    "wizard-step": {
+      "description": "Individual wizard step component",
+      "example_files": [
+        "src/features/areas/components/area-wizard/AreaDefinitionStep.tsx"
+      ],
+      "key_patterns": [
+        "Props include onNext, onBack",
+        "Local validation",
+        "Updates parent state"
+      ]
+    },
+    "api-hook": {
+      "description": "React Query hook for API calls",
+      "example_files": ["src/features/vessels/hooks/useVessels.ts"],
+      "key_patterns": [
+        "Uses React Query",
+        "Handles loading/error states",
+        "Provides data and refetch"
+      ]
+    },
+    "zustand-store": {
+      "description": "Zustand state management store",
+      "example_files": ["src/stores/cartStore.ts"],
+      "key_patterns": [
+        "Define interface first",
+        "Use create() with typed state",
+        "Actions modify state immutably"
+      ]
+    }
+  }
+}

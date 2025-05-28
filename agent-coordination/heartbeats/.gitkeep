@@ -1,0 +1,3 @@
+# This directory contains agent heartbeat files
+# Each agent writes a heartbeat file every 30 seconds
+# Files are named: [agent-id].json

@@ -1,0 +1,504 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "generated_at": "2025-05-28T12:00:00Z",
+    "source": "workflow/IMPLEMENTATION-PLAN.md",
+    "total_tasks": 45,
+    "phases": 7
+  },
+  "tasks": [
+    {
+      "id": "phase0-security-1",
+      "phase": "0.2",
+      "type": "security",
+      "priority": 95,
+      "status": "ready",
+      "title": "Remove JWT_SECRET from .env",
+      "description": "Move JWT_SECRET to environment-specific secrets, not in version control",
+      "acceptance_criteria": [
+        "JWT_SECRET removed from .env file",
+        "Documentation updated for secret management",
+        "Tests still pass with env variable"
+      ],
+      "estimated_hours": 1,
+      "dependencies": [],
+      "prd_section": "Security",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase0-security-2",
+      "phase": "0.2",
+      "type": "security",
+      "priority": 90,
+      "status": "ready",
+      "title": "Move user session from localStorage to secure storage",
+      "description": "Migrate user session data from localStorage to memory or httpOnly cookies for security",
+      "acceptance_criteria": [
+        "No sensitive data in localStorage",
+        "Session persists across page refreshes",
+        "Logout clears all session data",
+        "Tests cover new session management"
+      ],
+      "estimated_hours": 3,
+      "dependencies": [],
+      "prd_section": "Security",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase0-security-3",
+      "phase": "0.2",
+      "type": "security",
+      "priority": 85,
+      "status": "ready",
+      "title": "Enable CSRF protection for auth endpoints",
+      "description": "Add CSRF token validation to all authentication endpoints",
+      "acceptance_criteria": [
+        "CSRF tokens generated and validated",
+        "All auth endpoints protected",
+        "Tests verify CSRF protection",
+        "Frontend handles CSRF tokens correctly"
+      ],
+      "estimated_hours": 2,
+      "dependencies": [],
+      "prd_section": "Security",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase0-cleanup-1",
+      "phase": "0.2",
+      "type": "cleanup",
+      "priority": 60,
+      "status": "ready",
+      "title": "Remove empty directories",
+      "description": "Clean up empty directories: assets/fonts, icons, images, mocks",
+      "acceptance_criteria": [
+        "Empty directories removed",
+        "No broken imports",
+        "Build still works"
+      ],
+      "estimated_hours": 0.5,
+      "dependencies": [],
+      "prd_section": "Architecture",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase0-cleanup-2",
+      "phase": "0.2",
+      "type": "cleanup",
+      "priority": 65,
+      "status": "ready",
+      "title": "Consolidate page organization pattern",
+      "description": "Choose one pattern for page organization and apply consistently",
+      "acceptance_criteria": [
+        "Single pattern chosen and documented",
+        "All pages follow the pattern",
+        "Tests updated for new structure"
+      ],
+      "estimated_hours": 2,
+      "dependencies": [],
+      "prd_section": "Architecture",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase0-prod-1",
+      "phase": "0.2",
+      "type": "production",
+      "priority": 70,
+      "status": "ready",
+      "title": "Remove drop_console from vite.config",
+      "description": "Remove drop_console to allow proper debugging in production",
+      "acceptance_criteria": [
+        "drop_console removed from config",
+        "Console logs work in production build",
+        "No security-sensitive logs remain"
+      ],
+      "estimated_hours": 0.5,
+      "dependencies": [],
+      "prd_section": "Configuration",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase0-prod-2",
+      "phase": "0.2",
+      "type": "production",
+      "priority": 75,
+      "status": "ready",
+      "title": "Add error boundary setup",
+      "description": "Implement basic error boundaries for graceful error handling",
+      "acceptance_criteria": [
+        "Error boundary component created",
+        "Wraps main application areas",
+        "Tests verify error catching",
+        "User-friendly error messages"
+      ],
+      "estimated_hours": 2,
+      "dependencies": [],
+      "prd_section": "Error Handling",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase1-vessel-1",
+      "phase": "1.1",
+      "type": "feature",
+      "priority": 80,
+      "status": "ready",
+      "title": "Build tracking configuration wizard",
+      "description": "Create multi-step wizard for vessel tracking configuration",
+      "acceptance_criteria": [
+        "Step 1: Vessel selection with search",
+        "Step 2: Criteria selection with descriptions",
+        "Step 3: Duration configuration with pricing",
+        "Step 4: Review and confirmation",
+        "Integration with creditStore for payment",
+        "All steps have comprehensive tests"
+      ],
+      "estimated_hours": 6,
+      "dependencies": [],
+      "prd_section": "4.1",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase1-vessel-2",
+      "phase": "1.1",
+      "type": "feature",
+      "priority": 75,
+      "status": "blocked",
+      "title": "Add real-time vessel status updates",
+      "description": "Implement WebSocket-based real-time updates for vessel tracking",
+      "acceptance_criteria": [
+        "Vessel position updates in real-time",
+        "Alert notifications delivered instantly",
+        "Tracking status changes reflected",
+        "WebSocket reconnection handling",
+        "Tests cover all real-time scenarios"
+      ],
+      "estimated_hours": 4,
+      "dependencies": ["phase1-vessel-1"],
+      "prd_section": "4.1",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase1-alert-1",
+      "phase": "1.2",
+      "type": "feature",
+      "priority": 85,
+      "status": "ready",
+      "title": "Create alert data models and tests",
+      "description": "Define alert data structures and write comprehensive tests",
+      "acceptance_criteria": [
+        "Alert types defined",
+        "Alert severity levels implemented",
+        "Alert data validation",
+        "100% test coverage for models"
+      ],
+      "estimated_hours": 2,
+      "dependencies": [],
+      "prd_section": "4.5",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase1-alert-2",
+      "phase": "1.2",
+      "type": "feature",
+      "priority": 80,
+      "status": "blocked",
+      "title": "Implement alert store with Zustand",
+      "description": "Create centralized alert state management",
+      "acceptance_criteria": [
+        "Alert store created with Zustand",
+        "CRUD operations for alerts",
+        "Alert filtering and sorting",
+        "Real-time updates supported",
+        "Comprehensive test suite"
+      ],
+      "estimated_hours": 3,
+      "dependencies": ["phase1-alert-1"],
+      "prd_section": "4.5",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase1-alert-3",
+      "phase": "1.2",
+      "type": "feature",
+      "priority": 75,
+      "status": "blocked",
+      "title": "Build alert UI components",
+      "description": "Create alert badges, lists, and detail views",
+      "acceptance_criteria": [
+        "Alert badge with count",
+        "Alert list with filtering",
+        "Alert detail modal",
+        "Alert acknowledgment flow",
+        "Visual tests for all states"
+      ],
+      "estimated_hours": 4,
+      "dependencies": ["phase1-alert-2"],
+      "prd_section": "4.5",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase2-area-1",
+      "phase": "2.1",
+      "type": "feature",
+      "priority": 70,
+      "status": "blocked",
+      "title": "Implement geofencing calculations",
+      "description": "Create algorithms for area boundary detection",
+      "acceptance_criteria": [
+        "Point-in-polygon algorithm",
+        "Circle boundary detection",
+        "Entry/exit event generation",
+        "Performance optimized",
+        "Comprehensive test coverage"
+      ],
+      "estimated_hours": 4,
+      "dependencies": ["phase1-alert-2"],
+      "prd_section": "4.2",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase2-area-2",
+      "phase": "2.1",
+      "type": "feature",
+      "priority": 65,
+      "status": "blocked",
+      "title": "Build area drawing UI",
+      "description": "Interactive map tools for defining monitoring areas",
+      "acceptance_criteria": [
+        "Polygon drawing tool",
+        "Circle drawing tool",
+        "Area editing capabilities",
+        "Visual feedback during drawing",
+        "Touch-friendly controls"
+      ],
+      "estimated_hours": 5,
+      "dependencies": ["phase2-area-1", "phase5-map-1"],
+      "prd_section": "4.2",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase2-fleet-1",
+      "phase": "2.2",
+      "type": "feature",
+      "priority": 65,
+      "status": "blocked",
+      "title": "Create fleet tracking dashboard",
+      "description": "Centralized view for monitoring multiple vessels",
+      "acceptance_criteria": [
+        "Fleet vessel grid view",
+        "Fleet health indicators",
+        "Aggregated statistics",
+        "Real-time updates",
+        "Responsive design"
+      ],
+      "estimated_hours": 6,
+      "dependencies": ["phase1-vessel-2"],
+      "prd_section": "4.3",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase3-compliance-1",
+      "phase": "3.1",
+      "type": "feature",
+      "priority": 60,
+      "status": "blocked",
+      "title": "Implement compliance checking logic",
+      "description": "Automated compliance assessment algorithms",
+      "acceptance_criteria": [
+        "Sanctions screening logic",
+        "Regulatory compliance checks",
+        "Risk scoring algorithm",
+        "All criteria from PRD",
+        "Comprehensive test suite"
+      ],
+      "estimated_hours": 5,
+      "dependencies": ["phase1-vessel-1"],
+      "prd_section": "5.1",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase3-compliance-2",
+      "phase": "3.1",
+      "type": "feature",
+      "priority": 55,
+      "status": "blocked",
+      "title": "Design compliance report PDF template",
+      "description": "Professional PDF layout for compliance reports",
+      "acceptance_criteria": [
+        "Professional design",
+        "All data fields included",
+        "Charts and visualizations",
+        "Printer-friendly format",
+        "Consistent branding"
+      ],
+      "estimated_hours": 3,
+      "dependencies": ["phase3-compliance-1"],
+      "prd_section": "5.1",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase3-chronology-1",
+      "phase": "3.2",
+      "type": "feature",
+      "priority": 55,
+      "status": "blocked",
+      "title": "Build timeline visualization component",
+      "description": "Interactive timeline for vessel history",
+      "acceptance_criteria": [
+        "Timeline renders events",
+        "Event filtering",
+        "Zoom and pan controls",
+        "Event detail expansion",
+        "Mobile responsive"
+      ],
+      "estimated_hours": 4,
+      "dependencies": ["phase1-vessel-1"],
+      "prd_section": "5.2",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase4-investigation-1",
+      "phase": "4.1",
+      "type": "feature",
+      "priority": 50,
+      "status": "blocked",
+      "title": "Create RFI submission form",
+      "description": "Request for Information form with validation",
+      "acceptance_criteria": [
+        "Multi-step form wizard",
+        "Field validation",
+        "File upload support",
+        "Progress tracking",
+        "Draft saving"
+      ],
+      "estimated_hours": 5,
+      "dependencies": ["phase1-vessel-1"],
+      "prd_section": "4.4",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase4-pricing-1",
+      "phase": "4.2",
+      "type": "feature",
+      "priority": 70,
+      "status": "ready",
+      "title": "Implement tiered pricing system",
+      "description": "Build Bronze/Silver/Gold/Platinum tier system",
+      "acceptance_criteria": [
+        "All tiers implemented",
+        "Discount calculations correct",
+        "Package benefits clear",
+        "Upgrade/downgrade flows",
+        "Tests for all scenarios"
+      ],
+      "estimated_hours": 4,
+      "dependencies": [],
+      "prd_section": "3.0",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase5-map-1",
+      "phase": "5.1",
+      "type": "feature",
+      "priority": 60,
+      "status": "ready",
+      "title": "Integrate mapping library",
+      "description": "Add Mapbox or Leaflet for interactive maps",
+      "acceptance_criteria": [
+        "Map library integrated",
+        "Basic map rendering",
+        "Zoom and pan controls",
+        "Mobile gestures work",
+        "Performance acceptable"
+      ],
+      "estimated_hours": 3,
+      "dependencies": [],
+      "prd_section": "UI",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase5-ux-1",
+      "phase": "5.2",
+      "type": "enhancement",
+      "priority": 50,
+      "status": "blocked",
+      "title": "Add comprehensive loading states",
+      "description": "Loading indicators for all async operations",
+      "acceptance_criteria": [
+        "All API calls show loading",
+        "Skeleton screens implemented",
+        "No UI jumps",
+        "Accessible loading announcements",
+        "Consistent patterns"
+      ],
+      "estimated_hours": 3,
+      "dependencies": ["phase1-vessel-1", "phase2-area-1"],
+      "prd_section": "UX",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase6-perf-1",
+      "phase": "6.1",
+      "type": "performance",
+      "priority": 40,
+      "status": "blocked",
+      "title": "Add React.memo optimization",
+      "description": "Optimize expensive components with memoization",
+      "acceptance_criteria": [
+        "Profile render performance",
+        "Identify expensive renders",
+        "Add React.memo appropriately",
+        "Verify performance gains",
+        "No functionality broken"
+      ],
+      "estimated_hours": 3,
+      "dependencies": ["phase5-ux-1"],
+      "prd_section": "Performance",
+      "source": "implementation-plan"
+    },
+    {
+      "id": "phase6-prod-1",
+      "phase": "6.2",
+      "type": "production",
+      "priority": 45,
+      "status": "blocked",
+      "title": "Integrate error tracking",
+      "description": "Add Sentry for production error monitoring",
+      "acceptance_criteria": [
+        "Sentry SDK integrated",
+        "Errors captured with context",
+        "Source maps uploaded",
+        "User privacy respected",
+        "Alerts configured"
+      ],
+      "estimated_hours": 2,
+      "dependencies": ["phase5-ux-1"],
+      "prd_section": "Monitoring",
+      "source": "implementation-plan"
+    }
+  ],
+  "priority_levels": {
+    "100": "Test failures / Breaking changes",
+    "95": "Security vulnerabilities",
+    "90": "Critical bugs / Data loss risk",
+    "85": "Coverage gaps on critical paths",
+    "80": "Core features from PRD",
+    "75": "Features that unblock others",
+    "70": "Documentation / Architecture fixes",
+    "65": "Secondary features",
+    "60": "Nice-to-have features",
+    "55": "Reporting features",
+    "50": "UI enhancements",
+    "45": "Production readiness",
+    "40": "Performance optimizations",
+    "30": "Cosmetic improvements"
+  },
+  "task_sources": {
+    "implementation-plan": "From IMPLEMENTATION-PLAN.md",
+    "auditor": "Generated by Analysis Auditor",
+    "test-sentinel": "Generated by Test Coverage Sentinel",
+    "doc-guardian": "Generated by Documentation Guardian",
+    "visual-qa": "Generated by Visual QA Agent",
+    "orchestrator": "Created by Planning Orchestrator"
+  }
+}

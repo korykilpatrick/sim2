@@ -1,0 +1,3 @@
+# This directory contains system-wide events
+# Events trigger cross-agent actions
+# Files are named: [event-type]-[timestamp].json

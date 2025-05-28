@@ -1,0 +1,199 @@
+{
+  "decomposition_patterns": {
+    "wizard": {
+      "pattern": "Multi-step form wizard",
+      "components": [
+        {
+          "name": "wizard-container",
+          "description": "Main wizard container with step management",
+          "effort_hours": 2,
+          "dependencies": []
+        },
+        {
+          "name": "step-components",
+          "description": "Individual step components",
+          "effort_hours": 2,
+          "dependencies": ["wizard-container"],
+          "per_step": true
+        },
+        {
+          "name": "navigation-logic",
+          "description": "Step navigation and validation",
+          "effort_hours": 2,
+          "dependencies": ["wizard-container", "step-components"]
+        },
+        {
+          "name": "state-management",
+          "description": "Wizard state and persistence",
+          "effort_hours": 1,
+          "dependencies": ["wizard-container"]
+        },
+        {
+          "name": "integration-tests",
+          "description": "Full wizard flow tests",
+          "effort_hours": 2,
+          "dependencies": ["all"]
+        }
+      ]
+    },
+    "crud-feature": {
+      "pattern": "CRUD operations for entity",
+      "components": [
+        {
+          "name": "data-model",
+          "description": "TypeScript types and validation",
+          "effort_hours": 0.5,
+          "dependencies": []
+        },
+        {
+          "name": "api-service",
+          "description": "API service layer",
+          "effort_hours": 1,
+          "dependencies": ["data-model"]
+        },
+        {
+          "name": "store",
+          "description": "State management store",
+          "effort_hours": 1.5,
+          "dependencies": ["data-model", "api-service"]
+        },
+        {
+          "name": "list-component",
+          "description": "List view with filtering",
+          "effort_hours": 2,
+          "dependencies": ["store"]
+        },
+        {
+          "name": "form-component",
+          "description": "Create/edit form",
+          "effort_hours": 2,
+          "dependencies": ["store"]
+        },
+        {
+          "name": "detail-component",
+          "description": "Detail view",
+          "effort_hours": 1,
+          "dependencies": ["store"]
+        }
+      ]
+    },
+    "real-time-feature": {
+      "pattern": "WebSocket real-time updates",
+      "components": [
+        {
+          "name": "websocket-events",
+          "description": "Event type definitions",
+          "effort_hours": 0.5,
+          "dependencies": []
+        },
+        {
+          "name": "websocket-handler",
+          "description": "WebSocket message handler",
+          "effort_hours": 1,
+          "dependencies": ["websocket-events"]
+        },
+        {
+          "name": "state-sync",
+          "description": "Real-time state synchronization",
+          "effort_hours": 1.5,
+          "dependencies": ["websocket-handler"]
+        },
+        {
+          "name": "ui-updates",
+          "description": "UI components for real-time data",
+          "effort_hours": 2,
+          "dependencies": ["state-sync"]
+        },
+        {
+          "name": "connection-handling",
+          "description": "Reconnection and error handling",
+          "effort_hours": 1,
+          "dependencies": ["websocket-handler"]
+        }
+      ]
+    },
+    "report-generation": {
+      "pattern": "PDF report generation",
+      "components": [
+        {
+          "name": "data-aggregation",
+          "description": "Collect and prepare report data",
+          "effort_hours": 1.5,
+          "dependencies": []
+        },
+        {
+          "name": "report-template",
+          "description": "PDF template design",
+          "effort_hours": 2,
+          "dependencies": []
+        },
+        {
+          "name": "pdf-generator",
+          "description": "PDF generation service",
+          "effort_hours": 1.5,
+          "dependencies": ["report-template", "data-aggregation"]
+        },
+        {
+          "name": "report-ui",
+          "description": "Report request and preview UI",
+          "effort_hours": 2,
+          "dependencies": ["pdf-generator"]
+        },
+        {
+          "name": "report-storage",
+          "description": "Report caching and history",
+          "effort_hours": 1,
+          "dependencies": ["pdf-generator"]
+        }
+      ]
+    }
+  },
+  "atomic_task_templates": {
+    "component": {
+      "files_to_create": [
+        "src/[path]/[name].tsx",
+        "src/[path]/[name].test.tsx"
+      ],
+      "test_requirements": [
+        "Component renders without errors",
+        "Props are handled correctly",
+        "User interactions work",
+        "Accessibility requirements met",
+        "Error states handled"
+      ]
+    },
+    "service": {
+      "files_to_create": [
+        "src/services/[name].ts",
+        "src/services/[name].test.ts"
+      ],
+      "test_requirements": [
+        "All methods have tests",
+        "Error handling tested",
+        "Edge cases covered",
+        "Mocking external dependencies",
+        "Return types validated"
+      ]
+    },
+    "store": {
+      "files_to_create": [
+        "src/stores/[name]Store.ts",
+        "src/stores/[name]Store.test.ts"
+      ],
+      "test_requirements": [
+        "State initialization",
+        "All actions tested",
+        "Computed values correct",
+        "Persistence if applicable",
+        "Subscriptions work"
+      ]
+    }
+  },
+  "effort_modifiers": {
+    "first_instance": 1.5,
+    "complex_logic": 1.3,
+    "external_integration": 1.4,
+    "performance_critical": 1.2,
+    "security_sensitive": 1.3
+  }
+}

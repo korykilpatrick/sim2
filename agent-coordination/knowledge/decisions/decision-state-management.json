@@ -1,0 +1,97 @@
+{
+  "decision_id": "state-management-library",
+  "title": "State Management Library Selection",
+  "date": "2025-05-28",
+  "context": {
+    "problem": "Need centralized state management for cart, auth, and credits",
+    "constraints": [
+      "Must have TypeScript support",
+      "Need simple API for team adoption",
+      "Should support persistence",
+      "Must work with React 18"
+    ],
+    "stakeholders": ["Development team"]
+  },
+  "options_evaluated": [
+    {
+      "option": "Redux Toolkit",
+      "pros": [
+        "Industry standard",
+        "Excellent DevTools",
+        "Time-travel debugging",
+        "Large ecosystem"
+      ],
+      "cons": [
+        "More boilerplate",
+        "Steeper learning curve",
+        "Overkill for current needs"
+      ]
+    },
+    {
+      "option": "Zustand",
+      "pros": [
+        "Minimal boilerplate",
+        "Simple API",
+        "Built-in TypeScript support",
+        "Small bundle size (8kb)",
+        "No providers needed"
+      ],
+      "cons": [
+        "Smaller ecosystem",
+        "Less mature than Redux",
+        "Fewer middleware options"
+      ]
+    },
+    {
+      "option": "Context API + useReducer",
+      "pros": [
+        "No external dependencies",
+        "Native React solution",
+        "Familiar patterns"
+      ],
+      "cons": [
+        "Performance issues with frequent updates",
+        "More boilerplate for complex state",
+        "No built-in DevTools"
+      ]
+    }
+  ],
+  "decision": {
+    "chosen": "Zustand",
+    "rationale": [
+      "Simplest API reduces development time",
+      "TypeScript support is excellent",
+      "Small bundle size aligns with performance goals",
+      "Easy to onboard new developers",
+      "Can migrate to Redux later if needed"
+    ],
+    "implementation_notes": [
+      "Create separate stores per domain (auth, cart, etc)",
+      "Use immer for complex state updates",
+      "Add persistence middleware for cart",
+      "Document patterns in codebase"
+    ]
+  },
+  "success_criteria": [
+    "State updates are predictable",
+    "DevX is improved vs prop drilling",
+    "Bundle size increase < 10kb",
+    "New features use stores consistently"
+  ],
+  "outcome": {
+    "status": "successful",
+    "notes": "Zustand adoption was smooth, developers report improved productivity",
+    "metrics": {
+      "bundle_size_impact": "8.2kb",
+      "developer_satisfaction": "high",
+      "bugs_related_to_state": "reduced by 60%"
+    }
+  },
+  "lessons_learned": [
+    "Simple solutions often best for small teams",
+    "Good TypeScript support crucial for maintainability",
+    "Migration path important to consider upfront"
+  ],
+  "related_decisions": ["decision-cart-persistence", "decision-auth-storage"],
+  "tags": ["architecture", "state-management", "library-selection"]
+}

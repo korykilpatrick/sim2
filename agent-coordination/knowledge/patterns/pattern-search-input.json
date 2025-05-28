@@ -1,0 +1,45 @@
+{
+  "pattern_id": "search-input",
+  "name": "Search Input with Debounce",
+  "description": "Reusable search input pattern with debouncing and loading states",
+  "category": "ui-components",
+  "example_implementation": {
+    "component": "src/components/search/SearchInput.tsx",
+    "hook": "src/hooks/useDebounce.ts"
+  },
+  "code_template": {
+    "imports": [
+      "import { useState, useCallback } from 'react';",
+      "import { useDebounce } from '@/hooks/useDebounce';",
+      "import { Search, X } from 'lucide-react';",
+      "import { Input } from '@/components/forms/Input';"
+    ],
+    "component_structure": "const SearchInput = ({ onSearch, placeholder, loading }) => { ... }",
+    "key_features": [
+      "Debounced search (500ms default)",
+      "Clear button when has value",
+      "Loading spinner during search",
+      "Keyboard shortcuts (Esc to clear)",
+      "Accessible with ARIA labels"
+    ]
+  },
+  "test_patterns": [
+    "Test debounce behavior",
+    "Test clear functionality",
+    "Test loading state display",
+    "Test keyboard interactions",
+    "Test accessibility"
+  ],
+  "common_mistakes": [
+    "Not debouncing API calls",
+    "Missing loading states",
+    "Not handling empty results",
+    "Forgetting accessibility"
+  ],
+  "usage_examples": ["VesselSearchBar", "ProductSearch", "AreaSearch"],
+  "dependencies": ["useDebounce hook", "Input component", "Icon library"],
+  "performance_notes": "Use React.memo if parent re-renders frequently",
+  "created_at": "2025-05-28T14:00:00Z",
+  "usage_count": 5,
+  "success_rate": 100
+}

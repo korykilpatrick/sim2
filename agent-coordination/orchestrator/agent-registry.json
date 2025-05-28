@@ -1,0 +1,77 @@
+{
+  "agents": {
+    "orchestrator": {
+      "id": "orchestrator",
+      "type": "orchestrator",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": ["task-assignment", "merge-control", "system-monitoring"],
+      "current_task": null
+    },
+    "impl-1": {
+      "id": "impl-1",
+      "type": "implementation",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": ["feature-implementation", "test-writing", "bug-fixing"],
+      "current_task": null
+    },
+    "impl-2": {
+      "id": "impl-2",
+      "type": "implementation",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": ["feature-implementation", "test-writing", "bug-fixing"],
+      "current_task": null
+    },
+    "impl-3": {
+      "id": "impl-3",
+      "type": "implementation",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": ["feature-implementation", "test-writing", "bug-fixing"],
+      "current_task": null
+    },
+    "auditor": {
+      "id": "auditor",
+      "type": "analysis",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": [
+        "code-analysis",
+        "pattern-checking",
+        "security-scanning"
+      ],
+      "current_task": null
+    },
+    "doc-guardian": {
+      "id": "doc-guardian",
+      "type": "documentation",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": ["doc-verification", "prd-alignment", "api-docs"],
+      "current_task": null
+    },
+    "test-sentinel": {
+      "id": "test-sentinel",
+      "type": "testing",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": [
+        "coverage-monitoring",
+        "test-generation",
+        "quality-gates"
+      ],
+      "current_task": null
+    },
+    "visual-qa": {
+      "id": "visual-qa",
+      "type": "visual",
+      "status": "starting",
+      "last_heartbeat": null,
+      "capabilities": ["visual-testing", "accessibility", "performance"],
+      "current_task": null
+    }
+  },
+  "last_updated": "2025-05-28T12:00:00Z"
+}
