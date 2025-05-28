@@ -54,40 +54,40 @@ sleep 1
 
 # Launch the Orchestrator (the brain)
 echo "🧠 Starting Planning Orchestrator..."
-create_tab "Orchestrator" "echo '🧠 Orchestrator starting...' && echo 'Reading system state and task manifest...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/ORCHESTRATOR.md --system 'You are the Planning Orchestrator. Start by reading ATOMIC-TASKS.json and begin your 10-second work loop immediately.'"
+create_tab "Orchestrator" "echo '🧠 Orchestrator starting...' && echo 'Reading system state and task manifest...' && echo '' && claude code . --prompt-file agent-coordination/prompts/ORCHESTRATOR.md --system 'You are the Planning Orchestrator. Start by reading ATOMIC-TASKS.json and begin your 10-second work loop immediately.'"
 sleep 2
 
 # Launch Implementation Agents
 echo "💻 Starting Implementation Agent 1..."
-create_tab "Impl-1" "echo '💻 Implementation Agent 1 starting...' && echo 'Waiting for task assignments...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/IMPLEMENTATION.md --system 'You are Implementation Agent 1 (impl-1). Check your inbox at /agent-coordination/agents/impl-1/inbox/ every 30 seconds for tasks.'"
+create_tab "Impl-1" "echo '💻 Implementation Agent 1 starting...' && echo 'Waiting for task assignments...' && echo '' && claude code . --prompt-file agent-coordination/prompts/IMPLEMENTATION.md --system 'You are Implementation Agent 1 (impl-1). Check your inbox at /agent-coordination/agents/impl-1/inbox/ every 30 seconds for tasks.'"
 sleep 1
 
 echo "💻 Starting Implementation Agent 2..."
-create_tab "Impl-2" "echo '💻 Implementation Agent 2 starting...' && echo 'Waiting for task assignments...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/IMPLEMENTATION.md --system 'You are Implementation Agent 2 (impl-2). Check your inbox at /agent-coordination/agents/impl-2/inbox/ every 30 seconds for tasks.'"
+create_tab "Impl-2" "echo '💻 Implementation Agent 2 starting...' && echo 'Waiting for task assignments...' && echo '' && claude code . --prompt-file agent-coordination/prompts/IMPLEMENTATION.md --system 'You are Implementation Agent 2 (impl-2). Check your inbox at /agent-coordination/agents/impl-2/inbox/ every 30 seconds for tasks.'"
 sleep 1
 
 echo "💻 Starting Implementation Agent 3..."
-create_tab "Impl-3" "echo '💻 Implementation Agent 3 starting...' && echo 'Waiting for task assignments...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/IMPLEMENTATION.md --system 'You are Implementation Agent 3 (impl-3). Check your inbox at /agent-coordination/agents/impl-3/inbox/ every 30 seconds for tasks.'"
+create_tab "Impl-3" "echo '💻 Implementation Agent 3 starting...' && echo 'Waiting for task assignments...' && echo '' && claude code . --prompt-file agent-coordination/prompts/IMPLEMENTATION.md --system 'You are Implementation Agent 3 (impl-3). Check your inbox at /agent-coordination/agents/impl-3/inbox/ every 30 seconds for tasks.'"
 sleep 1
 
 # Launch Analysis Auditor
 echo "🔍 Starting Analysis Auditor..."
-create_tab "Auditor" "echo '🔍 Analysis Auditor starting...' && echo 'Beginning 8-pass code analysis...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/AUDITOR.md --system 'You are the Analysis Auditor. Start your continuous analysis loop, prioritizing recently changed files.'"
+create_tab "Auditor" "echo '🔍 Analysis Auditor starting...' && echo 'Beginning 8-pass code analysis...' && echo '' && claude code . --prompt-file agent-coordination/prompts/AUDITOR.md --system 'You are the Analysis Auditor. Start your continuous analysis loop, prioritizing recently changed files.'"
 sleep 1
 
 # Launch Documentation Guardian
 echo "📚 Starting Documentation Guardian..."
-create_tab "Doc-Guardian" "echo '📚 Documentation Guardian starting...' && echo 'Mapping code to documentation...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/DOC-GUARDIAN.md --system 'You are the Documentation Guardian. Begin verifying code-documentation alignment.'"
+create_tab "Doc-Guardian" "echo '📚 Documentation Guardian starting...' && echo 'Mapping code to documentation...' && echo '' && claude code . --prompt-file agent-coordination/prompts/DOC-GUARDIAN.md --system 'You are the Documentation Guardian. Begin verifying code-documentation alignment.'"
 sleep 1
 
 # Launch Test Coverage Sentinel
 echo "🛡️ Starting Test Coverage Sentinel..."
-create_tab "Test-Sentinel" "echo '🛡️ Test Coverage Sentinel starting...' && echo 'Monitoring test coverage...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/TEST-SENTINEL.md --system 'You are the Test Coverage Sentinel. Begin monitoring coverage and block any drops.'"
+create_tab "Test-Sentinel" "echo '🛡️ Test Coverage Sentinel starting...' && echo 'Monitoring test coverage...' && echo '' && claude code . --prompt-file agent-coordination/prompts/TEST-SENTINEL.md --system 'You are the Test Coverage Sentinel. Begin monitoring coverage and block any drops.'"
 sleep 1
 
 # Launch Visual QA Agent
 echo "👁️ Starting Visual QA Agent..."
-create_tab "Visual-QA" "echo '👁️ Visual QA Agent starting...' && echo 'Preparing Puppeteer for visual testing...' && echo '' && claude --no-conversation-file code . --prompt-file agent-coordination/prompts/VISUAL-QA.md --system 'You are the Visual QA Agent. Begin visual testing of UI components using Puppeteer.'"
+create_tab "Visual-QA" "echo '👁️ Visual QA Agent starting...' && echo 'Preparing Puppeteer for visual testing...' && echo '' && claude code . --prompt-file agent-coordination/prompts/VISUAL-QA.md --system 'You are the Visual QA Agent. Begin visual testing of UI components using Puppeteer.'"
 sleep 1
 
 # Final message
