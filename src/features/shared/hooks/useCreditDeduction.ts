@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { useAuthStore } from '@/features/auth/services/authStore'
-import { creditService } from '@/features/credits'
+import { creditService, useCreditStore } from '@/features/credits'
 import type { ServiceType } from '@/features/shared/types'
 
 interface CreditReservation {
@@ -104,8 +103,8 @@ interface DeductionResult {
  * ```
  */
 export function useCreditDeduction() {
-  const updateCredits = useAuthStore((state) => state.updateCredits)
-  const user = useAuthStore((state) => state.user)
+  const balance = useCreditStore((state) => state.balance)
+  const updateBalance = useCreditStore((state) => state.updateBalance)
   const [isDeducting, setIsDeducting] = useState(false)
   const [reservations] = useState(new Map<string, CreditReservation>())
 
@@ -116,8 +115,7 @@ export function useCreditDeduction() {
     setIsDeducting(true)
     try {
       // Check sufficient balance first
-      const currentBalance = user?.credits || 0
-      if (currentBalance < amount) {
+      if (balance < amount) {
         throw new Error('Insufficient credits')
       }
 
@@ -129,8 +127,8 @@ export function useCreditDeduction() {
         serviceType: 'vessel_tracking' as ServiceType, // Generic service type for now
       })
 
-      // Update local auth store with new balance
-      updateCredits(response.newBalance)
+      // Update credit store with new balance
+      updateBalance(response.newBalance)
 
       return {
         success: true,

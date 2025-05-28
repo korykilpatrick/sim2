@@ -1,6 +1,6 @@
 # SIM Implementation Plan - TDD Frontend Completion
 
-_Last Updated: May 26, 2025_
+_Last Updated: May 28, 2025_
 
 ## Overview
 
@@ -13,6 +13,49 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 3. **PRD Alignment**: Every feature must match PRD specifications exactly
 4. **No Backwards Compatibility**: We have zero users - always choose the ideal solution
 5. **Mock Everything**: Build against comprehensive mock data until real backend available
+
+## Phase 0: Critical Architecture Fixes (IMMEDIATE - 2 Days)
+
+_Added based on Codebase Quality Assessment findings_
+
+### 0.1 State Management Consolidation (Day 1) ✅ COMPLETED
+
+**Goal**: Fix credit balance triple-state issue
+
+#### Tasks:
+
+1. [x] Complete migration from authStore.credits to creditStore
+   - [x] Remove credits field from User type
+   - [x] Update all components using authStore.user.credits
+   - [x] Write tests for credit state synchronization
+2. [x] Initialize WebSocket credit sync in App.tsx
+   - [x] Call initializeCreditSync() on app startup (already in place)
+   - [x] Test WebSocket credit updates
+3. [x] Document state management architecture
+   - [x] Single source of truth: creditStore
+   - [x] React Query for server cache only
+   - [x] Clear update paths
+
+**Completed on 2025-05-28**: All credit state management consolidated to creditStore
+
+### 0.2 Security & Architecture Quick Fixes (Day 2)
+
+**Goal**: Address security concerns and clean architecture
+
+#### Tasks:
+
+1. [ ] Security hardening
+   - [ ] Remove JWT_SECRET from .env (use env-specific secrets)
+   - [ ] Move user session data from localStorage to memory/httpOnly cookies
+   - [ ] Enable CSRF protection for auth endpoints
+2. [ ] Architecture cleanup
+   - [ ] Remove empty directories (assets/fonts, icons, images)
+   - [ ] Remove empty mocks directory
+   - [ ] Consolidate page organization (choose one pattern)
+3. [ ] Production readiness
+   - [ ] Remove drop_console from vite.config.ts
+   - [ ] Add basic error boundary setup
+   - [ ] Add TODO for future monitoring setup
 
 ## Phase 1: Core Monitoring Services (Week 1-2)
 
@@ -41,7 +84,15 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
    - [x] Real-time pricing updates with all discounts
    - [x] 27 tests passing (100% coverage)
 6. [ ] Build tracking configuration wizard
+   - [ ] Step 1: Vessel selection with search
+   - [ ] Step 2: Criteria selection with descriptions
+   - [ ] Step 3: Duration configuration with pricing
+   - [ ] Step 4: Review and confirmation
+   - [ ] Integration with creditStore for payment
 7. [ ] Add real-time status updates via WebSocket
+   - [ ] Vessel position updates
+   - [ ] Alert notifications
+   - [ ] Tracking status changes
 
 #### Success Criteria:
 
@@ -49,6 +100,7 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 - Pricing updates based on duration and criteria
 - Bulk discounts applied correctly
 - All criteria types from PRD supported
+- Real-time updates working
 
 ### 1.2 Alert System Infrastructure
 
@@ -231,7 +283,7 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 4. [ ] Add guided tours for complex features
 5. [ ] Create contextual help system
 6. [ ] Implement keyboard shortcuts
-7. [ ] Add accessibility features
+7. [ ] Add accessibility features (ARIA labels, keyboard nav)
 
 ## Phase 6: Performance & Production Readiness (Week 6+)
 
@@ -245,21 +297,21 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 2. [ ] Implement virtual scrolling for large lists
 3. [ ] Add service workers for offline support
 4. [ ] Optimize bundle sizes
-5. [ ] Implement lazy loading for all routes
-6. [ ] Add request caching strategies
-7. [ ] Profile and optimize render performance
+5. [ ] Profile and optimize render performance
+6. [ ] Add image optimization
+7. [ ] Implement proper memoization strategies
 
-### 6.2 Observability & Analytics
+### 6.2 Production Essentials
 
-**Goal**: Full visibility into user behavior and system health
+**Goal**: Full production readiness with monitoring
 
 #### Tasks:
 
 1. [ ] Integrate error tracking (Sentry)
-2. [ ] Add performance monitoring
-3. [ ] Implement user analytics
-4. [ ] Create custom business metrics
-5. [ ] Add feature usage tracking
+2. [ ] Add performance monitoring (Web Vitals)
+3. [ ] Implement user analytics (privacy-respecting)
+4. [ ] Add basic internationalization structure
+5. [ ] Create feature flags system
 6. [ ] Build admin dashboard
 7. [ ] Implement A/B testing framework
 
@@ -304,11 +356,11 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 
 ### Code Quality
 
-- [ ] 90%+ test coverage
+- [ ] 85%+ test coverage (current: ~80%)
 - [ ] 0 ESLint errors/warnings
 - [ ] 0 TypeScript errors
-- [ ] 100% JSDoc coverage
 - [ ] All features match PRD exactly
+- [ ] No `any` types in production code
 
 ### Performance
 
@@ -327,13 +379,13 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 
 ## Next Steps
 
-1. **Today**: Start with Vessel Tracking Service tests
-2. **This Week**: Complete Phase 1 (Core Monitoring)
-3. **Week 2**: Complete Phase 2 (Area & Fleet)
-4. **Week 3**: Complete Phase 3 (Reporting)
-5. **Week 4**: Complete Phase 4 (Advanced Services)
-6. **Week 5**: Complete Phase 5 (Visualization & UX)
-7. **Week 6+**: Performance & Production Readiness
+1. **Immediate**: Complete Phase 0 critical fixes (2 days)
+2. **This Week**: Complete vessel tracking wizard (Phase 1.1)
+3. **Week 2**: Complete alert system and start area monitoring
+4. **Week 3**: Complete fleet services and start reporting
+5. **Week 4**: Complete reporting and start investigations
+6. **Week 5**: Complete advanced services and start visualization
+7. **Week 6+**: Performance optimization and production readiness
 
 ## Notes
 
@@ -342,3 +394,4 @@ This plan outlines the path to complete a fully implemented frontend for the SIM
 - Update this plan after each session
 - Maintain zero tech debt throughout
 - Ask for real backend API specs when available
+- Run visual tests with Puppeteer after any UI changes

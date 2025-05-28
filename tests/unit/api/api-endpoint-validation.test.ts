@@ -24,7 +24,6 @@ describe('API Endpoint Validation Integration', () => {
             phone: '+1234567890',
             avatar: null,
             role: 'user',
-            credits: 1000,
             preferences: {
               theme: 'light',
               notifications: {
@@ -36,8 +35,6 @@ describe('API Endpoint Validation Integration', () => {
             },
             subscription: {
               plan: 'professional',
-              credits: 1000,
-              creditsUsed: 0,
               renewalDate: new Date().toISOString(),
             },
             createdAt: new Date().toISOString(),
@@ -98,7 +95,6 @@ describe('API Endpoint Validation Integration', () => {
           phone: '+1234567890',
           avatar: 'https://example.com/avatar.jpg',
           role: 'admin',
-          credits: 2500,
           preferences: {
             theme: 'dark',
             notifications: {
@@ -110,8 +106,6 @@ describe('API Endpoint Validation Integration', () => {
           },
           subscription: {
             plan: 'enterprise',
-            credits: 10000,
-            creditsUsed: 7500,
             renewalDate: new Date().toISOString(),
           },
           createdAt: new Date().toISOString(),

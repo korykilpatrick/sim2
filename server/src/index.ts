@@ -6,6 +6,9 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import rateLimit from 'express-rate-limit'
 
+// Import configuration - this will validate JWT_SECRET on startup
+import { JWT_SECRET, NODE_ENV, PORT } from './config'
+
 // Import routes
 import authRoutes from './routes/auth'
 import vesselsRoutes from './routes/vessels'
@@ -118,7 +121,14 @@ app.use(
 )
 
 // Start server
-const PORT = process.env.PORT || 3001
 httpServer.listen(PORT, () => {
-  // Server started
+  console.log(`🚀 Server running on port ${PORT}`)
+  console.log(`🔧 Environment: ${NODE_ENV}`)
+  console.log(`🔐 JWT validation: ${JWT_SECRET ? 'Configured' : 'Missing'}`)
+  
+  if (NODE_ENV === 'production') {
+    console.log('🏭 Running in production mode')
+  } else {
+    console.log('⚠️  Running in development mode - do not use in production!')
+  }
 })

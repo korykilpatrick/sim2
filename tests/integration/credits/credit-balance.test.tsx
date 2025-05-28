@@ -204,9 +204,9 @@ describe('Credit Balance Integration Tests', () => {
         expect(result.current.balance).toBe(1000)
       })
 
-      // Check auth store is updated
+      // Check auth store is NOT updated with credits (credits are in creditStore only)
       const authStore = useAuthStore.getState()
-      expect(authStore.user?.credits).toBe(1000)
+      expect(authStore.user).not.toHaveProperty('credits')
     })
 
     it('should handle unauthenticated state', async () => {

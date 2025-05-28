@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom'
 import { formatPrice } from '@/utils/formatPrice'
 import { NotificationCenter } from '@/features/notifications'
 import { ConnectionIndicator } from '@/components/feedback'
+import { useCredits } from '@/features/credits'
 
 interface HeaderProps {
   onMenuClick?: () => void
 }
 
 export default function Header({ onMenuClick }: HeaderProps) {
-  const { user, isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth()
+  const { balance } = useCredits()
 
   return (
     <header className="sticky top-0 z-40 bg-dark-500 px-4 py-4">
@@ -34,14 +36,14 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
         <div className="flex items-center gap-4">
           {/* Credit Balance */}
-          {isAuthenticated && user && (
+          {isAuthenticated && (
             <Link
               to="/credits"
               className="flex items-center gap-2 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-md transition-colors"
             >
               <Coins className="h-4 w-4 text-synmax-500" />
               <span className="text-sm font-medium text-white">
-                {formatPrice(user.credits)} Credits
+                {formatPrice(balance)} Credits
               </span>
             </Link>
           )}

@@ -23,10 +23,6 @@ export interface UserPreferences {
 export interface UserSubscription {
   /** Subscription plan type */
   plan: 'free' | 'basic' | 'professional' | 'enterprise'
-  /** Total available credits */
-  credits: number
-  /** Credits used in current period */
-  creditsUsed: number
   /** ISO date string for subscription renewal */
   renewalDate: string
 }
@@ -51,11 +47,6 @@ export interface User {
   avatar?: string
   /** User's role determining access permissions */
   role: 'user' | 'admin'
-  /**
-   * Available credits for vessel tracking
-   * @deprecated Use creditStore for credit balance - this field will be removed in v2.0
-   */
-  credits: number
   /** User preferences */
   preferences?: UserPreferences
   /** Subscription information */

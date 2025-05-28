@@ -9,7 +9,6 @@ export const mockUsers = [
     phone: '+1-555-0123',
     avatar: null,
     role: 'user' as const,
-    credits: 1000,
     preferences: {
       theme: 'light' as const,
       notifications: {
@@ -21,8 +20,6 @@ export const mockUsers = [
     },
     subscription: {
       plan: 'professional' as const,
-      credits: 1000,
-      creditsUsed: 245,
       renewalDate: new Date(
         Date.now() + 30 * 24 * 60 * 60 * 1000,
       ).toISOString(),

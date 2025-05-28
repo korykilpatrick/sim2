@@ -115,7 +115,7 @@ export function CreditsPage() {
       type: 'purchase',
       description: `Purchased ${creditsAdded} credits`,
       amount: creditsAdded,
-      balance: (user?.credits || 0) + creditsAdded,
+      balance: balance + creditsAdded,
       createdAt: new Date().toISOString(),
     }
     setMockTransactions([newTransaction, ...mockTransactions])

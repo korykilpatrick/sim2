@@ -16,10 +16,12 @@ import { useToast } from '@/hooks/useToast'
 import { useAuthStore, profileService } from '@/features/auth/services'
 import { validation } from '@/services/validation'
 import type { User } from '@/features/auth/types'
+import { useCredits } from '@/features/credits'
 
 export default function ProfilePage() {
   const queryClient = useQueryClient()
   const { user, updateUser } = useAuthStore()
+  const { balance, lifetimeCredits } = useCredits()
   const { showToast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState<Partial<User>>({})
@@ -307,11 +309,10 @@ export default function ProfilePage() {
               <div>
                 <dt className="text-sm text-gray-500">Credits Available</dt>
                 <dd className="text-lg font-semibold text-gray-900">
-                  {currentUser.subscription.credits -
-                    currentUser.subscription.creditsUsed}
+                  {balance}
                   <span className="text-sm font-normal text-gray-500">
                     {' '}
-                    / {currentUser.subscription.credits}
+                    / {lifetimeCredits} lifetime
                   </span>
                 </dd>
               </div>

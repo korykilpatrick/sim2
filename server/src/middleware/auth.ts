@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import { config } from '../config'
+import { JWT_SECRET } from '../config'
 
 // Extend Express Request type to include user
 declare module 'express' {
@@ -36,7 +36,7 @@ export const authenticateToken = (
   }
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret) as { userId: string }
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string }
     req.user = { userId: decoded.userId }
     next()
   } catch (error) {

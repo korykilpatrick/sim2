@@ -1,13 +1,18 @@
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
 import { User } from '../types/auth'
 
 /**
- * Zustand store interface for authentication state management.
- * Note: Tokens are stored in httpOnly cookies for security.
+ * Secure authentication store that keeps user data in memory only.
+ * Session persistence is handled by httpOnly cookies on the server.
+ * 
+ * Security features:
+ * - No localStorage/sessionStorage usage (prevents XSS attacks)
+ * - Sensitive data filtering (removes fields that shouldn't be client-side)
+ * - Memory-only storage (data cleared on page refresh)
+ * - Session validation through server API calls
  */
 interface AuthStore {
-  /** Currently authenticated user data */
+  /** Currently authenticated user data (sanitized) */
   user: User | null
   /** Whether a user is currently authenticated */
   isAuthenticated: boolean
@@ -15,18 +20,42 @@ interface AuthStore {
   setAuth: (user: User) => void
   /** Updates current user data partially */
   updateUser: (user: Partial<User>) => void
-  /**
-   * Updates user credit balance
-   * @deprecated Use creditStore.updateBalance() instead - will be removed in v2.0
-   */
-  updateCredits: (credits: number) => void
   /** Clears all authentication data */
   logout: () => void
 }
 
 /**
- * Global authentication state store with persistence.
- * Stores only user data in localStorage - tokens are in httpOnly cookies.
+ * List of fields that should never be stored client-side
+ */
+const SENSITIVE_FIELDS = [
+  'passwordHash',
+  'password',
+  'apiKey',
+  'apiSecret',
+  'refreshToken',
+  'accessToken',
+  'sessionToken',
+  'secretKey',
+  'privateKey',
+] as const
+
+/**
+ * Sanitizes user data by removing sensitive fields
+ */
+function sanitizeUserData<T extends Record<string, any>>(data: T): T {
+  const sanitized = { ...data }
+  
+  // Remove any sensitive fields
+  SENSITIVE_FIELDS.forEach(field => {
+    delete (sanitized as any)[field]
+  })
+  
+  return sanitized
+}
+
+/**
+ * Secure authentication state store - memory only, no persistence.
+ * Tokens are stored in httpOnly cookies for security.
  *
  * @example
  * // Access auth state
@@ -36,45 +65,33 @@ interface AuthStore {
  * const { setAuth, logout } = useAuthStore();
  * setAuth(userData);
  */
-export const useAuthStore = create<AuthStore>()(
-  persist(
-    (set) => ({
+export const useAuthStore = create<AuthStore>((set) => ({
+  user: null,
+  isAuthenticated: false,
+  
+  setAuth: (user) => {
+    // Sanitize user data before storing
+    const sanitizedUser = sanitizeUserData(user)
+    
+    set({
+      user: sanitizedUser,
+      isAuthenticated: true,
+    })
+  },
+  
+  updateUser: (userData) =>
+    set((state) => ({
+      user: state.user 
+        ? sanitizeUserData({ ...state.user, ...userData })
+        : null,
+    })),
+    
+  logout: () =>
+    set({
       user: null,
       isAuthenticated: false,
-      setAuth: (user) =>
-        set({
-          user,
-          isAuthenticated: true,
-        }),
-      updateUser: (userData) =>
-        set((state) => ({
-          user: state.user ? { ...state.user, ...userData } : null,
-        })),
-      updateCredits: (credits) => {
-        console.warn(
-          'authStore.updateCredits is deprecated. Use creditStore.updateBalance() instead.',
-        )
-        set((state) => ({
-          user: state.user ? { ...state.user, credits } : null,
-        }))
-      },
-      logout: () =>
-        set({
-          user: null,
-          isAuthenticated: false,
-        }),
     }),
-    {
-      name: 'auth-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-        // Don't persist tokens - they're in httpOnly cookies
-      }),
-    },
-  ),
-)
+}))
 
 /**
  * Selector functions for accessing specific parts of the auth store.
@@ -85,6 +102,28 @@ export const authSelectors = {
   isAuthenticated: (state: AuthStore) => state.isAuthenticated,
   setAuth: (state: AuthStore) => state.setAuth,
   updateUser: (state: AuthStore) => state.updateUser,
-  updateCredits: (state: AuthStore) => state.updateCredits,
   logout: (state: AuthStore) => state.logout,
+}
+
+/**
+ * Hook to initialize auth state from server on app load.
+ * This should be called in the root component to restore session.
+ */
+export async function initializeAuthFromServer(): Promise<void> {
+  try {
+    // Make API call to validate session and get user data
+    const response = await fetch('/api/v1/auth/me', {
+      credentials: 'include', // Include httpOnly cookies
+    })
+    
+    if (response.ok) {
+      const data = await response.json()
+      if (data.user) {
+        useAuthStore.getState().setAuth(data.user)
+      }
+    }
+  } catch (error) {
+    // Session invalid or network error - user remains logged out
+    // Silent fail - this is expected if user has no session
+  }
 }

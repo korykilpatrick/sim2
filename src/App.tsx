@@ -6,6 +6,7 @@ import ProtectedRoute from '@routes/ProtectedRoute'
 import { AppLayout } from '@components/layout'
 import { fetchCSRFToken } from '@utils/csrf'
 import { initializeCreditSync } from '@features/credits'
+import { initializeAuthFromServer } from '@features/auth/services/authStore'
 
 // Lazy load pages
 const HomePage = lazy(() => import('@pages/HomePage'))
@@ -86,6 +87,9 @@ function App() {
   useEffect(() => {
     // Fetch CSRF token
     fetchCSRFToken()
+
+    // Initialize auth state from server (httpOnly cookies)
+    initializeAuthFromServer()
 
     // Initialize credit sync with WebSocket
     initializeCreditSync()

@@ -6,9 +6,11 @@ import { productApi } from '@/features/products/services'
 import { productKeys } from '@/features/products/services/productKeys'
 import { getPricingDisplayText } from '@/utils/formatPrice'
 import { LowBalanceWarning } from '@/features/credits/components'
+import { useCredits } from '@/features/credits'
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const { balance } = useCredits()
   const navigate = useNavigate()
 
   // Fetch all products
@@ -72,7 +74,7 @@ export default function DashboardPage() {
         {/* Low Balance Warning */}
         {user && (
           <div className="mb-6">
-            <LowBalanceWarning currentBalance={user.credits} />
+            <LowBalanceWarning currentBalance={balance} />
           </div>
         )}
 

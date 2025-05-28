@@ -49,7 +49,6 @@ const UserSchema = z.object({
   phone: z.string().optional(),
   avatar: z.string().nullable(),
   role: z.enum(['user', 'admin']),
-  credits: z.number().min(0),
   preferences: z.object({
     theme: z.enum(['light', 'dark']),
     notifications: z.object({
@@ -61,8 +60,6 @@ const UserSchema = z.object({
   }),
   subscription: z.object({
     plan: z.enum(['basic', 'professional', 'enterprise']),
-    credits: z.number(),
-    creditsUsed: z.number(),
     renewalDate: z.string().datetime()
   }),
   createdAt: z.string().datetime(),
@@ -188,7 +185,6 @@ describe('API Contract Validation', () => {
             phone: '+1234567890',
             avatar: null,
             role: 'user',
-            credits: 1000,
             preferences: {
               theme: 'light',
               notifications: {
@@ -200,8 +196,6 @@ describe('API Contract Validation', () => {
             },
             subscription: {
               plan: 'professional',
-              credits: 1000,
-              creditsUsed: 0,
               renewalDate: new Date().toISOString()
             },
             createdAt: new Date().toISOString(),
@@ -234,7 +228,6 @@ describe('API Contract Validation', () => {
             name: 'New User',
             avatar: null,
             role: 'user',
-            credits: 500,
             preferences: {
               theme: 'light',
               notifications: {
@@ -246,7 +239,6 @@ describe('API Contract Validation', () => {
             },
             subscription: {
               plan: 'basic',
-              credits: 500,
               creditsUsed: 0,
               renewalDate: new Date().toISOString()
             },

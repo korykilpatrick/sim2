@@ -4,6 +4,12 @@ import crypto from 'crypto'
 /**
  * CSRF protection middleware using double-submit cookie pattern.
  * Generates and validates CSRF tokens for state-changing requests.
+ * 
+ * Security approach:
+ * - All state-changing requests (POST, PUT, DELETE) require CSRF tokens
+ * - This includes auth endpoints (login/register) to prevent CSRF attacks
+ * - Clients must first GET /api/v1/csrf-token before making auth requests
+ * - Token is stored in both cookie and must be sent in X-CSRF-Token header
  */
 
 // Generate a random CSRF token
@@ -40,11 +46,6 @@ export const validateCSRFToken = (
 ) => {
   // Skip CSRF check for safe methods
   if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
-    return next()
-  }
-
-  // Skip for auth endpoints (they don't have tokens yet)
-  if (req.path.includes('/auth/login') || req.path.includes('/auth/register')) {
     return next()
   }
 

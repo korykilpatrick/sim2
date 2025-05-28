@@ -99,7 +99,7 @@ class AnalyticsService {
    *   email: user.email,
    *   company: user.company,
    *   plan: 'premium',
-   *   creditsBalance: user.credits
+   *   creditsBalance: creditStore.balance
    * })
    * ```
    */

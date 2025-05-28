@@ -45,7 +45,6 @@ describe('useAuth', () => {
     name: 'Test User',
     company: 'Test Company',
     role: 'user',
-    credits: 1000,
     isActive: true,
     preferences: {
       theme: 'light',
@@ -58,8 +57,6 @@ describe('useAuth', () => {
     },
     subscription: {
       plan: 'professional',
-      credits: 5000,
-      creditsUsed: 1000,
       renewalDate: '2025-02-25',
     },
     createdAt: '2025-01-01T00:00:00Z',

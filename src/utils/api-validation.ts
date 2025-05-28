@@ -83,7 +83,6 @@ export const UserSchema = z.object({
   phone: z.string(),
   avatar: z.string().nullable(),
   role: z.enum(['user', 'admin', 'superadmin']),
-  credits: z.number().min(0),
   preferences: z.object({
     theme: z.enum(['light', 'dark']),
     notifications: z.object({
@@ -102,8 +101,6 @@ export const UserSchema = z.object({
   }),
   subscription: z.object({
     plan: z.enum(['basic', 'professional', 'enterprise']),
-    credits: z.number(),
-    creditsUsed: z.number(),
     renewalDate: z.string().datetime(),
   }),
   createdAt: z.string().datetime(),

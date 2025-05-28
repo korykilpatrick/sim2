@@ -21,7 +21,8 @@ export async function fetchCSRFToken(): Promise<void> {
       csrfToken = token
     }
   } catch (error) {
-    console.error('Failed to fetch CSRF token:', error)
+    // Silent fail - CSRF token will be retried on next request
+    // This is expected on first load before auth
   }
 }
 

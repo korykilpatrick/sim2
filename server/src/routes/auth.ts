@@ -2,7 +2,7 @@ import { Router } from 'express'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { mockUsers } from '../data/mockData'
-import { config } from '../config'
+import { JWT_SECRET } from '../config'
 
 const router = Router()
 
@@ -13,10 +13,10 @@ interface JWTPayload {
 
 // Helper to generate tokens
 const generateTokens = (userId: string) => {
-  const accessToken = jwt.sign({ userId }, config.jwtSecret, {
+  const accessToken = jwt.sign({ userId }, JWT_SECRET, {
     expiresIn: '1h',
   })
-  const refreshToken = jwt.sign({ userId }, config.jwtSecret, {
+  const refreshToken = jwt.sign({ userId }, JWT_SECRET, {
     expiresIn: '7d',
   })
   return { accessToken, refreshToken }
@@ -101,7 +101,6 @@ router.post('/register', async (req, res) => {
     phone: '',
     avatar: null,
     role: 'user' as const,
-    credits: 100, // Free credits on signup
     preferences: {
       theme: 'light' as const,
       notifications: {
@@ -113,8 +112,6 @@ router.post('/register', async (req, res) => {
     },
     subscription: {
       plan: 'professional' as const,
-      credits: 100,
-      creditsUsed: 0,
       renewalDate: new Date(
         Date.now() + 30 * 24 * 60 * 60 * 1000,
       ).toISOString(),
@@ -171,7 +168,7 @@ router.post('/refresh', async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, config.jwtSecret) as JWTPayload
+    const decoded = jwt.verify(refreshToken, JWT_SECRET) as JWTPayload
     const tokens = generateTokens(decoded.userId)
 
     // Set new httpOnly cookies
@@ -223,7 +220,7 @@ router.get('/me', async (req, res) => {
   const token = authHeader.substring(7)
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret) as JWTPayload
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
     const user = mockUsers.find((u) => u.id === decoded.userId)
 
     if (!user) {
@@ -275,7 +272,7 @@ router.put('/profile', async (req, res) => {
   const token = authHeader.substring(7)
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret) as JWTPayload
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
     const userIndex = mockUsers.findIndex((u) => u.id === decoded.userId)
 
     if (userIndex === -1) {
@@ -326,7 +323,7 @@ router.post('/change-password', async (req, res) => {
   const token = authHeader.substring(7)
 
   try {
-    const decoded = jwt.verify(token, config.jwtSecret) as JWTPayload
+    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
     const userIndex = mockUsers.findIndex((u) => u.id === decoded.userId)
 
     if (userIndex === -1) {

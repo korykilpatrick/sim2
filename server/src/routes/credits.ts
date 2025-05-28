@@ -16,6 +16,12 @@ interface CreditTransaction {
   referenceId?: string
 }
 
+// Credit balance store (separate from user data)
+const creditBalances = new Map<string, number>()
+
+// Initialize demo user with 1000 credits
+creditBalances.set('1', 1000)
+
 // Credit transaction history
 const creditTransactions = new Map<string, CreditTransaction[]>()
 
@@ -28,9 +34,11 @@ router.get('/balance', authenticateToken, (req, res) => {
     return res.status(404).json({ error: { message: 'User not found' } })
   }
 
+  const balance = creditBalances.get(userId) || 0
+  
   res.json({
-    current: user.credits,
-    lifetime: user.credits + 500, // Mock lifetime credits
+    current: balance,
+    lifetime: balance + 500, // Mock lifetime credits
     expiringCredits: {
       amount: 100,
       expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -74,8 +82,10 @@ router.post('/purchase', authenticateToken, (req, res) => {
     return res.status(400).json({ error: { message: 'Invalid package' } })
   }
 
-  // Update user credits
-  user.credits += selectedPackage.credits
+  // Update credit balance
+  const currentBalance = creditBalances.get(userId) || 0
+  const newBalance = currentBalance + selectedPackage.credits
+  creditBalances.set(userId, newBalance)
 
   // Add transaction
   const transaction: CreditTransaction = {
@@ -83,7 +93,7 @@ router.post('/purchase', authenticateToken, (req, res) => {
     type: 'purchase' as const,
     description: `Purchased ${selectedPackage.credits} credits`,
     amount: selectedPackage.credits,
-    balance: user.credits,
+    balance: newBalance,
     createdAt: new Date().toISOString(),
     packageId,
   }
@@ -95,7 +105,7 @@ router.post('/purchase', authenticateToken, (req, res) => {
   res.json({
     transactionId: transaction.id,
     creditsAdded: selectedPackage.credits,
-    newBalance: user.credits,
+    newBalance: newBalance,
     invoice: {
       id: `INV-${Date.now()}`,
       url: `/invoices/INV-${Date.now()}.pdf`,
@@ -113,14 +123,15 @@ router.post('/deduct', authenticateToken, (req, res) => {
     return res.status(404).json({ error: { message: 'User not found' } })
   }
 
-  if (user.credits < amount) {
+  const currentBalance = creditBalances.get(userId) || 0
+  
+  if (currentBalance < amount) {
     return res.status(400).json({ error: { message: 'Insufficient credits' } })
   }
 
-  const previousBalance = user.credits
-
-  // Deduct credits
-  user.credits -= amount
+  const previousBalance = currentBalance
+  const newBalance = currentBalance - amount
+  creditBalances.set(userId, newBalance)
 
   // Add transaction
   const transaction: CreditTransaction = {
@@ -128,7 +139,7 @@ router.post('/deduct', authenticateToken, (req, res) => {
     type: 'usage' as const,
     description,
     amount: -amount,
-    balance: user.credits,
+    balance: newBalance,
     service: serviceType,
     referenceId: serviceId,
     createdAt: new Date().toISOString(),
@@ -143,7 +154,7 @@ router.post('/deduct', authenticateToken, (req, res) => {
     data: {
       transactionId: transaction.id,
       previousBalance,
-      newBalance: user.credits,
+      newBalance: newBalance,
       deductedAmount: amount,
       timestamp: transaction.createdAt,
     },

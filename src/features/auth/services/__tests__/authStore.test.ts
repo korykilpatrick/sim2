@@ -20,7 +20,6 @@ describe('Auth Store', () => {
     name: 'Test User',
     company: 'Test Company',
     role: 'user',
-    credits: 1000,
     isActive: true,
     preferences: {
       theme: 'light',
@@ -33,8 +32,6 @@ describe('Auth Store', () => {
     },
     subscription: {
       plan: 'enterprise',
-      credits: 5000,
-      creditsUsed: 1000,
       renewalDate: '2025-02-25',
     },
     createdAt: '2025-01-01T00:00:00Z',
@@ -110,42 +107,6 @@ describe('Auth Store', () => {
     })
   })
 
-  describe('updateCredits', () => {
-    it('should update user credits', () => {
-      useAuthStore.getState().setAuth(mockUser)
-
-      useAuthStore.getState().updateCredits(3000)
-
-      const state = useAuthStore.getState()
-      expect(state.user?.credits).toBe(3000)
-    })
-
-    it('should not update credits if no user', () => {
-      useAuthStore.getState().updateCredits(3000)
-
-      const state = useAuthStore.getState()
-      expect(state.user).toBeNull()
-    })
-
-    it('should handle zero credits', () => {
-      useAuthStore.getState().setAuth(mockUser)
-
-      useAuthStore.getState().updateCredits(0)
-
-      const state = useAuthStore.getState()
-      expect(state.user?.credits).toBe(0)
-    })
-
-    it('should handle negative credits (edge case)', () => {
-      useAuthStore.getState().setAuth(mockUser)
-
-      useAuthStore.getState().updateCredits(-100)
-
-      const state = useAuthStore.getState()
-      expect(state.user?.credits).toBe(-100)
-    })
-  })
-
   describe('logout', () => {
     it('should clear all auth data', () => {
       // Set auth data
@@ -168,14 +129,30 @@ describe('Auth Store', () => {
     })
   })
 
-  describe('persistence', () => {
-    it('should use correct storage key', () => {
-      const persistOptions = useAuthStore.persist?.getOptions()
-      expect(persistOptions?.name).toBe('auth-storage')
+  describe('security', () => {
+    it('should NOT persist to localStorage', () => {
+      // Verify no persistence middleware is configured
+      expect(useAuthStore.persist).toBeUndefined()
     })
 
-    it('should have persistence configured', () => {
-      expect(useAuthStore.persist).toBeDefined()
+    it('should sanitize sensitive fields from user data', () => {
+      const userWithSensitiveData = {
+        ...mockUser,
+        passwordHash: 'should-be-removed',
+        apiKey: 'secret-key',
+        refreshToken: 'refresh-token',
+      }
+
+      useAuthStore.getState().setAuth(userWithSensitiveData as any)
+      const storedUser = useAuthStore.getState().user
+
+      expect(storedUser).not.toBeNull()
+      expect((storedUser as any).passwordHash).toBeUndefined()
+      expect((storedUser as any).apiKey).toBeUndefined()
+      expect((storedUser as any).refreshToken).toBeUndefined()
+      // Regular fields should remain
+      expect(storedUser?.email).toBe(mockUser.email)
+      expect(storedUser?.name).toBe(mockUser.name)
     })
   })
 

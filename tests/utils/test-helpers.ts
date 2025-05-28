@@ -28,7 +28,6 @@ export const mockUser: User = {
   name: 'Test User',
   email: 'test@example.com',
   company: 'Test Company',
-  credits: 1000,
   role: 'user',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
