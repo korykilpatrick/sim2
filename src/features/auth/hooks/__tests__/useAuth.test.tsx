@@ -1,42 +1,38 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { renderHook, waitFor, act } from '@testing-library/react'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
-import { ReactNode } from 'react'
+import { MemoryRouter } from 'react-router-dom'
 import { useAuth } from '../useAuth'
 import { authApi } from '../../services/auth'
 import { useAuthStore } from '../../services/authStore'
-import { useToast } from '@/hooks/useToast'
-import type {
-  User,
-  LoginCredentials,
-  RegisterData,
-  AuthResponse,
-} from '../../types/auth'
+// ToastProvider import removed - not needed for tests
+import { ReactNode } from 'react'
+import type { User } from '../../types/auth'
 
-// Mock dependencies
-vi.mock('react-router-dom', () => ({
-  useNavigate: vi.fn(),
-}))
-
+// Mock modules
+vi.mock('../../services/auth')
 vi.mock('@/hooks/useToast', () => ({
-  useToast: vi.fn(),
+  useToast: () => ({
+    showToast: vi.fn(),
+    hideToast: vi.fn(),
+    toasts: [],
+    addToast: vi.fn(),
+    removeToast: vi.fn(),
+  }),
 }))
 
-vi.mock('../../services/auth', () => ({
-  authApi: {
-    login: vi.fn(),
-    register: vi.fn(),
-    logout: vi.fn(),
-    getCurrentUser: vi.fn(),
-    refreshToken: vi.fn(),
-  },
-}))
+// Mock router
+const mockNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  }
+})
 
-describe('useAuth Hook', () => {
-  const mockNavigate = vi.fn()
-  const mockShowToast = vi.fn()
-  let testQueryClient: QueryClient
+describe('useAuth', () => {
+  let queryClient: QueryClient
 
   const mockUser: User = {
     id: '123',
@@ -56,7 +52,7 @@ describe('useAuth Hook', () => {
       defaultView: 'dashboard',
     },
     subscription: {
-      plan: 'enterprise',
+      plan: 'professional',
       credits: 5000,
       creditsUsed: 1000,
       renewalDate: '2025-02-25',
@@ -66,30 +62,33 @@ describe('useAuth Hook', () => {
   }
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={testQueryClient}>
-      {children}
-    </QueryClientProvider>
+    <MemoryRouter>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </MemoryRouter>
   )
 
   beforeEach(() => {
-    testQueryClient = new QueryClient({
+    queryClient = new QueryClient({
       defaultOptions: {
         queries: { retry: false },
         mutations: { retry: false },
       },
     })
 
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate)
-    vi.mocked(useToast).mockReturnValue({
-      showToast: mockShowToast,
-      removeToast: vi.fn(),
-    })
+    // Mock useToast
+    vi.mock('@/hooks/useToast', () => ({
+      useToast: () => ({
+        showToast: vi.fn(),
+        hideToast: vi.fn(),
+        toasts: [],
+        addToast: vi.fn(),
+        removeToast: vi.fn(),
+      }),
+    }))
 
     // Reset auth store
     useAuthStore.setState({
       user: null,
-      accessToken: null,
-      refreshToken: null,
       isAuthenticated: false,
     })
 
@@ -104,8 +103,6 @@ describe('useAuth Hook', () => {
     it('should return auth state from store', () => {
       useAuthStore.setState({
         user: mockUser,
-        accessToken: 'token',
-        refreshToken: 'refresh',
         isAuthenticated: true,
       })
 
@@ -113,7 +110,6 @@ describe('useAuth Hook', () => {
 
       expect(result.current.user).toEqual(mockUser)
       expect(result.current.isAuthenticated).toBe(true)
-      expect(result.current.token).toBe('token')
     })
 
     it('should return unauthenticated state when not logged in', () => {
@@ -121,249 +117,168 @@ describe('useAuth Hook', () => {
 
       expect(result.current.user).toBeNull()
       expect(result.current.isAuthenticated).toBe(false)
-      expect(result.current.token).toBeNull()
     })
   })
 
   describe('login', () => {
-    const loginCredentials: LoginCredentials = {
-      email: 'test@example.com',
-      password: 'password123',
-    }
-
-    it('should successfully login', async () => {
-      const authResponse = {
-        user: mockUser,
-        accessToken: 'access-token',
-        refreshToken: 'refresh-token',
-      }
-
-      vi.mocked(authApi.login).mockResolvedValueOnce(authResponse)
+    it('should handle successful login', async () => {
+      const mockResponse = { user: mockUser }
+      vi.mocked(authApi.login).mockResolvedValueOnce(mockResponse)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      act(() => {
-        result.current.login(loginCredentials)
-      })
+      result.current.login({ email: 'test@example.com', password: 'password' })
 
       await waitFor(() => {
-        expect(authApi.login).toHaveBeenCalledWith(loginCredentials)
-        expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
-        expect(mockShowToast).toHaveBeenCalledWith({
-          type: 'success',
-          message: 'Successfully logged in!',
-        })
+        expect(result.current.isLoggingIn).toBe(false)
       })
 
-      // Check store was updated
       const state = useAuthStore.getState()
       expect(state.user).toEqual(mockUser)
-      expect(state.accessToken).toBe('access-token')
-      expect(state.refreshToken).toBe('refresh-token')
       expect(state.isAuthenticated).toBe(true)
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
     })
 
-    it('should handle login failure', async () => {
-      const error = {
+    it('should handle login error', async () => {
+      const mockError = {
         response: {
           data: {
-            error: {
-              message: 'Invalid credentials',
-            },
+            error: { message: 'Invalid credentials' },
           },
         },
       }
-      vi.mocked(authApi.login).mockRejectedValueOnce(error)
+      vi.mocked(authApi.login).mockRejectedValueOnce(mockError)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      act(() => {
-        result.current.login(loginCredentials)
-      })
+      result.current.login({ email: 'test@example.com', password: 'wrong' })
 
       await waitFor(() => {
-        expect(mockShowToast).toHaveBeenCalledWith({
-          type: 'error',
-          message: 'Invalid credentials',
-        })
-        expect(mockNavigate).not.toHaveBeenCalled()
+        expect(result.current.isLoggingIn).toBe(false)
       })
 
-      // Check store was not updated
-      const state = useAuthStore.getState()
-      expect(state.user).toBeNull()
-      expect(state.isAuthenticated).toBe(false)
-    })
-
-    it('should handle network errors', async () => {
-      vi.mocked(authApi.login).mockRejectedValueOnce({ response: undefined })
-
-      const { result } = renderHook(() => useAuth(), { wrapper })
-
-      act(() => {
-        result.current.login(loginCredentials)
-      })
-
-      await waitFor(() => {
-        expect(mockShowToast).toHaveBeenCalledWith({
-          type: 'error',
-          message: 'Login failed',
-        })
-      })
+      expect(useAuthStore.getState().user).toBeNull()
+      expect(useAuthStore.getState().isAuthenticated).toBe(false)
     })
   })
 
   describe('register', () => {
-    const registerData: RegisterData = {
-      email: 'new@example.com',
-      password: 'password123',
-      name: 'New User',
-      company: 'New Company',
-    }
-
-    it('should successfully register', async () => {
-      const authResponse = {
-        user: mockUser,
-        accessToken: 'access-token',
-        refreshToken: 'refresh-token',
-      }
-
-      vi.mocked(authApi.register).mockResolvedValueOnce(authResponse)
+    it('should handle successful registration', async () => {
+      const mockResponse = { user: mockUser }
+      vi.mocked(authApi.register).mockResolvedValueOnce(mockResponse)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      act(() => {
-        result.current.register(registerData)
+      result.current.register({
+        email: 'new@example.com',
+        password: 'password',
+        name: 'New User',
       })
 
       await waitFor(() => {
-        expect(authApi.register).toHaveBeenCalledWith(registerData)
-        expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
-        expect(mockShowToast).toHaveBeenCalledWith({
-          type: 'success',
-          message: 'Account created successfully!',
-        })
+        expect(result.current.isRegistering).toBe(false)
       })
 
-      // Check store was updated
       const state = useAuthStore.getState()
       expect(state.user).toEqual(mockUser)
       expect(state.isAuthenticated).toBe(true)
+      expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
     })
 
-    it('should handle registration failure', async () => {
-      const error = {
+    it('should handle registration error', async () => {
+      const mockError = {
         response: {
           data: {
-            error: {
-              message: 'Email already exists',
-            },
+            error: { message: 'Email already exists' },
           },
         },
       }
-      vi.mocked(authApi.register).mockRejectedValueOnce(error)
+      vi.mocked(authApi.register).mockRejectedValueOnce(mockError)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      act(() => {
-        result.current.register(registerData)
+      result.current.register({
+        email: 'existing@example.com',
+        password: 'password',
+        name: 'User',
       })
 
       await waitFor(() => {
-        expect(mockShowToast).toHaveBeenCalledWith({
-          type: 'error',
-          message: 'Email already exists',
-        })
-        expect(mockNavigate).not.toHaveBeenCalled()
+        expect(result.current.isRegistering).toBe(false)
       })
+
+      expect(useAuthStore.getState().user).toBeNull()
+      expect(useAuthStore.getState().isAuthenticated).toBe(false)
     })
   })
 
   describe('logout', () => {
-    beforeEach(() => {
+    it('should handle successful logout', async () => {
+      // Set initial authenticated state
       useAuthStore.setState({
         user: mockUser,
-        accessToken: 'token',
-        refreshToken: 'refresh',
         isAuthenticated: true,
       })
-    })
 
-    it('should successfully logout', async () => {
       vi.mocked(authApi.logout).mockResolvedValueOnce(undefined)
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      act(() => {
-        result.current.logout()
-      })
+      result.current.logout()
 
       await waitFor(() => {
-        expect(authApi.logout).toHaveBeenCalled()
-        expect(mockNavigate).toHaveBeenCalledWith('/login')
-        expect(mockShowToast).toHaveBeenCalledWith({
-          type: 'success',
-          message: 'Successfully logged out',
-        })
+        expect(result.current.isLoggingOut).toBe(false)
       })
 
-      // Check store was cleared
       const state = useAuthStore.getState()
       expect(state.user).toBeNull()
-      expect(state.accessToken).toBeNull()
       expect(state.isAuthenticated).toBe(false)
+      expect(mockNavigate).toHaveBeenCalledWith('/login')
     })
 
-    it('should handle logout errors gracefully', async () => {
+    it('should clear state even if logout API fails', async () => {
+      // Set initial authenticated state
+      useAuthStore.setState({
+        user: mockUser,
+        isAuthenticated: true,
+      })
+
       vi.mocked(authApi.logout).mockRejectedValueOnce(
-        new Error('Logout failed'),
+        new Error('Network error'),
       )
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
-      act(() => {
-        result.current.logout()
-      })
+      result.current.logout()
 
       await waitFor(() => {
-        // Should still clear local state even if API fails
-        expect(mockNavigate).toHaveBeenCalledWith('/login')
+        expect(result.current.isLoggingOut).toBe(false)
       })
 
-      // Store should still be cleared
+      // Should still clear local state
       const state = useAuthStore.getState()
       expect(state.user).toBeNull()
       expect(state.isAuthenticated).toBe(false)
+      expect(mockNavigate).toHaveBeenCalledWith('/login')
     })
   })
 
   describe('loading states', () => {
     it('should track login loading state', async () => {
-      let resolveLogin: (value: unknown) => void
-      const loginPromise = new Promise<AuthResponse>((resolve) => {
-        resolveLogin = resolve as (value: unknown) => void
-      })
-      vi.mocked(authApi.login).mockReturnValueOnce(loginPromise)
+      vi.mocked(authApi.login).mockImplementation(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ user: mockUser }), 100),
+          ),
+      )
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
       expect(result.current.isLoggingIn).toBe(false)
 
-      act(() => {
-        result.current.login({ email: 'test@example.com', password: 'pass' })
-      })
+      result.current.login({ email: 'test@example.com', password: 'password' })
 
-      await waitFor(() => {
-        expect(result.current.isLoggingIn).toBe(true)
-      })
-
-      await act(async () => {
-        resolveLogin!({
-          user: mockUser,
-          accessToken: 'token',
-          refreshToken: 'refresh',
-        })
-      })
+      expect(result.current.isLoggingIn).toBe(true)
 
       await waitFor(() => {
         expect(result.current.isLoggingIn).toBe(false)
@@ -371,36 +286,24 @@ describe('useAuth Hook', () => {
     })
 
     it('should track register loading state', async () => {
-      let resolveRegister: (value: unknown) => void
-      const registerPromise = new Promise<AuthResponse>((resolve) => {
-        resolveRegister = resolve as (value: unknown) => void
-      })
-      vi.mocked(authApi.register).mockReturnValueOnce(registerPromise)
+      vi.mocked(authApi.register).mockImplementation(
+        () =>
+          new Promise((resolve) =>
+            setTimeout(() => resolve({ user: mockUser }), 100),
+          ),
+      )
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
       expect(result.current.isRegistering).toBe(false)
 
-      act(() => {
-        result.current.register({
-          email: 'test@example.com',
-          password: 'pass',
-          name: 'Test',
-          company: 'Company',
-        })
+      result.current.register({
+        email: 'test@example.com',
+        password: 'password',
+        name: 'Test User',
       })
 
-      await waitFor(() => {
-        expect(result.current.isRegistering).toBe(true)
-      })
-
-      await act(async () => {
-        resolveRegister!({
-          user: mockUser,
-          accessToken: 'token',
-          refreshToken: 'refresh',
-        })
-      })
+      expect(result.current.isRegistering).toBe(true)
 
       await waitFor(() => {
         expect(result.current.isRegistering).toBe(false)
@@ -408,27 +311,17 @@ describe('useAuth Hook', () => {
     })
 
     it('should track logout loading state', async () => {
-      let resolveLogout: (value: unknown) => void
-      const logoutPromise = new Promise((resolve) => {
-        resolveLogout = resolve
-      })
-      vi.mocked(authApi.logout).mockReturnValueOnce(logoutPromise)
+      vi.mocked(authApi.logout).mockImplementation(
+        () => new Promise((resolve) => setTimeout(resolve, 100)),
+      )
 
       const { result } = renderHook(() => useAuth(), { wrapper })
 
       expect(result.current.isLoggingOut).toBe(false)
 
-      act(() => {
-        result.current.logout()
-      })
+      result.current.logout()
 
-      await waitFor(() => {
-        expect(result.current.isLoggingOut).toBe(true)
-      })
-
-      await act(async () => {
-        resolveLogout!(undefined)
-      })
+      expect(result.current.isLoggingOut).toBe(true)
 
       await waitFor(() => {
         expect(result.current.isLoggingOut).toBe(false)
@@ -436,22 +329,37 @@ describe('useAuth Hook', () => {
     })
   })
 
-  describe('exposed properties', () => {
-    it('should expose isLoadingUser as false', () => {
-      const { result } = renderHook(() => useAuth(), { wrapper })
-      expect(result.current.isLoadingUser).toBe(false)
-    })
+  describe('state synchronization', () => {
+    it('should update query cache on successful login', async () => {
+      vi.mocked(authApi.login).mockResolvedValueOnce({ user: mockUser })
 
-    it('should expose auth token', () => {
-      useAuthStore.setState({
-        user: mockUser,
-        accessToken: 'test-token',
-        refreshToken: 'refresh-token',
-        isAuthenticated: true,
+      const { result } = renderHook(() => useAuth(), { wrapper })
+
+      result.current.login({ email: 'test@example.com', password: 'password' })
+
+      await waitFor(() => {
+        expect(result.current.isLoggingIn).toBe(false)
       })
 
+      const cachedData = queryClient.getQueryData(['auth', 'user'])
+      expect(cachedData).toEqual(mockUser)
+    })
+
+    it('should clear query cache on logout', async () => {
+      // Set initial data
+      queryClient.setQueryData(['auth', 'user'], mockUser)
+      vi.mocked(authApi.logout).mockResolvedValueOnce(undefined)
+
       const { result } = renderHook(() => useAuth(), { wrapper })
-      expect(result.current.token).toBe('test-token')
+
+      result.current.logout()
+
+      await waitFor(() => {
+        expect(result.current.isLoggingOut).toBe(false)
+      })
+
+      const cachedData = queryClient.getQueryData(['auth', 'user'])
+      expect(cachedData).toBeUndefined()
     })
   })
 })

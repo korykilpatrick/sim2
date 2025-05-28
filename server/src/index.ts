@@ -1,5 +1,7 @@
 import express from 'express'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import helmet from 'helmet'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import rateLimit from 'express-rate-limit'
@@ -19,6 +21,9 @@ import analyticsRoutes from './routes/analytics'
 // Import WebSocket setup
 import { setupWebSocket } from './websocket'
 
+// Import middleware
+import { setCSRFToken, validateCSRFToken } from './middleware/csrf'
+
 const app = express()
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
@@ -28,8 +33,34 @@ const io = new Server(httpServer, {
   },
 })
 
+// Security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for dev
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // Allow for dev tools
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'", 'ws://localhost:3001', 'http://localhost:3001'],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+      },
+    },
+    crossOriginEmbedderPolicy: false, // Disable for development
+  }),
+)
+
 // Middleware
-app.use(cors())
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true, // Allow cookies to be sent
+  }),
+)
+app.use(cookieParser())
 app.use(express.json())
 
 // Rate limiting
@@ -38,6 +69,14 @@ const limiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per windowMs
 })
 app.use('/api/', limiter)
+
+// CSRF token endpoint
+app.get('/api/v1/csrf-token', setCSRFToken, (_req, res) => {
+  res.json({ success: true, timestamp: new Date().toISOString() })
+})
+
+// Apply CSRF validation to all API routes
+app.use('/api/', validateCSRFToken)
 
 // Health check
 app.get('/api/v1/health', (_req, res) => {

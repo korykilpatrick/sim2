@@ -52,15 +52,18 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
   describe('Room Rejoin Race Condition', () => {
     it('should queue room join requests until authentication completes', async () => {
       // Connect the service
-      service.connect('test-token')
+      service.connect()
 
       // Join some rooms while connected
       mockSocket.connected = true
-      
+
       // Simulate initial authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
@@ -75,7 +78,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       // Simulate disconnection and reconnection
       mockSocket.connected = false
       const disconnectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'disconnect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'disconnect',
       )?.[1] as (() => void) | undefined
       if (disconnectHandler) {
         disconnectHandler()
@@ -86,7 +90,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       // Simulate reconnection
       mockSocket.connected = true
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect',
       )?.[1] as (() => void) | undefined
       if (connectHandler) {
         connectHandler()
@@ -94,13 +99,19 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
       // At this point, rejoinRooms is called but authentication hasn't completed
       // The current implementation will fail to rejoin rooms
-      
+
       // Verify authentication was attempted
       expect(mockSocket.emit).toHaveBeenCalledWith('authenticate', 'test-token')
-      
+
       // But room joins should NOT have been attempted yet
-      expect(mockSocket.emit).not.toHaveBeenCalledWith('join_vessel_room', 'vessel-123')
-      expect(mockSocket.emit).not.toHaveBeenCalledWith('join_area_room', 'area-456')
+      expect(mockSocket.emit).not.toHaveBeenCalledWith(
+        'join_vessel_room',
+        'vessel-123',
+      )
+      expect(mockSocket.emit).not.toHaveBeenCalledWith(
+        'join_area_room',
+        'area-456',
+      )
 
       // Now complete authentication
       if (authHandler) {
@@ -112,51 +123,67 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       await new Promise((resolve) => setTimeout(resolve, 200))
 
       // After authentication, rooms should be automatically rejoined
-      expect(mockSocket.emit).toHaveBeenCalledWith('join_vessel_room', 'vessel-123')
+      expect(mockSocket.emit).toHaveBeenCalledWith(
+        'join_vessel_room',
+        'vessel-123',
+      )
       expect(mockSocket.emit).toHaveBeenCalledWith('join_area_room', 'area-456')
     })
 
     it('should queue new room join attempts made during authentication', async () => {
-      service.connect('test-token')
+      service.connect()
       mockSocket.connected = true
 
       // Try to join room before authentication completes
       service.joinVesselRoom('vessel-999')
 
       // Should not emit yet
-      expect(mockSocket.emit).not.toHaveBeenCalledWith('join_vessel_room', 'vessel-999')
+      expect(mockSocket.emit).not.toHaveBeenCalledWith(
+        'join_vessel_room',
+        'vessel-999',
+      )
 
       // Complete authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
 
       // Now it should emit the queued join
-      expect(mockSocket.emit).toHaveBeenCalledWith('join_vessel_room', 'vessel-999')
+      expect(mockSocket.emit).toHaveBeenCalledWith(
+        'join_vessel_room',
+        'vessel-999',
+      )
     })
   })
 
   describe('Connection State Machine', () => {
     it('should handle authentication failure during connected state', () => {
-      service.connect('test-token')
+      service.connect()
       mockSocket.connected = true
 
       // Simulate connect
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect',
       )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
 
       // After connect, it should start authenticating
       const state = service.getState()
-      expect(['connected', 'authenticating'].includes(state.connectionState)).toBe(true)
+      expect(
+        ['connected', 'authenticating'].includes(state.connectionState),
+      ).toBe(true)
 
       // Simulate authentication failure
       const unauthorizedHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'unauthorized',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'unauthorized',
       )?.[1] as ((data: { message: string }) => void) | undefined
       if (unauthorizedHandler) {
         unauthorizedHandler({ message: 'Token expired' })
@@ -165,13 +192,13 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       // Should transition to a state that indicates auth failure
       // Current implementation doesn't handle this well
       expect(service.getIsAuthenticated()).toBe(false)
-      
+
       // Should retry authentication or notify user
       // This is not implemented in current code
     })
 
     it('should handle disconnect during authentication', () => {
-      service.connect('test-token')
+      service.connect()
       mockSocket.connected = true
 
       // Start authentication
@@ -182,7 +209,8 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       // Disconnect before authentication completes
       mockSocket.connected = false
       const disconnectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'disconnect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'disconnect',
       )?.[1] as (() => void) | undefined
       if (disconnectHandler) {
         disconnectHandler()
@@ -204,12 +232,12 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
     })
 
     it('should implement exponential backoff for authentication retries', () => {
-      service.connect('test-token')
+      service.connect()
       mockSocket.connected = true
 
       // Track authentication attempts
       const authAttempts: number[] = []
-      
+
       // Override emit to track timing
       const originalEmit = mockSocket.emit
       mockSocket.emit = vi.fn((event: string, ...args: unknown[]) => {
@@ -221,9 +249,10 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
 
       // First auth failure
       const unauthorizedHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'unauthorized',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'unauthorized',
       )?.[1] as ((data: { message: string }) => void) | undefined
-      
+
       // Simulate multiple auth failures
       for (let i = 0; i < 3; i++) {
         if (unauthorizedHandler) {
@@ -238,23 +267,27 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
     })
 
     it('should implement backoff for room rejoin attempts', () => {
-      service.connect('test-token')
+      service.connect()
       mockSocket.connected = true
 
       // Authenticate first
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
 
       // Join a room
       service.joinVesselRoom('vessel-123')
-      
+
       // Simulate room join failure
       const roomErrorHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'room_join_error',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'room_join_error',
       )?.[1] as ((data: { room: string; error: string }) => void) | undefined
 
       if (roomErrorHandler) {
@@ -283,28 +316,35 @@ describe('WebSocket Race Conditions and Authentication Queuing', () => {
       service.dismissAlert('alert-2')
 
       // Connect
-      service.connect('test-token')
+      service.connect()
       mockSocket.connected = true
 
       // Complete connection
       const connectHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'connect',
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'connect',
       )?.[1] as (() => void) | undefined
       if (connectHandler) connectHandler()
 
       // Complete authentication
       const authHandler = mockSocket.on.mock.calls.find(
-        (call: [string, (...args: unknown[]) => unknown]) => call[0] === 'authenticated',
-      )?.[1] as ((data: { userId: string; success: boolean }) => void) | undefined
+        (call: [string, (...args: unknown[]) => unknown]) =>
+          call[0] === 'authenticated',
+      )?.[1] as
+        | ((data: { userId: string; success: boolean }) => void)
+        | undefined
       if (authHandler) {
         authHandler({ userId: 'user-1', success: true })
       }
 
       // Wait for async processing of queued operations
       await new Promise((resolve) => setTimeout(resolve, 500))
-      
+
       // All queued operations should now execute
-      expect(mockSocket.emit).toHaveBeenCalledWith('join_vessel_room', 'vessel-1')
+      expect(mockSocket.emit).toHaveBeenCalledWith(
+        'join_vessel_room',
+        'vessel-1',
+      )
       expect(mockSocket.emit).toHaveBeenCalledWith('join_area_room', 'area-1')
       expect(mockSocket.emit).toHaveBeenCalledWith('mark_alert_read', 'alert-1')
       expect(mockSocket.emit).toHaveBeenCalledWith('dismiss_alert', 'alert-2')

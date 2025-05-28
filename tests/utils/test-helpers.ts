@@ -8,18 +8,19 @@ import type { User } from '@/features/auth/types'
 import { useAuthStore } from '@/features/auth/services/authStore'
 
 // Create a new QueryClient for each test
-export const createTestQueryClient = () => new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      gcTime: 0,
-      staleTime: 0
+export const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: 0,
+        staleTime: 0,
+      },
+      mutations: {
+        retry: false,
+      },
     },
-    mutations: {
-      retry: false
-    }
-  }
-})
+  })
 
 // Mock authenticated user for tests
 export const mockUser: User = {
@@ -31,13 +32,13 @@ export const mockUser: User = {
   role: 'user',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
-  isActive: true
+  isActive: true,
 }
 
 // Helper to set up authenticated state
 export const setupAuthenticatedUser = (user: User = mockUser) => {
   const store = useAuthStore.getState()
-  store.setAuth(user, 'mock-access-token', 'mock-refresh-token')
+  store.setAuth(user)
 }
 
 // Helper to clear auth state

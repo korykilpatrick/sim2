@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-
-const JWT_SECRET = 'mock-jwt-secret'
+import { config } from '../config'
 
 // Extend Express Request type to include user
 declare module 'express' {
@@ -18,8 +17,13 @@ export const authenticateToken = (
   res: Response,
   next: NextFunction,
 ) => {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1] // Bearer TOKEN
+  // First check cookies, then fall back to Authorization header
+  let token = req.cookies?.accessToken
+
+  if (!token) {
+    const authHeader = req.headers['authorization']
+    token = authHeader && authHeader.split(' ')[1] // Bearer TOKEN
+  }
 
   if (!token) {
     return res.status(401).json({
@@ -32,7 +36,7 @@ export const authenticateToken = (
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string }
+    const decoded = jwt.verify(token, config.jwtSecret) as { userId: string }
     req.user = { userId: decoded.userId }
     next()
   } catch (error) {

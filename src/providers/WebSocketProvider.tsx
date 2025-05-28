@@ -12,7 +12,7 @@ interface WebSocketProviderProps {
 }
 
 export function WebSocketProvider({ children }: WebSocketProviderProps) {
-  const { user, token } = useAuth()
+  const { user, isAuthenticated } = useAuth()
   const hasInitialized = useRef(false)
   const [isConnected, setIsConnected] = React.useState(false)
 
@@ -23,10 +23,10 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
     }
 
     // Connect when user is authenticated
-    if (user && token) {
+    if (user && isAuthenticated) {
       logger.info('Initializing WebSocket connection')
       hasInitialized.current = true
-      websocketService.connect(token)
+      websocketService.connect()
 
       // Listen for connection state changes
       const unsubscribers = [
@@ -56,7 +56,7 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
       hasInitialized.current = false
       setIsConnected(false)
     }
-  }, [user, token])
+  }, [user, isAuthenticated])
 
   // Log WebSocket events in development
   useEffect(() => {

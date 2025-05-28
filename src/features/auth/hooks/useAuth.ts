@@ -7,6 +7,7 @@ import { LoginCredentials, RegisterData } from '../types/auth'
 import type { AxiosError } from 'axios'
 import type { ApiResponse } from '@/api/types'
 import { authKeys } from './'
+import { fetchCSRFToken, clearCSRFToken } from '@/utils/csrf'
 
 /**
  * Authentication hook providing login, register, logout functionality.
@@ -31,16 +32,17 @@ export function useAuth() {
   const { showToast } = useToast()
   const user = useAuthStore(authSelectors.user)
   const isAuthenticated = useAuthStore(authSelectors.isAuthenticated)
-  const token = useAuthStore(authSelectors.accessToken)
   const setAuth = useAuthStore(authSelectors.setAuth)
   const logoutStore = useAuthStore(authSelectors.logout)
 
   const loginMutation = useMutation({
     mutationFn: (credentials: LoginCredentials) => authApi.login(credentials),
-    onSuccess: (response) => {
-      const { user, accessToken, refreshToken } = response
-      setAuth(user, accessToken, refreshToken)
+    onSuccess: async (response) => {
+      const { user } = response
+      setAuth(user)
       queryClient.setQueryData(authKeys.user(), user)
+      // Fetch new CSRF token after login
+      await fetchCSRFToken()
       showToast({ type: 'success', message: 'Successfully logged in!' })
       navigate('/dashboard')
     },
@@ -55,8 +57,8 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: (data: RegisterData) => authApi.register(data),
     onSuccess: (response) => {
-      const { user, accessToken, refreshToken } = response
-      setAuth(user, accessToken, refreshToken)
+      const { user } = response
+      setAuth(user)
       queryClient.setQueryData(authKeys.user(), user)
       showToast({ type: 'success', message: 'Account created successfully!' })
       navigate('/dashboard')
@@ -74,6 +76,7 @@ export function useAuth() {
     onSuccess: () => {
       logoutStore()
       queryClient.clear()
+      clearCSRFToken()
       showToast({ type: 'success', message: 'Successfully logged out' })
       navigate('/login')
     },
@@ -88,7 +91,6 @@ export function useAuth() {
   return {
     user,
     isAuthenticated,
-    token,
     isLoadingUser: false,
     login: loginMutation.mutate,
     register: registerMutation.mutate,

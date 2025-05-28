@@ -1,6 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/features/auth/services/authStore'
 import { ApiError } from '@/api/types'
+import { getCSRFToken } from '@/utils/csrf'
 
 /**
  * Base URL for all API requests.
@@ -25,18 +26,27 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Include cookies in requests
 })
 
 /**
- * Request interceptor that automatically adds the authentication token
- * to all outgoing requests if the user is authenticated.
+ * Request interceptor that adds CSRF tokens to state-changing requests.
+ * Authentication is handled via httpOnly cookies automatically.
  */
 apiClient.interceptors.request.use(
   (config) => {
-    const token = useAuthStore.getState().accessToken
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    // Add CSRF token for state-changing requests
+    if (
+      ['POST', 'PUT', 'DELETE', 'PATCH'].includes(
+        config.method?.toUpperCase() || '',
+      )
+    ) {
+      const csrfToken = getCSRFToken()
+      if (csrfToken) {
+        config.headers['X-CSRF-Token'] = csrfToken
+      }
     }
+
     return config
   },
   (error) => Promise.reject(error),
@@ -58,24 +68,16 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true
 
       try {
-        const refreshToken = useAuthStore.getState().refreshToken
-        if (!refreshToken) {
-          throw new Error('No refresh token')
-        }
+        // Try to refresh using cookies (no need to send refresh token in body)
+        await axios.post(
+          `${API_BASE_URL}/auth/refresh`,
+          {},
+          {
+            withCredentials: true, // Include cookies
+          },
+        )
 
-        const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-          refreshToken,
-        })
-
-        const { accessToken, refreshToken: newRefreshToken } =
-          response.data.data
-        const { user } = useAuthStore.getState()
-
-        if (user) {
-          useAuthStore.getState().setAuth(user, accessToken, newRefreshToken)
-        }
-
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`
+        // Retry the original request - cookies will be updated automatically
         return apiClient(originalRequest)
       } catch (refreshError) {
         useAuthStore.getState().logout()

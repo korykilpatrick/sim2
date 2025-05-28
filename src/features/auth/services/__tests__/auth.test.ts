@@ -46,8 +46,6 @@ describe('Auth Service', () => {
 
   const mockAuthResponse: AuthResponse = {
     user: mockUser,
-    accessToken: 'mock-access-token',
-    refreshToken: 'mock-refresh-token',
   }
 
   beforeEach(() => {

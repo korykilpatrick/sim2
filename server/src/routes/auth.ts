@@ -1,9 +1,10 @@
 import { Router } from 'express'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import { mockUsers } from '../data/mockData'
+import { config } from '../config'
 
 const router = Router()
-const JWT_SECRET = 'mock-jwt-secret'
 
 // JWT payload type
 interface JWTPayload {
@@ -12,8 +13,12 @@ interface JWTPayload {
 
 // Helper to generate tokens
 const generateTokens = (userId: string) => {
-  const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '1h' })
-  const refreshToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' })
+  const accessToken = jwt.sign({ userId }, config.jwtSecret, {
+    expiresIn: '1h',
+  })
+  const refreshToken = jwt.sign({ userId }, config.jwtSecret, {
+    expiresIn: '7d',
+  })
   return { accessToken, refreshToken }
 }
 
@@ -24,11 +29,9 @@ router.post('/login', async (req, res) => {
   // Simulate delay
   await new Promise((resolve) => setTimeout(resolve, 500))
 
-  const user = mockUsers.find(
-    (u) => u.email === email && u.password === password,
-  )
+  const user = mockUsers.find((u) => u.email === email)
 
-  if (!user) {
+  if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).json({
       success: false,
       error: {
@@ -42,12 +45,25 @@ router.post('/login', async (req, res) => {
   const { password: userPassword, ...userWithoutPassword } = user
   void userPassword // Intentionally unused
 
+  // Set httpOnly cookies
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 60 * 60 * 1000, // 1 hour
+  })
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  })
+
   res.json({
     success: true,
     data: {
       user: userWithoutPassword,
-      accessToken,
-      refreshToken,
+      // Don't send tokens in response body anymore for security
     },
     timestamp: new Date().toISOString(),
   })
@@ -71,11 +87,14 @@ router.post('/register', async (req, res) => {
     })
   }
 
+  // Hash password before storing
+  const hashedPassword = await bcrypt.hash(password, 10)
+
   // Create new user
   const newUser = {
     id: String(mockUsers.length + 1),
     email,
-    password,
+    password: hashedPassword,
     name,
     company: company || '',
     department: '',
@@ -112,12 +131,25 @@ router.post('/register', async (req, res) => {
   const { password: newUserPassword, ...userWithoutPassword } = newUser
   void newUserPassword // Intentionally unused
 
+  // Set httpOnly cookies
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 60 * 60 * 1000, // 1 hour
+  })
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  })
+
   res.json({
     success: true,
     data: {
       user: userWithoutPassword,
-      accessToken,
-      refreshToken,
+      // Don't send tokens in response body anymore for security
     },
     timestamp: new Date().toISOString(),
   })
@@ -125,7 +157,8 @@ router.post('/register', async (req, res) => {
 
 // Refresh token
 router.post('/refresh', async (req, res) => {
-  const { refreshToken } = req.body
+  // Read refresh token from cookie only
+  const refreshToken = req.cookies?.refreshToken
 
   if (!refreshToken) {
     return res.status(401).json({
@@ -138,12 +171,28 @@ router.post('/refresh', async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, JWT_SECRET) as JWTPayload
+    const decoded = jwt.verify(refreshToken, config.jwtSecret) as JWTPayload
     const tokens = generateTokens(decoded.userId)
+
+    // Set new httpOnly cookies
+    res.cookie('accessToken', tokens.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 1000, // 1 hour
+    })
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    })
 
     res.json({
       success: true,
-      data: tokens,
+      data: {
+        // Don't send tokens in response body anymore for security
+      },
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
@@ -174,7 +223,7 @@ router.get('/me', async (req, res) => {
   const token = authHeader.substring(7)
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    const decoded = jwt.verify(token, config.jwtSecret) as JWTPayload
     const user = mockUsers.find((u) => u.id === decoded.userId)
 
     if (!user) {
@@ -226,7 +275,7 @@ router.put('/profile', async (req, res) => {
   const token = authHeader.substring(7)
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    const decoded = jwt.verify(token, config.jwtSecret) as JWTPayload
     const userIndex = mockUsers.findIndex((u) => u.id === decoded.userId)
 
     if (userIndex === -1) {
@@ -277,7 +326,7 @@ router.post('/change-password', async (req, res) => {
   const token = authHeader.substring(7)
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    const decoded = jwt.verify(token, config.jwtSecret) as JWTPayload
     const userIndex = mockUsers.findIndex((u) => u.id === decoded.userId)
 
     if (userIndex === -1) {
@@ -285,7 +334,9 @@ router.post('/change-password', async (req, res) => {
     }
 
     // Verify current password
-    if (mockUsers[userIndex].password !== currentPassword) {
+    if (
+      !(await bcrypt.compare(currentPassword, mockUsers[userIndex].password))
+    ) {
       return res.status(400).json({
         success: false,
         error: {
@@ -295,8 +346,8 @@ router.post('/change-password', async (req, res) => {
       })
     }
 
-    // Update password
-    mockUsers[userIndex].password = newPassword
+    // Update password with hashed version
+    mockUsers[userIndex].password = await bcrypt.hash(newPassword, 10)
     mockUsers[userIndex].updatedAt = new Date().toISOString()
 
     res.json({
@@ -313,6 +364,19 @@ router.post('/change-password', async (req, res) => {
       },
     })
   }
+})
+
+// Logout
+router.post('/logout', (_req, res) => {
+  // Clear httpOnly cookies
+  res.clearCookie('accessToken')
+  res.clearCookie('refreshToken')
+
+  res.json({
+    success: true,
+    data: { message: 'Logged out successfully' },
+    timestamp: new Date().toISOString(),
+  })
 })
 
 export default router

@@ -102,13 +102,10 @@ export interface RegisterData extends LoginCredentials {
 
 /**
  * Response data from successful authentication endpoints.
- * Returned by login, register, and token refresh operations.
+ * Returned by login and register operations.
+ * Note: Tokens are stored in httpOnly cookies for security.
  */
 export interface AuthResponse {
   /** Authenticated user data */
   user: User
-  /** JWT access token for API requests */
-  accessToken: string
-  /** JWT refresh token for obtaining new access tokens */
-  refreshToken: string
 }

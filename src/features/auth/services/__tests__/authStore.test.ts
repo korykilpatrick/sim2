@@ -45,8 +45,6 @@ describe('Auth Store', () => {
     // Reset store to initial state
     useAuthStore.setState({
       user: null,
-      accessToken: null,
-      refreshToken: null,
       isAuthenticated: false,
     })
     vi.clearAllMocks()
@@ -56,31 +54,25 @@ describe('Auth Store', () => {
     it('should have correct initial state', () => {
       const state = useAuthStore.getState()
       expect(state.user).toBeNull()
-      expect(state.accessToken).toBeNull()
-      expect(state.refreshToken).toBeNull()
       expect(state.isAuthenticated).toBe(false)
     })
   })
 
   describe('setAuth', () => {
     it('should set authentication data correctly', () => {
-      useAuthStore.getState().setAuth(mockUser, 'access-token', 'refresh-token')
+      useAuthStore.getState().setAuth(mockUser)
 
       const state = useAuthStore.getState()
       expect(state.user).toEqual(mockUser)
-      expect(state.accessToken).toBe('access-token')
-      expect(state.refreshToken).toBe('refresh-token')
       expect(state.isAuthenticated).toBe(true)
     })
 
     it('should handle setting auth with minimal data', () => {
       const minimalUser = { ...mockUser }
-      useAuthStore.getState().setAuth(minimalUser, 'token', '')
+      useAuthStore.getState().setAuth(minimalUser)
 
       const state = useAuthStore.getState()
       expect(state.user).toEqual(minimalUser)
-      expect(state.accessToken).toBe('token')
-      expect(state.refreshToken).toBe('')
       expect(state.isAuthenticated).toBe(true)
     })
   })
@@ -88,7 +80,7 @@ describe('Auth Store', () => {
   describe('updateUser', () => {
     it('should update user data', () => {
       // Set initial user
-      useAuthStore.getState().setAuth(mockUser, 'token', 'refresh')
+      useAuthStore.getState().setAuth(mockUser)
 
       // Update user
       const updates = { name: 'Updated Name', email: 'updated@example.com' }
@@ -101,14 +93,12 @@ describe('Auth Store', () => {
     })
 
     it('should not affect other state when updating user', () => {
-      useAuthStore.getState().setAuth(mockUser, 'access-token', 'refresh-token')
+      useAuthStore.getState().setAuth(mockUser)
 
       const updates = { email: 'new@example.com' }
       useAuthStore.getState().updateUser(updates)
 
       const state = useAuthStore.getState()
-      expect(state.accessToken).toBe('access-token')
-      expect(state.refreshToken).toBe('refresh-token')
       expect(state.isAuthenticated).toBe(true)
     })
 
@@ -122,7 +112,7 @@ describe('Auth Store', () => {
 
   describe('updateCredits', () => {
     it('should update user credits', () => {
-      useAuthStore.getState().setAuth(mockUser, 'token', 'refresh')
+      useAuthStore.getState().setAuth(mockUser)
 
       useAuthStore.getState().updateCredits(3000)
 
@@ -138,7 +128,7 @@ describe('Auth Store', () => {
     })
 
     it('should handle zero credits', () => {
-      useAuthStore.getState().setAuth(mockUser, 'token', 'refresh')
+      useAuthStore.getState().setAuth(mockUser)
 
       useAuthStore.getState().updateCredits(0)
 
@@ -147,7 +137,7 @@ describe('Auth Store', () => {
     })
 
     it('should handle negative credits (edge case)', () => {
-      useAuthStore.getState().setAuth(mockUser, 'token', 'refresh')
+      useAuthStore.getState().setAuth(mockUser)
 
       useAuthStore.getState().updateCredits(-100)
 
@@ -159,15 +149,13 @@ describe('Auth Store', () => {
   describe('logout', () => {
     it('should clear all auth data', () => {
       // Set auth data
-      useAuthStore.getState().setAuth(mockUser, 'access-token', 'refresh-token')
+      useAuthStore.getState().setAuth(mockUser)
 
       // Logout
       useAuthStore.getState().logout()
 
       const state = useAuthStore.getState()
       expect(state.user).toBeNull()
-      expect(state.accessToken).toBeNull()
-      expect(state.refreshToken).toBeNull()
       expect(state.isAuthenticated).toBe(false)
     })
 
@@ -176,8 +164,6 @@ describe('Auth Store', () => {
 
       const state = useAuthStore.getState()
       expect(state.user).toBeNull()
-      expect(state.accessToken).toBeNull()
-      expect(state.refreshToken).toBeNull()
       expect(state.isAuthenticated).toBe(false)
     })
   })
@@ -198,7 +184,7 @@ describe('Auth Store', () => {
       const listener = vi.fn()
       const unsubscribe = useAuthStore.subscribe(listener)
 
-      useAuthStore.getState().setAuth(mockUser, 'token', 'refresh')
+      useAuthStore.getState().setAuth(mockUser)
 
       expect(listener).toHaveBeenCalled()
 
@@ -212,7 +198,6 @@ describe('Auth Store', () => {
       useAuthStore.setState((state) => ({
         ...state,
         user: mockUser,
-        accessToken: 'token',
         isAuthenticated: true,
       }))
 

@@ -1,9 +1,10 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import LoadingSpinner from '@components/feedback/LoadingSpinner'
 import { ConnectionStatus } from '@components/feedback'
 import ProtectedRoute from '@routes/ProtectedRoute'
 import AppLayout from '@components/layout/AppLayout'
+import { fetchCSRFToken } from '@utils/csrf'
 
 // Lazy load pages
 const HomePage = lazy(() => import('@pages/HomePage'))
@@ -50,8 +51,10 @@ const InvestigationWizard = lazy(
 )
 
 // Credits pages
-const CreditsPage = lazy(() => 
-  import('@pages/credits/CreditsPage').then(module => ({ default: module.CreditsPage }))
+const CreditsPage = lazy(() =>
+  import('@pages/credits/CreditsPage').then((module) => ({
+    default: module.CreditsPage,
+  })),
 )
 
 // Analytics pages
@@ -78,6 +81,11 @@ const PaymentConfirmationPage = lazy(
 )
 
 function App() {
+  // Fetch CSRF token on app initialization
+  useEffect(() => {
+    fetchCSRFToken()
+  }, [])
+
   return (
     <>
       <Suspense fallback={<LoadingSpinner fullScreen />}>

@@ -4,18 +4,15 @@ import { User } from '../types/auth'
 
 /**
  * Zustand store interface for authentication state management.
+ * Note: Tokens are stored in httpOnly cookies for security.
  */
 interface AuthStore {
   /** Currently authenticated user data */
   user: User | null
-  /** JWT access token for API requests */
-  accessToken: string | null
-  /** JWT refresh token for obtaining new access tokens */
-  refreshToken: string | null
   /** Whether a user is currently authenticated */
   isAuthenticated: boolean
   /** Sets authentication data after successful login/register */
-  setAuth: (user: User, accessToken: string, refreshToken: string) => void
+  setAuth: (user: User) => void
   /** Updates current user data partially */
   updateUser: (user: Partial<User>) => void
   /** Updates user credit balance */
@@ -26,7 +23,7 @@ interface AuthStore {
 
 /**
  * Global authentication state store with persistence.
- * Stores auth tokens and user data in localStorage.
+ * Stores only user data in localStorage - tokens are in httpOnly cookies.
  *
  * @example
  * // Access auth state
@@ -34,20 +31,16 @@ interface AuthStore {
  *
  * // Update auth state
  * const { setAuth, logout } = useAuthStore();
- * setAuth(userData, accessToken, refreshToken);
+ * setAuth(userData);
  */
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
       user: null,
-      accessToken: null,
-      refreshToken: null,
       isAuthenticated: false,
-      setAuth: (user, accessToken, refreshToken) =>
+      setAuth: (user) =>
         set({
           user,
-          accessToken,
-          refreshToken,
           isAuthenticated: true,
         }),
       updateUser: (userData) =>
@@ -61,8 +54,6 @@ export const useAuthStore = create<AuthStore>()(
       logout: () =>
         set({
           user: null,
-          accessToken: null,
-          refreshToken: null,
           isAuthenticated: false,
         }),
     }),
@@ -71,9 +62,8 @@ export const useAuthStore = create<AuthStore>()(
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
-        accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
+        // Don't persist tokens - they're in httpOnly cookies
       }),
     },
   ),
@@ -86,8 +76,6 @@ export const useAuthStore = create<AuthStore>()(
 export const authSelectors = {
   user: (state: AuthStore) => state.user,
   isAuthenticated: (state: AuthStore) => state.isAuthenticated,
-  accessToken: (state: AuthStore) => state.accessToken,
-  refreshToken: (state: AuthStore) => state.refreshToken,
   setAuth: (state: AuthStore) => state.setAuth,
   updateUser: (state: AuthStore) => state.updateUser,
   updateCredits: (state: AuthStore) => state.updateCredits,

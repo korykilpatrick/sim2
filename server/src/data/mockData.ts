@@ -2,7 +2,7 @@ export const mockUsers = [
   {
     id: '1',
     email: 'demo@synmax.com',
-    password: 'demo123', // In real app, this would be hashed
+    password: '$2b$10$gq.IvYu6qgbQjfrap6dwu.p9Jazbdoq1wAGnRcxAi0uQqlkX1KBxC', // bcrypt hash of 'demo123'
     name: 'Demo User',
     company: 'SynMax Demo',
     department: 'Operations',

@@ -148,19 +148,16 @@ export class EnhancedWebSocketService {
   }
 
   /**
-   * Connect to the WebSocket server with optional authentication
-   * @param {string} [token] - Optional authentication token
+   * Connect to the WebSocket server.
+   * Authentication is handled via httpOnly cookies.
    * @returns {void}
    * @example
    * ```typescript
-   * // Connect without authentication
+   * // Connect - auth handled by cookies
    * ws.connect()
-   *
-   * // Connect with authentication
-   * ws.connect('auth-token-123')
    * ```
    */
-  connect(token?: string): void {
+  connect(): void {
     if (this.socket?.connected) {
       logger.debug('Already connected')
       return
@@ -172,7 +169,7 @@ export class EnhancedWebSocketService {
     }
 
     logger.debug('Connecting to', config.websocketUrl)
-    this.authToken = token || null
+    this.authToken = null // Authentication via cookies
     this.transitionState('connecting')
 
     this.socket = io(config.websocketUrl, {
@@ -182,7 +179,7 @@ export class EnhancedWebSocketService {
       reconnectionAttempts: this.maxReconnectAttempts,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 10000,
-      auth: token ? { token } : undefined,
+      withCredentials: true, // Include cookies
     })
 
     this.setupEventHandlers()
@@ -357,10 +354,14 @@ export class EnhancedWebSocketService {
     ]
 
     events.forEach((event) => {
-      this.socket!.on(event as keyof WebSocketEvents, (data: unknown) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.emit(event as keyof WebSocketEvents, data as any)
-      })
+      const typedEvent = event as keyof WebSocketEvents
+      this.socket!.on(typedEvent, ((...args: unknown[]) => {
+        // Properly type the emit call based on the event
+        this.emit(
+          typedEvent,
+          ...(args as Parameters<WebSocketEvents[typeof typedEvent]>),
+        )
+      }) as WebSocketEvents[typeof typedEvent])
     })
   }
 
