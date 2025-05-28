@@ -34,6 +34,42 @@ export const mockCreditTransactions = [
   }
 ]
 
+// Mock credit packages for testing
+export const mockCreditPackages = [
+  {
+    id: 'pkg-100',
+    name: 'Starter',
+    credits: 100,
+    price: 10.00,
+    bonus: 0,
+    popular: false
+  },
+  {
+    id: 'pkg-500',
+    name: 'Professional',
+    credits: 500,
+    price: 45.00,
+    bonus: 0,
+    popular: false
+  },
+  {
+    id: 'pkg-1000',
+    name: 'Business',
+    credits: 1000,
+    price: 80.00,
+    bonus: 0,
+    popular: true
+  },
+  {
+    id: 'pkg-5000',
+    name: 'Enterprise',
+    credits: 5000,
+    price: 350.00,
+    bonus: 0,
+    popular: false
+  }
+]
+
 // Handlers for features/credits endpoints
 export const featuresCreditHandlers = [
   // Get credit balance - returns format expected by features/credits
@@ -54,10 +90,20 @@ export const featuresCreditHandlers = [
     })
   }),
 
+  // Get available packages
+  http.get(`${API_BASE_URL}/credits/packages`, () => {
+    return HttpResponse.json({
+      success: true,
+      data: mockCreditPackages,
+      timestamp: new Date().toISOString()
+    })
+  }),
+
   // Purchase credits
-  http.post(`${API_BASE_URL}/credits/purchase`, async () => {
+  http.post(`${API_BASE_URL}/credits/purchase`, async ({ request }) => {
+    const body = await request.json() as any
     // Mock successful purchase
-    const creditsAdded = 500
+    const creditsAdded = body.credits || 500
     const newBalance = mockCreditBalanceFeatures.available + creditsAdded
     mockCreditBalanceFeatures.available = newBalance
     

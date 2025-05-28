@@ -170,11 +170,16 @@ export function useCreditDeduction() {
       throw new Error('Reservation not found')
     }
 
+    // Check if reservation expired
+    if (new Date(reservation.expiresAt) < new Date()) {
+      reservations.delete(reservationId)
+      throw new Error('Reservation expired')
+    }
+
     reservations.delete(reservationId)
 
-    // Mock: In tests, the amount is mocked to 50
-    const mockAmount = 50
-    return deductCredits(mockAmount, 'Reserved service')
+    // Use the actual reservation amount
+    return deductCredits(reservation.amount, 'Reserved service')
   }
 
   const cancelReservation = async (reservationId: string) => {

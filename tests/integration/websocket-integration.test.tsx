@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, act, waitFor } from '@testing-library/react';
 import { io } from 'socket.io-client';
 import { useWebSocket } from '@/hooks/useWebSocket';
-import { renderWithProviders, clearAuth, setupAuthenticatedUser } from '../utils/test-utils';
+import { renderWithProviders, clearAuth, setupAuthenticatedUser } from '../utils/test-helpers';
 import React, { useEffect, useState } from 'react';
 
 // Mock socket.io-client

@@ -261,16 +261,22 @@ export function CreditsPage() {
                     </span>
                   </div>
                 )}
+                {pkg.credits === 1000 && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="bg-primary-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                      Best Value
+                    </span>
+                  </div>
+                )}
                 <CardHeader>
                   <CardTitle className="text-center">{pkg.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
                   <div className="mt-2">
-                    <span className="text-4xl font-bold">{pkg.credits}</span>
-                    <span className="text-gray-500 ml-1">credits</span>
+                    <span className="text-4xl font-bold">{pkg.credits.toLocaleString()} Credits</span>
                   </div>
                   <div className="mt-4">
-                    <span className="text-3xl font-bold">${pkg.price}</span>
+                    <span className="text-3xl font-bold">${pkg.price.toFixed(2)}</span>
                   </div>
                   {pkg.savings > 0 && (
                     <p className="mt-2 text-sm text-green-600 font-medium">

@@ -178,6 +178,9 @@ describe('Credit Balance Integration Tests', () => {
         expect(balanceElement).toHaveTextContent('1,000 Credits')
       })
 
+      // Update the mock balance before triggering the event
+      mockCreditBalanceFeatures.available = 1200
+      
       // Simulate WebSocket balance update event
       const wsEvent = new CustomEvent('ws:credit-update', {
         detail: { newBalance: 1200 },
