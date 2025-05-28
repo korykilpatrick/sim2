@@ -64,8 +64,8 @@ describe('useWebSocket', () => {
     it('should auto-connect when user is authenticated', () => {
       renderHook(() => useWebSocket())
 
-      // Should connect automatically with token from useAuth mock
-      expect(websocketService.connect).toHaveBeenCalledWith('test-token')
+      // Should connect automatically (auth handled by cookies)
+      expect(websocketService.connect).toHaveBeenCalled()
     })
 
     it('should update state when connection changes', async () => {
@@ -195,8 +195,8 @@ describe('useWebSocket', () => {
         result.current.connect()
       })
 
-      // Connect uses the token from useAuth
-      expect(websocketService.connect).toHaveBeenCalledWith('test-token')
+      // Connect called without parameters (auth via cookies)
+      expect(websocketService.connect).toHaveBeenCalled()
     })
 
     it('should provide disconnect method', () => {

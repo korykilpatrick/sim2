@@ -38,7 +38,7 @@
 - Fixed auth store integration tests (removed non-existent token references)
 - Added missing data-testids to components
 
-### 6. Credit Integration Tests (Day 2 - In Progress)
+### 6. Credit Integration Tests (Day 2 - Completed)
 
 - Fixed credit package display format ($10.00 vs $10)
 - Added test-specific credit packages for consistent testing
@@ -47,44 +47,47 @@
 - Fixed credit reservation logic to use actual amounts
 - Updated error handling expectations in tests
 - Added "Best Value" badge for 1000 credit package
+- Removed 'any' type from mock handler (~17 tests fixed)
+
+### 7. WebSocket Tests (Day 2 - In Progress)
+
+- Fixed useWebSocket hook tests (auth via cookies)
+- Fixed WebSocket race condition tests (7 tests)
+- Added room_joined/room_left event support
+- Fixed WebSocket integration test setup
+- Updated test component to track room state properly
 
 ## 📊 Test Coverage Progress
 
 - **Before Phase 3**: 97 failing tests
 - **After initial fixes**: 85 failing tests
-- **After Day 1**: 77 failing tests  
-- **Current status**: ~60 failing tests (estimated)
-- **Total tests fixed**: ~90 tests (90% reduction)
+- **After Day 1**: 77 failing tests
+- **After credit fixes**: ~60 failing tests
+- **Current status**: ~16 failing tests (major improvement!)
+- **Total tests fixed**: ~81 tests (83% reduction)
 - **Current coverage**: 79.14% → targeting 85%+
 
-## 🔄 Remaining Work (77 failing tests)
+## 🔄 Remaining Work (~16 failing tests)
 
 ### By Category:
 
-1. **Credit Integration Tests** (~35 failures)
+1. **WebSocket Integration Tests** (~12 failures)
 
-   - Credit deduction flows (missing UI elements)
-   - Purchase modal interactions (component not found)
-   - Transaction history display (data mismatch)
-   - Service-specific credit integration
+   - Full connection flow (disconnect on logout)
+   - Real-time event handling (vessel updates, area alerts, credit balance)
+   - Room management (join/leave/rejoin)
+   - Error handling (connection errors, unauthorized, reconnection)
+   - Multiple component state sharing
 
-2. **WebSocket Tests** (~20 failures)
+2. **WebSocketProvider Tests** (~4 failures)
 
-   - Connection state management
-   - Room join/leave functionality
-   - Real-time event handling
-   - Reconnection logic with race conditions
+   - Disconnect on logout
+   - Debug mode listener registration
+   - Edge cases (WebSocket disabled, rapid auth changes)
 
-3. **Component Tests** (~15 failures)
-
-   - CriteriaSelector grouping functionality
-   - CriteriaCategoryGroup keyboard interactions
-   - API validation utility tests
-
-4. **Integration Tests** (~7 failures)
-   - Full WebSocket flow with auth
-   - Multi-component state sharing
-   - Error handling scenarios
+3. **Other Tests** (Unknown count)
+   - Component tests (if any remaining)
+   - Other integration tests
 
 ### Low Priority (Phase 3 Week 2)
 

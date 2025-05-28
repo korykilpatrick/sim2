@@ -324,6 +324,7 @@ export class WebSocketService {
       (data: { room: string; type: 'vessel' | 'area' }) => {
         logger.debug(`Successfully joined ${data.type} room:`, data.room)
         this.clearRoomRetryTimer(`${data.type}:${data.room}`)
+        this.emit('room_joined', data)
       },
     )
 
@@ -332,6 +333,15 @@ export class WebSocketService {
       (data: { room: string; error: string }) => {
         logger.error('Room join error:', data.error)
         this.handleRoomJoinError(data.room, data.error)
+        this.emit('room_join_error', data)
+      },
+    )
+
+    this.socket.on(
+      'room_left',
+      (data: { room: string; type: 'vessel' | 'area' }) => {
+        logger.debug(`Successfully left ${data.type} room:`, data.room)
+        this.emit('room_left', data)
       },
     )
 

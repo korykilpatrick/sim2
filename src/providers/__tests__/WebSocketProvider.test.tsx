@@ -312,8 +312,8 @@ describe('WebSocketProvider', () => {
   })
 
   describe('Edge Cases', () => {
-    it('should handle missing config gracefully', async () => {
-      // Re-mock config with websocket disabled
+    it('should handle websocket disabled gracefully', async () => {
+      // Mock config with websocket disabled
       vi.doMock('@/config', () => ({
         config: {
           features: {
@@ -323,10 +323,6 @@ describe('WebSocketProvider', () => {
         },
       }))
 
-      // Clear module cache and reimport
-      vi.resetModules()
-      await import('../WebSocketProvider')
-
       setupAuthenticatedUser()
 
       renderWithProviders(<TestComponent />)
@@ -334,8 +330,7 @@ describe('WebSocketProvider', () => {
       // Should not connect when websocket is disabled
       expect(websocketService.connect).not.toHaveBeenCalled()
 
-      // Reset mocks
-      vi.resetModules()
+      // Restore original mock
       vi.doMock('@/config', () => ({
         config: {
           features: {

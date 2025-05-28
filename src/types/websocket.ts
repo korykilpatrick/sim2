@@ -42,6 +42,7 @@ export interface WebSocketEvents {
 
   // Room events
   room_joined: (data: { room: string; type: 'vessel' | 'area' }) => void
+  room_left: (data: { room: string; type: 'vessel' | 'area' }) => void
   room_join_error: (data: { room: string; error: string }) => void
 
   // System events
