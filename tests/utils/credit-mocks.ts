@@ -9,8 +9,8 @@ export const mockCreditBalanceFeatures = {
   lifetime: 5000,
   expiring: {
     amount: 100,
-    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-  }
+    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+  },
 }
 
 export const mockCreditTransactions = [
@@ -21,7 +21,7 @@ export const mockCreditTransactions = [
     amount: 500,
     balance: 1500,
     description: 'Credit package purchase',
-    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: 'tx-2',
@@ -30,8 +30,8 @@ export const mockCreditTransactions = [
     amount: -50,
     balance: 1450,
     description: 'Vessel tracking - 10 days',
-    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()
-  }
+    createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+  },
 ]
 
 // Mock credit packages for testing
@@ -40,34 +40,34 @@ export const mockCreditPackages = [
     id: 'pkg-100',
     name: 'Starter',
     credits: 100,
-    price: 10.00,
+    price: 10.0,
     bonus: 0,
-    popular: false
+    popular: false,
   },
   {
     id: 'pkg-500',
     name: 'Professional',
     credits: 500,
-    price: 45.00,
+    price: 45.0,
     bonus: 0,
-    popular: false
+    popular: false,
   },
   {
     id: 'pkg-1000',
     name: 'Business',
     credits: 1000,
-    price: 80.00,
+    price: 80.0,
     bonus: 0,
-    popular: true
+    popular: true,
   },
   {
     id: 'pkg-5000',
     name: 'Enterprise',
     credits: 5000,
-    price: 350.00,
+    price: 350.0,
     bonus: 0,
-    popular: false
-  }
+    popular: false,
+  },
 ]
 
 // Handlers for features/credits endpoints
@@ -77,7 +77,7 @@ export const featuresCreditHandlers = [
     return HttpResponse.json({
       success: true,
       data: mockCreditBalanceFeatures,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   }),
 
@@ -86,7 +86,7 @@ export const featuresCreditHandlers = [
     return HttpResponse.json({
       success: true,
       data: mockCreditTransactions,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   }),
 
@@ -95,18 +95,21 @@ export const featuresCreditHandlers = [
     return HttpResponse.json({
       success: true,
       data: mockCreditPackages,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   }),
 
   // Purchase credits
   http.post(`${API_BASE_URL}/credits/purchase`, async ({ request }) => {
-    const body = await request.json() as any
+    const body = (await request.json()) as {
+      credits?: number
+      paymentMethodId?: string
+    }
     // Mock successful purchase
     const creditsAdded = body.credits || 500
     const newBalance = mockCreditBalanceFeatures.available + creditsAdded
     mockCreditBalanceFeatures.available = newBalance
-    
+
     return HttpResponse.json({
       success: true,
       data: {
@@ -115,43 +118,46 @@ export const featuresCreditHandlers = [
         newBalance,
         invoice: {
           id: `inv-${Date.now()}`,
-          url: '/invoices/mock-invoice.pdf'
-        }
+          url: '/invoices/mock-invoice.pdf',
+        },
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
   }),
 
   // Deduct credits - for features/credits
   http.post(`${API_BASE_URL}/credits/deduct`, async ({ request }) => {
-    const body = await request.json() as { amount: number; description?: string }
-    
+    const body = (await request.json()) as {
+      amount: number
+      description?: string
+    }
+
     if (body.amount > mockCreditBalanceFeatures.available) {
       return HttpResponse.json(
-        { 
+        {
           success: false,
-          error: { 
+          error: {
             message: 'Insufficient credits',
-            code: 'INSUFFICIENT_CREDITS'
-          }
+            code: 'INSUFFICIENT_CREDITS',
+          },
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
-    
+
     const newBalance = mockCreditBalanceFeatures.available - body.amount
     mockCreditBalanceFeatures.available = newBalance
-    
+
     return HttpResponse.json({
       success: true,
       data: {
         success: true,
         newBalance,
-        transactionId: `tx-${Date.now()}`
+        transactionId: `tx-${Date.now()}`,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
-  })
+  }),
 ]
 
 // Reset helper
@@ -160,6 +166,6 @@ export const resetFeaturesCreditData = () => {
   mockCreditBalanceFeatures.lifetime = 5000
   mockCreditBalanceFeatures.expiring = {
     amount: 100,
-    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
+    date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
   }
 }
