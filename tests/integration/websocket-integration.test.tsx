@@ -180,8 +180,8 @@ describe('WebSocket Integration', () => {
       }),
       emit: vi.fn(),
       connect: vi.fn(() => {
+        // Don't auto-trigger connect, let test control it
         mockSocket.connected = true
-        triggerSocketEvent('connect')
       }),
       disconnect: vi.fn(() => {
         mockSocket.connected = false
@@ -193,10 +193,20 @@ describe('WebSocket Integration', () => {
     ;(io as jest.Mock).mockReturnValue(mockSocket)
   })
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Ensure WebSocket is disconnected
+    if (mockSocket.connected) {
+      mockSocket.connected = false
+      triggerSocketEvent('disconnect', 'test cleanup')
+    }
+
     vi.clearAllMocks()
     clearAuth()
     socketEventHandlers.clear()
+
+    // Reset websocket service state
+    const { websocketService } = await import('@/services/websocket')
+    websocketService.disconnect()
   })
 
   // Helper to trigger socket events
@@ -255,7 +265,7 @@ describe('WebSocket Integration', () => {
       // Start logged in
       setupAuthenticatedUser()
 
-      const { rerender } = renderWithProviders(<WebSocketTestComponent />)
+      renderWithProviders(<WebSocketTestComponent />)
 
       // Wait for initial connection
       await waitFor(() => {
@@ -275,16 +285,13 @@ describe('WebSocket Integration', () => {
         )
       })
 
-      // Clear emit calls before logout
+      // Clear disconnect mock calls before logout
       mockSocket.disconnect.mockClear()
 
       // Simulate logout by clearing auth
       act(() => {
         clearAuth()
       })
-
-      // Force re-render to propagate auth state change
-      rerender(<WebSocketTestComponent />)
 
       // The WebSocketProvider will call disconnect when user becomes null
       await waitFor(
@@ -309,7 +316,7 @@ describe('WebSocket Integration', () => {
   })
 
   describe('Real-time Events', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       // Start authenticated
       setupAuthenticatedUser()
     })
@@ -321,6 +328,9 @@ describe('WebSocket Integration', () => {
       await waitFor(() => {
         expect(io).toHaveBeenCalled()
       })
+
+      // Reset vessel positions counter (in case of duplicate events during setup)
+      const vesselPositionsElement = screen.getByTestId('vessel-positions')
 
       // Simulate connected and authenticated state
       act(() => {
@@ -334,6 +344,9 @@ describe('WebSocket Integration', () => {
           'connected',
         )
       })
+
+      // Get the current vessel position count before update
+      const initialCount = parseInt(vesselPositionsElement.textContent || '0')
 
       // Simulate vessel position update
       act(() => {
@@ -347,9 +360,11 @@ describe('WebSocket Integration', () => {
         })
       })
 
-      // Verify position received
+      // Verify position received (should increment by 1)
       await waitFor(() => {
-        expect(screen.getByTestId('vessel-positions')).toHaveTextContent('1')
+        expect(vesselPositionsElement).toHaveTextContent(
+          String(initialCount + 1),
+        )
       })
     })
 
@@ -360,6 +375,8 @@ describe('WebSocket Integration', () => {
       await waitFor(() => {
         expect(io).toHaveBeenCalled()
       })
+
+      const areaAlertsElement = screen.getByTestId('area-alerts')
 
       // Simulate connected and authenticated state
       act(() => {
@@ -373,6 +390,9 @@ describe('WebSocket Integration', () => {
           'connected',
         )
       })
+
+      // Get the current alert count before update
+      const initialCount = parseInt(areaAlertsElement.textContent || '0')
 
       // Simulate area alert
       act(() => {
@@ -387,9 +407,9 @@ describe('WebSocket Integration', () => {
         })
       })
 
-      // Verify alert received
+      // Verify alert received (should increment by 1)
       await waitFor(() => {
-        expect(screen.getByTestId('area-alerts')).toHaveTextContent('1')
+        expect(areaAlertsElement).toHaveTextContent(String(initialCount + 1))
       })
     })
 
@@ -400,6 +420,8 @@ describe('WebSocket Integration', () => {
       await waitFor(() => {
         expect(io).toHaveBeenCalled()
       })
+
+      const creditBalanceElement = screen.getByTestId('credit-balance')
 
       // Simulate connected and authenticated state
       act(() => {
@@ -424,13 +446,13 @@ describe('WebSocket Integration', () => {
 
       // Verify balance updated
       await waitFor(() => {
-        expect(screen.getByTestId('credit-balance')).toHaveTextContent('150')
+        expect(creditBalanceElement).toHaveTextContent('150')
       })
     })
   })
 
   describe('Room Management', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       setupAuthenticatedUser()
     })
 

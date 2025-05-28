@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, act } from '@testing-library/react'
 import { websocketService } from '@/services/websocket'
 import {
   renderWithProviders,
@@ -99,21 +99,26 @@ describe('WebSocketProvider', () => {
     it('should disconnect when user logs out', async () => {
       setupAuthenticatedUser()
 
-      const { rerender } = renderWithProviders(<TestComponent />)
+      renderWithProviders(<TestComponent />)
 
       await waitFor(() => {
         expect(websocketService.connect).toHaveBeenCalled()
       })
 
+      // Clear previous mock calls
+      ;(websocketService.disconnect as any).mockClear()
+
       // Simulate logout
-      clearAuth()
-
-      // Force re-render to trigger effect
-      rerender(<TestComponent />)
-
-      await waitFor(() => {
-        expect(websocketService.disconnect).toHaveBeenCalled()
+      act(() => {
+        clearAuth()
       })
+
+      await waitFor(
+        () => {
+          expect(websocketService.disconnect).toHaveBeenCalled()
+        },
+        { timeout: 2000 },
+      )
     })
   })
 

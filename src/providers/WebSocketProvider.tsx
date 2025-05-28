@@ -17,16 +17,18 @@ export function WebSocketProvider({ children }: WebSocketProviderProps) {
   const [isConnected, setIsConnected] = React.useState(false)
 
   useEffect(() => {
-    // Only initialize once and only if WebSocket is enabled
-    if (!config.features.websocket || hasInitialized.current) {
+    // Only proceed if WebSocket is enabled
+    if (!config.features.websocket) {
       return
     }
 
     // Connect when user is authenticated
     if (user && isAuthenticated) {
-      logger.info('Initializing WebSocket connection')
-      hasInitialized.current = true
-      websocketService.connect()
+      if (!hasInitialized.current) {
+        logger.info('Initializing WebSocket connection')
+        hasInitialized.current = true
+        websocketService.connect()
+      }
 
       // Listen for connection state changes
       const unsubscribers = [
