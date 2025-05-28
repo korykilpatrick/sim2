@@ -1,16 +1,17 @@
 /**
  * Product service for managing marketplace products and pricing
- * 
+ *
  * Handles fetching product catalogs, checking availability, and managing
  * product access permissions. All products represent credit packages or
  * subscription-based maritime intelligence services.
- * 
+ *
  * @module features/products/services/productService
  */
 
 import { apiClient } from '@/api/client'
 import type { ApiResponse } from '@/api/types'
 import { Product } from '@/types/product'
+import { ProductFilter } from '../types'
 
 /**
  * Product availability information for access control
@@ -42,7 +43,7 @@ export const productApi = {
    * ```typescript
    * // Get all products
    * const products = await productApi.getProducts()
-   * 
+   *
    * // Get credit packages sorted by price
    * const credits = await productApi.getProducts({
    *   category: 'credits',
@@ -50,11 +51,15 @@ export const productApi = {
    * })
    * ```
    */
-  async getProducts(params?: {
-    category?: string
-    search?: string
-    sort?: 'price-asc' | 'price-desc' | 'name'
-  }): Promise<Product[]> {
+  async getProducts(filters?: ProductFilter): Promise<Product[]> {
+    const params = filters
+      ? {
+          category: filters.category,
+          search: filters.searchQuery,
+          sort: filters.priceRange ? 'price-asc' : undefined,
+        }
+      : undefined
+
     const response = await apiClient.get<ApiResponse<Product[]>>('/products', {
       params,
     })
@@ -88,7 +93,7 @@ export const productApi = {
    * ```typescript
    * // Get all credit packages
    * const creditPackages = await productApi.getProductsByCategory('credits')
-   * 
+   *
    * // Get all subscription products
    * const subscriptions = await productApi.getProductsByCategory('subscriptions')
    * ```

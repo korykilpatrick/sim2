@@ -1,7 +1,11 @@
-export { default as AppLayout } from './AppLayout'
+// Core layout components
+export { default as AppLayout } from './core/AppLayout'
+export { default as Header } from './core/Header'
+export { default as MinimalHeader } from './core/MinimalHeader'
+export { default as Sidebar } from './core/Sidebar'
 
-export { default as Header } from './Header'
-
-export { default as MinimalHeader } from './MinimalHeader'
-
-export { default as Sidebar } from './Sidebar'
+// Layout patterns
+export { PageLayout } from './patterns/PageLayout'
+export { DashboardLayout } from './patterns/DashboardLayout'
+export { ListDetailLayout } from './patterns/ListDetailLayout'
+export { WizardLayout } from './patterns/WizardLayout'

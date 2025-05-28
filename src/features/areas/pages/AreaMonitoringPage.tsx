@@ -15,7 +15,7 @@ import {
   AreaWizard,
 } from '../components'
 import { useAreaAlerts, useMarkAlertRead } from '../hooks/useAreaMonitoring'
-import { PageLayout } from '@/components/layouts'
+import { PageLayout } from '@/components/layout'
 import Button from '@/components/common/Button'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Modal from '@/components/common/Modal'

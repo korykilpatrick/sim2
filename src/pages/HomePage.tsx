@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import Button from '@/components/common/Button'
-import Header from '@/components/layout/Header'
+import { Header } from '@/components/layout'
 import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { productApi } from '@/features/products/services'

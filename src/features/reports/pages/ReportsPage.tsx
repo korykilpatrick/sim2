@@ -13,7 +13,7 @@ import {
   ReportFiltersPanel,
   ReportWizard,
 } from '../components'
-import { PageLayout } from '@/components/layouts'
+import { PageLayout } from '@/components/layout'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Modal from '@/components/common/Modal'
 import { Plus } from 'lucide-react'

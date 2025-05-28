@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { PageLayout } from '@/components/layouts/PageLayout'
+import { PageLayout } from '@/components/layout'
 import Button from '@/components/common/Button'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import Alert from '@/components/feedback/Alert'

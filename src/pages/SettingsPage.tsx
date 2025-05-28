@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { PageLayout } from '@/components/layouts'
+import { PageLayout } from '@/components/layout'
 import {
   Card,
   CardContent,

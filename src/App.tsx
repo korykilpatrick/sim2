@@ -3,7 +3,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import LoadingSpinner from '@components/feedback/LoadingSpinner'
 import { ConnectionStatus } from '@components/feedback'
 import ProtectedRoute from '@routes/ProtectedRoute'
-import AppLayout from '@components/layout/AppLayout'
+import { AppLayout } from '@components/layout'
 import { fetchCSRFToken } from '@utils/csrf'
 
 // Lazy load pages

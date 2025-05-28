@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PageLayout } from '@components/layouts'
+import { PageLayout } from '@components/layout'
 import { Button } from '@components/common'
 import { Select } from '@components/forms'
 import { LoadingSpinner, ErrorBoundary } from '@components/feedback'

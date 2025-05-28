@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/useToast'
 import { vesselsApi } from '../services/vessels'
-import { PageLayout } from '@/components/layouts'
+import { PageLayout } from '@/components/layout'
 import {
   TrackingWizard,
   TrackingWizardData,

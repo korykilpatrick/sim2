@@ -4,7 +4,7 @@ import {
   ComplianceReportView,
   ChronologyReportView,
 } from '@/features/reports/components'
-import { PageLayout } from '@/components/layouts'
+import { PageLayout } from '@/components/layout'
 import LoadingSpinner from '@/components/feedback/LoadingSpinner'
 import { Alert } from '@/components/feedback'
 import { ArrowLeft } from 'lucide-react'

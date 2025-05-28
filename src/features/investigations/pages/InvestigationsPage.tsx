@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PageLayout } from '@/components/layouts/PageLayout'
+import { PageLayout } from '@/components/layout'
 import { Card } from '@/components/common/Card'
 import { SearchInput } from '@/components/search/SearchInput'
 import { EmptyState } from '@/components/empty-states/EmptyState'
