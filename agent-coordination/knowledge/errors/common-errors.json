@@ -1,0 +1,14 @@
+{
+  "errors": [
+    {
+      "pattern": "Cannot find module",
+      "solution": "Check import paths and tsconfig aliases",
+      "frequency": 0
+    },
+    {
+      "pattern": "Type .* is not assignable",
+      "solution": "Verify type definitions match usage",
+      "frequency": 0
+    }
+  ]
+}

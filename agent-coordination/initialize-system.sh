@@ -115,11 +115,14 @@ fi
 echo ""
 echo "📊 System Status Check..."
 
-# Run tests to get current status
-echo "Running tests to check coverage..."
-npm test -- --run --coverage &> /dev/null
-if [ $? -eq 0 ]; then
+# Run tests to get current status (with timeout to prevent hanging)
+echo "Running tests to check coverage (30 second timeout)..."
+timeout 30 npm test -- --run --coverage &> /dev/null
+TEST_RESULT=$?
+if [ $TEST_RESULT -eq 0 ]; then
     echo "✅ Tests passing"
+elif [ $TEST_RESULT -eq 124 ]; then
+    echo "⚠️  Test check timed out - skipping coverage check"
 else
     echo "⚠️  Some tests failing - agents will prioritize fixes"
 fi

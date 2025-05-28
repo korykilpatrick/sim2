@@ -200,6 +200,11 @@ describe('WebSocket Integration', () => {
       triggerSocketEvent('disconnect', 'test cleanup')
     }
 
+    // Wait for any pending effects to complete
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0))
+    })
+
     vi.clearAllMocks()
     clearAuth()
     socketEventHandlers.clear()
@@ -211,13 +216,20 @@ describe('WebSocket Integration', () => {
 
   // Helper to trigger socket events
   const triggerSocketEvent = (event: string, ...args: unknown[]) => {
-    const handlers = socketEventHandlers.get(event) || []
-    handlers.forEach((handler) => handler(...args))
+    act(() => {
+      const handlers = socketEventHandlers.get(event) || []
+      handlers.forEach((handler) => handler(...args))
+    })
   }
 
   describe('Full Connection Flow', () => {
     it('should establish connection when user logs in', async () => {
       renderWithProviders(<WebSocketTestComponent />)
+
+      // Wait for initial render to complete
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0))
+      })
 
       // Initially disconnected
       expect(screen.getByTestId('connection-state')).toHaveTextContent(
@@ -244,11 +256,9 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate successful connection
-      act(() => {
-        mockSocket.connected = true
-        triggerSocketEvent('connect')
-        triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
-      })
+      mockSocket.connected = true
+      triggerSocketEvent('connect')
+      triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
 
       // Verify connected state
       await waitFor(() => {
@@ -302,10 +312,8 @@ describe('WebSocket Integration', () => {
       )
 
       // Simulate disconnect event
-      act(() => {
-        mockSocket.connected = false
-        triggerSocketEvent('disconnect', 'client disconnect')
-      })
+      mockSocket.connected = false
+      triggerSocketEvent('disconnect', 'client disconnect')
 
       await waitFor(() => {
         expect(screen.getByTestId('connection-state')).toHaveTextContent(
@@ -333,11 +341,9 @@ describe('WebSocket Integration', () => {
       const vesselPositionsElement = screen.getByTestId('vessel-positions')
 
       // Simulate connected and authenticated state
-      act(() => {
-        mockSocket.connected = true
-        triggerSocketEvent('connect')
-        triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
-      })
+      mockSocket.connected = true
+      triggerSocketEvent('connect')
+      triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
 
       await waitFor(() => {
         expect(screen.getByTestId('connection-state')).toHaveTextContent(
@@ -349,15 +355,13 @@ describe('WebSocket Integration', () => {
       const initialCount = parseInt(vesselPositionsElement.textContent || '0')
 
       // Simulate vessel position update
-      act(() => {
-        triggerSocketEvent('vessel_position_update', {
-          vesselId: 'vessel-123',
-          timestamp: new Date().toISOString(),
-          position: { lat: 10.5, lng: -20.3 },
-          heading: 90,
-          speed: 15,
-          status: 'active',
-        })
+      triggerSocketEvent('vessel_position_update', {
+        vesselId: 'vessel-123',
+        timestamp: new Date().toISOString(),
+        position: { lat: 10.5, lng: -20.3 },
+        heading: 90,
+        speed: 15,
+        status: 'active',
       })
 
       // Verify position received (should increment by 1)
@@ -379,11 +383,9 @@ describe('WebSocket Integration', () => {
       const areaAlertsElement = screen.getByTestId('area-alerts')
 
       // Simulate connected and authenticated state
-      act(() => {
-        mockSocket.connected = true
-        triggerSocketEvent('connect')
-        triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
-      })
+      mockSocket.connected = true
+      triggerSocketEvent('connect')
+      triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
 
       await waitFor(() => {
         expect(screen.getByTestId('connection-state')).toHaveTextContent(
@@ -395,16 +397,14 @@ describe('WebSocket Integration', () => {
       const initialCount = parseInt(areaAlertsElement.textContent || '0')
 
       // Simulate area alert
-      act(() => {
-        triggerSocketEvent('area_alert', {
-          id: 'alert-1',
-          areaId: 'area-456',
-          areaName: 'Test Area',
-          type: 'vessel_entered',
-          severity: 'medium',
-          message: 'Vessel entered area',
-          timestamp: new Date().toISOString(),
-        })
+      triggerSocketEvent('area_alert', {
+        id: 'alert-1',
+        areaId: 'area-456',
+        areaName: 'Test Area',
+        type: 'vessel_entered',
+        severity: 'medium',
+        message: 'Vessel entered area',
+        timestamp: new Date().toISOString(),
       })
 
       // Verify alert received (should increment by 1)
@@ -424,11 +424,9 @@ describe('WebSocket Integration', () => {
       const creditBalanceElement = screen.getByTestId('credit-balance')
 
       // Simulate connected and authenticated state
-      act(() => {
-        mockSocket.connected = true
-        triggerSocketEvent('connect')
-        triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
-      })
+      mockSocket.connected = true
+      triggerSocketEvent('connect')
+      triggerSocketEvent('authenticated', { userId: 'user-1', success: true })
 
       await waitFor(() => {
         expect(screen.getByTestId('connection-state')).toHaveTextContent(
@@ -437,11 +435,9 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate credit balance update
-      act(() => {
-        triggerSocketEvent('credit_balance_updated', {
-          balance: 150,
-          change: -10,
-        })
+      triggerSocketEvent('credit_balance_updated', {
+        balance: 150,
+        change: -10,
       })
 
       // Verify balance updated
@@ -496,11 +492,9 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate room join acknowledgment
-      act(() => {
-        triggerSocketEvent('room_joined', {
-          room: 'vessel-test-123',
-          type: 'vessel',
-        })
+      triggerSocketEvent('room_joined', {
+        room: 'vessel-test-123',
+        type: 'vessel',
       })
 
       await waitFor(() => {
@@ -520,11 +514,9 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate room leave acknowledgment
-      act(() => {
-        triggerSocketEvent('room_left', {
-          room: 'vessel-test-123',
-          type: 'vessel',
-        })
+      triggerSocketEvent('room_left', {
+        room: 'vessel-test-123',
+        type: 'vessel',
       })
 
       await waitFor(() => {
@@ -572,11 +564,9 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate room join acknowledgment
-      act(() => {
-        triggerSocketEvent('room_joined', {
-          room: 'area-test-456',
-          type: 'area',
-        })
+      triggerSocketEvent('room_joined', {
+        room: 'area-test-456',
+        type: 'area',
       })
 
       await waitFor(() => {
@@ -596,9 +586,7 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate room leave acknowledgment
-      act(() => {
-        triggerSocketEvent('room_left', { room: 'area-test-456', type: 'area' })
-      })
+      triggerSocketEvent('room_left', { room: 'area-test-456', type: 'area' })
 
       await waitFor(() => {
         expect(screen.getByTestId('rooms-count')).toHaveTextContent('0')
@@ -633,15 +621,13 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate room join acknowledgments
-      act(() => {
-        triggerSocketEvent('room_joined', {
-          room: 'vessel-test-123',
-          type: 'vessel',
-        })
-        triggerSocketEvent('room_joined', {
-          room: 'area-test-456',
-          type: 'area',
-        })
+      triggerSocketEvent('room_joined', {
+        room: 'vessel-test-123',
+        type: 'vessel',
+      })
+      triggerSocketEvent('room_joined', {
+        room: 'area-test-456',
+        type: 'area',
       })
 
       await waitFor(() => {
@@ -698,9 +684,7 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate connection error
-      act(() => {
-        triggerSocketEvent('connect_error', new Error('Connection failed'))
-      })
+      triggerSocketEvent('connect_error', new Error('Connection failed'))
 
       // Verify error state
       await waitFor(() => {
@@ -767,9 +751,7 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate reconnection attempt
-      act(() => {
-        triggerSocketEvent('reconnect_attempt', 1)
-      })
+      triggerSocketEvent('reconnect_attempt', 1)
 
       await waitFor(() => {
         expect(screen.getByTestId('connection-state')).toHaveTextContent(
@@ -828,25 +810,28 @@ describe('WebSocket Integration', () => {
   })
 
   describe('Multiple Components', () => {
+    // Define component outside of test to avoid re-creation
+    const SecondTestComponent = () => {
+      const { status, rooms } = useWebSocket()
+      return (
+        <div>
+          <div data-testid="second-status">{status}</div>
+          <div data-testid="second-rooms">{rooms.length}</div>
+        </div>
+      )
+    }
+
     it('should share WebSocket state across components', async () => {
       setupAuthenticatedUser()
 
-      const SecondTestComponent = () => {
-        const { status, rooms } = useWebSocket()
-        return (
-          <div>
-            <div data-testid="second-status">{status}</div>
-            <div data-testid="second-rooms">{rooms.length}</div>
-          </div>
+      await act(async () => {
+        renderWithProviders(
+          <>
+            <WebSocketTestComponent />
+            <SecondTestComponent />
+          </>,
         )
-      }
-
-      renderWithProviders(
-        <>
-          <WebSocketTestComponent />
-          <SecondTestComponent />
-        </>,
-      )
+      })
 
       // Wait for connection
       await waitFor(() => {
@@ -876,11 +861,9 @@ describe('WebSocket Integration', () => {
       })
 
       // Simulate room join acknowledgment
-      act(() => {
-        triggerSocketEvent('room_joined', {
-          room: 'vessel-test-123',
-          type: 'vessel',
-        })
+      triggerSocketEvent('room_joined', {
+        room: 'vessel-test-123',
+        type: 'vessel',
       })
 
       // Both components should see the room

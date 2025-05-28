@@ -1,0 +1,12 @@
+{
+  "patterns": [
+    {
+      "id": "search-input",
+      "name": "Search Input with Debounce",
+      "file": "pattern-search-input.json",
+      "usage_count": 5
+    }
+  ],
+  "total_patterns": 1,
+  "last_updated": "2025-05-28T21:54:06Z"
+}
