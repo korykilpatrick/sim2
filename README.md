@@ -1,13 +1,6 @@
 # SIM - SynMax Intelligence Marketplace
 
-## 🚨 CRITICAL: Test-First Development
-
-**Current Status**: 0% test coverage across 357 files - THIS MUST BE ADDRESSED FIRST
-
-This project follows strict test-first development practices:
-- **80% minimum test coverage** required for all code
-- **TDD (Test-Driven Development)** for all new features
-- **No commits without passing tests**
+A modern web application for maritime intelligence services, providing vessel tracking, area monitoring, fleet management, and compliance reporting.
 
 ## Quick Start
 
@@ -15,43 +8,83 @@ This project follows strict test-first development practices:
 # Install dependencies
 npm install
 
-# Run tests (ALWAYS run first!)
+# Run tests
 npm test
 
-# Check coverage (must be 80%+)
-npm run test:coverage
-
-# Start development (only after tests pass)
+# Start development servers (frontend + API)
 npm run dev
 ```
 
-## Development Workflow
+The application runs on:
 
-1. **Write Test First** - Create failing test for new functionality
-2. **Implement Code** - Write minimal code to pass test
-3. **Refactor** - Improve while keeping tests green
-4. **Verify Coverage** - Ensure 80%+ coverage maintained
+- Frontend: http://localhost:5173
+- Mock API: http://localhost:3001
 
-## Why Test-First?
+**Demo credentials**: `demo@synmax.com` / `demo123`
 
-In the era of AI-assisted development:
-- Tests validate AI-generated code meets requirements
-- Tests serve as living documentation
-- Tests enable confident refactoring
-- Tests prevent regressions in production
+## Project Philosophy
 
-## Documentation
+This codebase follows strict engineering principles:
 
-- [Testing Standards](/docs/standards/TESTING-STANDARDS.md) - Comprehensive testing guide
-- [Implementation Plan](/workflow/IMPLEMENTATION-PLAN.md) - Test-first roadmap
-- [Architecture](/docs/architecture/FRONTEND-ARCHITECTURE.md) - System design
+1. **Test-First Development** - All features must have tests before implementation
+2. **Type Safety** - Full TypeScript with strict mode enabled
+3. **Code Quality** - Automated linting, formatting, and pre-commit hooks
+4. **No Legacy Burden** - Zero users means we always choose the ideal solution
 
 ## Tech Stack
 
-- React 18 + TypeScript + Vite
-- Vitest for testing
-- Tailwind CSS
-- Zustand + React Query
-- Express mock backend
+**Frontend**
 
-See [CLAUDE.md](CLAUDE.md) for detailed development instructions.
+- React 18 with TypeScript
+- Vite for fast builds
+- Tailwind CSS for styling
+- Zustand + React Query for state management
+
+**Backend**
+
+- Express.js mock API
+- Socket.io for real-time features
+- JWT authentication
+
+**Testing & Quality**
+
+- Vitest for unit/integration tests
+- ESLint + Prettier for code standards
+- Husky for pre-commit hooks
+
+## Key Commands
+
+```bash
+npm run dev          # Start development servers
+npm test             # Run tests
+npm run lint         # Check code quality
+npm run typecheck    # Verify TypeScript types
+npm run build        # Production build
+```
+
+## Documentation
+
+- [Architecture Overview](docs/architecture/FRONTEND-ARCHITECTURE.md)
+- [Development Workflow](workflow/PROMPT.md)
+- [Testing Standards](docs/standards/TESTING-STANDARDS.md)
+- [API Documentation](docs/api/MOCK-API-SPEC.md)
+
+## Features
+
+✅ **Authentication** - JWT-based with secure sessions  
+✅ **Vessel Tracking** - Track individual vessels with 11 monitoring criteria  
+✅ **Area Monitoring** - Monitor maritime regions with geofencing  
+✅ **Fleet Management** - Organize and track vessel groups  
+✅ **Compliance Reports** - Generate regulatory reports  
+✅ **Credits System** - Usage-based billing with multiple tiers
+
+## Contributing
+
+1. Read [CLAUDE.md](CLAUDE.md) for AI-assisted development guidelines
+2. Follow the [development workflow](workflow/PROMPT.md)
+3. Ensure all tests pass before committing
+4. Use conventional commits format
+
+## License
+
+Proprietary - SynMax Inc.
